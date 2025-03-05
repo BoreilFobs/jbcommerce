@@ -9,9 +9,9 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>ElectroSphere - Bootstrap eCommerce Template</title>
+    <title>ElectroSphere</title>
     <meta name="keywords" content="HTML5 Template" />
-    <meta name="description" content="ElectroSphere - Bootstrap eCommerce Template" />
+    <meta name="description" content="ElectroSphere" />
     <meta name="author" content="p-themes" />
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="assets/images/icons/apple-touch-icon.png" />
