@@ -1,4 +1,4 @@
-ad <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <!-- ElectroSphere/index-3.html  22 Nov 2019 09:55:42 GMT -->
 @php
@@ -27,14 +27,14 @@ ad <!DOCTYPE html>
     <meta name="theme-color" content="#ffffff" />
     <link rel="stylesheet" href="assets/vendor/line-awesome/line-awesome/line-awesome/css/line-awesome.min.css" />
     <!-- Plugins CSS File -->
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="assets/css/plugins/owl-carousel/owl.carousel.css" />
-    <link rel="stylesheet" href="assets/css/plugins/magnific-popup/magnific-popup.css" />
-    <link rel="stylesheet" href="assets/css/plugins/jquery.countdown.css" />
+    <link rel="stylesheet" href={{ asset('assets/css/bootstrap.min.css') }} />
+    <link rel="stylesheet" href={{ asset('assets/css/plugins/owl-carousel/owl.carousel.css') }} />
+    <link rel="stylesheet" href={{ asset('assets/css/plugins/magnific-popup/magnific-popup.css') }} />
+    <link rel="stylesheet" href={{ asset('assets/css/plugins/jquery.countdown.css') }} />
     <!-- Main CSS File -->
-    <link rel="stylesheet" href="assets/css/style.css" />
-    <link rel="stylesheet" href="assets/css/skins/skin-demo-3.css" />
-    <link rel="stylesheet" href="assets/css/demos/demo-3.css" />
+    <link rel="stylesheet" href={{ asset('assets/css/style.css') }} />
+    <link rel="stylesheet" href={{ asset('assets/css/skins/skin-demo-3.css') }} />
+    <link rel="stylesheet" href={{ asset('assets/css/demos/demo-3.css') }} />
 </head>
 
 <body>
@@ -116,9 +116,11 @@ ad <!DOCTYPE html>
                             <i class="icon-bars"></i>
                         </button>
 
-                        <a href="index.html" class="logo">
-                            <img src="assets/images/demos/demo-3/logo.png" alt="ElectroSphere Logo" width="105"
-                                height="25" />
+                        <a href={{ url('/') }} style="font-family: cursive; font-weight:500; font-size: 35px;"
+                            class="logo">
+                            {{-- <img src={{ asset('assets/images/demos/demo-3/logo.png') }} alt="ElectroSphere Logo"
+                                width="105" height="25" /> --}}
+                            ElectroSphere
                         </a>
                     </div>
                     <!-- End .header-left -->
@@ -143,41 +145,56 @@ ad <!DOCTYPE html>
 
                     <div class="header-right">
                         <div class="dropdown compare-dropdown">
-                            <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false" data-display="static"
-                                title="Compare Products" aria-label="Compare Products">
-                                <div class="icon">
-                                    <i class="icon-random"></i>
-                                </div>
-                                <p>Compare</p>
-                            </a>
+
 
                             <!-- End .dropdown-menu -->
                         </div>
                         <!-- End .compare-dropdown -->
 
                         <div class="wishlist">
-                            <a href={{ '/whishlist' }} title="Wishlist">
-                                <div class="icon">
-                                    <i class="icon-heart-o"></i>
-                                    <span class="wishlist-count badge">3</span>
-                                </div>
-                                <p>Wishlist</p>
-                            </a>
+                            @if (Auth::check())
+                                <a href={{ url('/wish-list/' . Auth::id()) }} title="Wishlist">
+                                    <div class="icon">
+                                        <i class="icon-heart-o"></i>
+                                        <span class="wishlist-count badge">3</span>
+                                    </div>
+                                    <p>Wishlist</p>
+                                </a>
+                            @else
+                                <a href='#' title="Wishlist">
+                                    <div onclick="()=>{alert('login to access this page')}" class="icon">
+                                        <i class="icon-heart-o"></i>
+                                        <span class="wishlist-count badge">3</span>
+                                    </div>
+                                    <p>Wishlist</p>
+                                </a>
+                            @endif
                         </div>
                         <!-- End .compare-dropdown -->
 
                         <div class="dropdown cart-dropdown">
-                            <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false" data-display="static">
-                                <div class="icon">
-                                    <i class="icon-shopping-cart"></i>
-                                    <span class="cart-count">2</span>
-                                </div>
-                                <p>Cart</p>
-                            </a>
+                            @if (Auth::check())
+                                <a href={{ url('/cart/' . Auth::id()) }} class="dropdown-toggle" role="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    data-display="static">
+                                    <div onclick="()=>{alert('login to access this page')}" class="icon">
+                                        <i class="icon-shopping-cart"></i>
+                                        <span class="cart-count">2</span>
+                                    </div>
+                                    <p>Cart</p>
+                                </a>
+                            @else
+                                <a href='#' class="dropdown-toggle" role="button" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false" data-display="static">
+                                    <div class="icon">
+                                        <i class="icon-shopping-cart"></i>
+                                        <span class="cart-count">2</span>
+                                    </div>
+                                    <p>Cart</p>
+                                </a>
+                            @endif
 
-                            <div class="dropdown-menu dropdown-menu-right">
+                            {{-- <div class="dropdown-menu dropdown-menu-right">
                                 <div class="dropdown-cart-products">
                                     <div class="product">
                                         <div class="product-cart-details">
@@ -242,7 +259,7 @@ ad <!DOCTYPE html>
                                             class="icon-long-arrow-right"></i></a>
                                 </div>
                                 <!-- End .dropdown-cart-total -->
-                            </div>
+                            </div> --}}
                             <!-- End .dropdown-menu -->
                         </div>
                         <!-- End .cart-dropdown -->
@@ -265,9 +282,6 @@ ad <!DOCTYPE html>
 
                                     <!-- End .megamenu -->
                                 </li>
-                                <li class=" {{ request()->is('/products') ? 'active' : '' }}">
-                                    <a href={{ url('/products') }}>Products</a>
-                                </li>
                                 <li class="{{ request()->is('/about') ? 'active' : '' }}">
                                     <a href={{ url('/about') }}>About us</a>
                                 </li>
@@ -284,7 +298,8 @@ ad <!DOCTYPE html>
                     <div class="header-right">
                         <i class="la la-lightbulb-o"></i>
                         <p>
-                            Clearance<span class="highlight">&nbsp;Up to 30% Off</span>
+                            {{ Auth::check() ? Auth::user()->name : '' }}<span class="highlight">&nbsp;Up to 30%
+                                Off</span>
                         </p>
                     </div>
                 </div>
@@ -368,9 +383,19 @@ ad <!DOCTYPE html>
 
                                 <ul class="widget-list">
                                     <li>
-                                        <a href={{ url('/cart') }}>View Cart</a>
+                                        @if (Auth::check())
+                                            <a href={{ url('/cart/' . Auth::id()) }}>View Cart</a>
+                                        @else
+                                            <a href="#">View Cart</a>
+                                        @endif
                                     </li>
-                                    <li><a href={{ url('/wishlist') }}>My Wishlist</a></li>
+                                    <li>
+                                        @if (Auth::check())
+                                            <a href={{ url('/wish-list/' . Auth::id()) }}>My Wishlist</a>
+                                        @else
+                                            <a href='#'>My Wishlist</a>
+                                        @endif
+                                    </li>
                                     <li><a href="#">Help</a></li>
                                 </ul>
                                 <!-- End .widget-list -->
@@ -392,7 +417,7 @@ ad <!DOCTYPE html>
                     </p>
                     <!-- End .footer-copyright -->
                     <figure class="footer-payments">
-                        <img src="assets/images/payments.png" alt="Payment methods" width="272" height="20" />
+                        {{-- <img src="assets/img/payments.jpeg" alt="Payment methods" width="272" height="20" /> --}}
                     </figure>
                     <!-- End .footer-payments -->
                 </div>
@@ -606,14 +631,14 @@ ad <!DOCTYPE html>
     </div>
     <!-- End .modal -->
 
-    <div class="container newsletter-popup-container mfp-hide" id="newsletter-popup-form">
+    {{-- <div class="container newsletter-popup-container mfp-hide" id="newsletter-popup-form">
         <div class="row justify-content-center">
             <div class="col-10">
                 <div class="row no-gutters bg-white newsletter-popup-content">
                     <div class="col-xl-3-5col col-lg-7 banner-content-wrap">
                         <div class="banner-content text-center">
-                            <img src="assets/images/popup/newsletter/logo.png" class="logo" alt="logo"
-                                width="60" height="15" />
+                            <img src={{ asset('assets/images/popup/newsletter/logo.png') }} class="logo"
+                                alt="logo" width="60" height="15" />
                             <h2 class="banner-title">
                                 get <span>25<light>%</light></span> off
                             </h2>
@@ -645,13 +670,13 @@ ad <!DOCTYPE html>
                         </div>
                     </div>
                     <div class="col-xl-2-5col col-lg-5">
-                        <img src="assets/images/popup/newsletter/img-1.jpg" class="newsletter-img"
+                        <img src={{ asset('assets/images/popup/newsletter/img-1.jpg') }} class="newsletter-img"
                             alt="newsletter" />
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     <!-- Plugins JS File -->
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>

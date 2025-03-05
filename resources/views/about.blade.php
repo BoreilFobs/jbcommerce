@@ -12,7 +12,7 @@
         </nav><!-- End .breadcrumb-nav -->
         <div class="container">
             <div class="page-header page-header-big text-center"
-                style="background-image: url('assets/images/about-header-bg.jpg')">
+                style="background: url('assets/img/bg-about.jpeg'); background-size: cover; background-repeat:no-repeat">
                 <h1 class="page-title text-white">About us<span class="text-white">Who we are</span></h1>
             </div><!-- End .page-header -->
         </div><!-- End .container -->
@@ -150,9 +150,9 @@
 
                 <hr class="mt-4 mb-6">
 
-                <h2 class="title text-center mb-4">Meet Our Team</h2><!-- End .title text-center mb-2 -->
+                {{-- <h2 class="title text-center mb-4">Meet Our Team</h2><!-- End .title text-center mb-2 --> --}}
 
-                <div class="row">
+                {{-- <div class="row">
                     <div class="col-md-4">
                         <div class="member member-anim text-center">
                             <figure class="member-media">
@@ -244,17 +244,17 @@
                         </div><!-- End .member -->
                     </div><!-- End .col-md-4 -->
                 </div><!-- End .row -->
-            </div><!-- End .container -->
+            </div><!-- End .container --> --}}
 
-            <div class="mb-2"></div><!-- End .mb-2 -->
+                <div class="mb-2"></div><!-- End .mb-2 -->
 
-            <div class="about-testimonials bg-light-2 pt-6 pb-6">
-                <div class="container">
-                    <h2 class="title text-center mb-3">What Customer Say About Us</h2><!-- End .title text-center -->
+                <div class="about-testimonials bg-light-2 pt-6 pb-6">
+                    <div class="container">
+                        <h2 class="title text-center mb-3">What Customer Say About Us</h2><!-- End .title text-center -->
 
-                    <div class="owl-carousel owl-simple owl-testimonials-photo" data-toggle="owl"
-                        data-owl-options='{
-                                "nav": false, 
+                        <div class="owl-carousel owl-simple owl-testimonials-photo" data-toggle="owl"
+                            data-owl-options='{
+                                "nav": false,
                                 "dots": true,
                                 "margin": 20,
                                 "loop": false,
@@ -264,40 +264,45 @@
                                     }
                                 }
                             }'>
-                        <blockquote class="testimonial text-center">
-                            <img src="assets/images/testimonials/user-1.jpg" alt="user">
-                            <p>" ElectroSphere has completely transformed how I shop for tech. Their product descriptions
-                                are
-                                detailed and accurate, and their customer service team actually understands technology.
-                                <br>When
-                                my new laptop had an issue, their technical support walked me through troubleshooting steps
-                                that
-                                fixed it immediately. I won't shop for electronics anywhere else now. "</p>
-                            <cite>
-                                Jenson Gregory
-                                <span>Customer</span>
-                            </cite>
-                        </blockquote><!-- End .testimonial -->
+                            <blockquote class="testimonial text-center">
+                                <img src="assets/images/testimonials/user-1.jpg" alt="user">
+                                <p>" ElectroSphere has completely transformed how I shop for tech. Their product
+                                    descriptions
+                                    are
+                                    detailed and accurate, and their customer service team actually understands technology.
+                                    <br>When
+                                    my new laptop had an issue, their technical support walked me through troubleshooting
+                                    steps
+                                    that
+                                    fixed it immediately. I won't shop for electronics anywhere else now. "
+                                </p>
+                                <cite>
+                                    Jenson Gregory
+                                    <span>Customer</span>
+                                </cite>
+                            </blockquote><!-- End .testimonial -->
 
-                        <blockquote class="testimonial text-center">
-                            <img src="assets/images/testimonials/user-2.jpg" alt="user">
-                            <p>" As someone who's not particularly tech-savvy, I was nervous about purchasing smart home
-                                devices.
-                                The ElectroSphere team took the time to understand my needs and recommended products that
-                                were
-                                perfect for my situation. The installation guides were clear, and when I had questions,
-                                their
-                                support team was just a call away. My home is now smarter, and I didn't have to stress about
-                                it! "</p>
+                            <blockquote class="testimonial text-center">
+                                <img src="assets/images/testimonials/user-2.jpg" alt="user">
+                                <p>" As someone who's not particularly tech-savvy, I was nervous about purchasing smart home
+                                    devices.
+                                    The ElectroSphere team took the time to understand my needs and recommended products
+                                    that
+                                    were
+                                    perfect for my situation. The installation guides were clear, and when I had questions,
+                                    their
+                                    support team was just a call away. My home is now smarter, and I didn't have to stress
+                                    about
+                                    it! "</p>
 
-                            <cite>
-                                Victoria Ventura
-                                <span>Customer</span>
-                            </cite>
-                        </blockquote><!-- End .testimonial -->
-                    </div><!-- End .testimonials-slider owl-carousel -->
-                </div><!-- End .container -->
-            </div><!-- End .bg-light-2 pt-5 pb-6 -->
-        </div><!-- End .page-content -->
+                                <cite>
+                                    Victoria Ventura
+                                    <span>Customer</span>
+                                </cite>
+                            </blockquote><!-- End .testimonial -->
+                        </div><!-- End .testimonials-slider owl-carousel -->
+                    </div><!-- End .container -->
+                </div><!-- End .bg-light-2 pt-5 pb-6 -->
+            </div><!-- End .page-content -->
     </main><!-- End .main -->
 @endsection

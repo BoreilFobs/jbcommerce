@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="{{ asset('assets/modules/owlcarousel2/dist/assets/owl.theme.default.min.css') }}">
 
     <!-- Template CSS -->
+    <link rel="stylesheet" href={{ asset('assets/css/style.css') }} />
+
     <link rel="stylesheet" href="{{ asset('assets/css/style.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/components.min.css') }}">
 </head>
@@ -217,8 +219,9 @@
                             <ul class="dropdown-menu">
                                 <li class="{{ Request::is('offers') ? 'active' : '' }}"><a class="nav-link"
                                         href="{{ url('/offers') }}">All Offers</a></li>
-                                <li class="{{ Request::is('offers/create') ? 'active' : '' }}"><a class="nav-link"
-                                        href="{{ url('/offers/create') }}">Create Offer</a></li>
+                                <li class="{{ Request::is('offers/create-offer') ? 'active' : '' }}"><a
+                                        class="nav-link" href="{{ url('/offers/create-offer') }}">Create Offer</a>
+                                </li>
                             </ul>
                         </li>
 

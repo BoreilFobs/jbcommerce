@@ -12,7 +12,7 @@
         </nav><!-- End .breadcrumb-nav -->
         <div class="container">
             <div class="page-header page-header-big text-center"
-                style="background-image: url('assets/images/contact-header-bg.jpg')">
+                style="background-image: url('assets/img/bg contact us.jpeg')">
                 <h1 class="page-title text-white">Contact us<span class="text-white">keep in touch with us</span></h1>
             </div><!-- End .page-header -->
         </div><!-- End .container -->
