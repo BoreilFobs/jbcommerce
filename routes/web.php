@@ -30,6 +30,7 @@ Route::get('/offers/delete/{id}', [OffersController::class, 'delete']);
 Route::get('/offers/update/{id}', [OffersController::class, 'updateF']);
 Route::put('/offers/{id}/update', [OffersController::class, 'update']);
 Route::get('/team', [AboutController::class, 'team']);
+    Route::get('/about', [AboutController::class, 'index']);
 
 
 
@@ -37,7 +38,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/about', [AboutController::class, 'index']);
     // Route::get('/products', [OffersController::class, 'index']);
     Route::get('/wish-list/{id}', [WishesController::class, 'index']);
     Route::get('/wish-list/{Oid}/create/{Uid}', [WishesController::class, 'store']);
