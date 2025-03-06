@@ -195,41 +195,41 @@
                     </div>
                     <ul class="sidebar-menu">
                         <li class="menu-header">Dashboard</li>
-                        <li class="{{ Request::is('dashboard') ? 'active' : '' }}">
+                        <li class="{{ Request::is('/dashboard') ? 'active' : '' }}">
                             <a href="{{ route('dashboard') }}" class="nav-link"><i
                                     class="fas fa-fire"></i><span>Dashboard</span></a>
                         </li>
 
 
                         <li class="menu-header">Admin Management</li>
-                        <li class="dropdown {{ Request::is('team*') ? 'active' : '' }}">
+                        {{-- <li class="dropdown {{ Request::is('/team*') ? 'active' : '' }}">
                             <a href="#" class="nav-link has-dropdown"><i class="fas fa-users"></i>
                                 <span>Team</span></a>
                             <ul class="dropdown-menu">
-                                <li class="{{ Request::is('team') ? 'active' : '' }}"><a class="nav-link"
+                                <li class="{{ Request::is('/team') ? 'active' : '' }}"><a class="nav-link"
                                         href="{{ url('/team') }}">All Team Members</a></li>
-                                <li class="{{ Request::is('team/create') ? 'active' : '' }}"><a class="nav-link"
+                                <li class="{{ Request::is('/team/create') ? 'active' : '' }}"><a class="nav-link"
                                         href="{{ url('/team/create') }}">Add Team Member</a></li>
                             </ul>
-                        </li>
+                        </li> --}}
 
-                        <li class="dropdown {{ Request::is('offers*') ? 'active' : '' }}">
+                        <li class="dropdown {{ Request::is('/offers*') ? 'active' : '' }}">
                             <a href="#" class="nav-link has-dropdown"><i class="fas fa-tags"></i>
-                                <span>Offers</span></a>
+                                <span>Products</span></a>
                             <ul class="dropdown-menu">
-                                <li class="{{ Request::is('offers') ? 'active' : '' }}"><a class="nav-link"
-                                        href="{{ url('/offers') }}">All Offers</a></li>
-                                <li class="{{ Request::is('offers/create-offer') ? 'active' : '' }}"><a
-                                        class="nav-link" href="{{ url('/offers/create-offer') }}">Create Offer</a>
+                                <li class="{{ Request::is('//offers') ? 'active' : '' }}"><a class="nav-link"
+                                        href="{{ url('/offers') }}">All Product</a></li>
+                                <li class="{{ Request::is('/offers/create-offer') ? 'active' : '' }}"><a
+                                        class="nav-link" href="{{ url('/offers/create-offer') }}">Create Product</a>
                                 </li>
                             </ul>
                         </li>
 
-                        <li class="dropdown {{ Request::is('users*') ? 'active' : '' }}">
+                        <li class="dropdown {{ Request::is('/users*') ? 'active' : '' }}">
                             <a href="#" class="nav-link has-dropdown"><i class="fas fa-user-cog"></i>
                                 <span>Users</span></a>
                             <ul class="dropdown-menu">
-                                <li class="{{ Request::is('users') ? 'active' : '' }}"><a class="nav-link"
+                                <li class="{{ Request::is('/users') ? 'active' : '' }}"><a class="nav-link"
                                         href="{{ url('/users') }}">All Users</a></li>
                             </ul>
                         </li>

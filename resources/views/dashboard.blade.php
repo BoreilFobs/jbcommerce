@@ -34,10 +34,6 @@
                                     <div class="card-stats-item-label">Pending</div>
                                 </div>
                                 <div class="card-stats-item">
-                                    <div class="card-stats-item-count">12</div>
-                                    <div class="card-stats-item-label">Shipping</div>
-                                </div>
-                                <div class="card-stats-item">
                                     <div class="card-stats-item-count">23</div>
                                     <div class="card-stats-item-label">Completed</div>
                                 </div>
@@ -69,7 +65,7 @@
                                 <h4>Balance</h4>
                             </div>
                             <div class="card-body">
-                                $187,13
+                                1,231,000FCFA
                             </div>
                         </div>
                     </div>
@@ -132,11 +128,11 @@
                                         <div class="mt-1">
                                             <div class="budget-price">
                                                 <div class="budget-price-square bg-primary" data-width="64%"></div>
-                                                <div class="budget-price-label">$68,714</div>
+                                                <div class="budget-price-label">68,714FCFA</div>
                                             </div>
                                             <div class="budget-price">
                                                 <div class="budget-price-square bg-danger" data-width="43%"></div>
-                                                <div class="budget-price-label">$38,700</div>
+                                                <div class="budget-price-label">38,700FCFA</div>
                                             </div>
                                         </div>
                                     </div>
@@ -152,11 +148,11 @@
                                         <div class="mt-1">
                                             <div class="budget-price">
                                                 <div class="budget-price-square bg-primary" data-width="84%"></div>
-                                                <div class="budget-price-label">$107,133</div>
+                                                <div class="budget-price-label">107,133FCFA</div>
                                             </div>
                                             <div class="budget-price">
                                                 <div class="budget-price-square bg-danger" data-width="60%"></div>
-                                                <div class="budget-price-label">$91,455</div>
+                                                <div class="budget-price-label">91,455FCFA</div>
                                             </div>
                                         </div>
                                     </div>
@@ -172,11 +168,11 @@
                                         <div class="mt-1">
                                             <div class="budget-price">
                                                 <div class="budget-price-square bg-primary" data-width="34%"></div>
-                                                <div class="budget-price-label">$3,717</div>
+                                                <div class="budget-price-label">3,717FCFA</div>
                                             </div>
                                             <div class="budget-price">
                                                 <div class="budget-price-square bg-danger" data-width="28%"></div>
-                                                <div class="budget-price-label">$2,835</div>
+                                                <div class="budget-price-label">2,835FCFA</div>
                                             </div>
                                         </div>
                                     </div>
@@ -192,11 +188,11 @@
                                         <div class="mt-1">
                                             <div class="budget-price">
                                                 <div class="budget-price-square bg-primary" data-width="45%"></div>
-                                                <div class="budget-price-label">$13,972</div>
+                                                <div class="budget-price-label">13,972FCFA</div>
                                             </div>
                                             <div class="budget-price">
                                                 <div class="budget-price-square bg-danger" data-width="30%"></div>
-                                                <div class="budget-price-label">$9,660</div>
+                                                <div class="budget-price-label">9,660FCFA</div>
                                             </div>
                                         </div>
                                     </div>
@@ -212,11 +208,11 @@
                                         <div class="mt-1">
                                             <div class="budget-price">
                                                 <div class="budget-price-square bg-primary" data-width="35%"></div>
-                                                <div class="budget-price-label">$7,391</div>
+                                                <div class="budget-price-label">7,391FCFA</div>
                                             </div>
                                             <div class="budget-price">
                                                 <div class="budget-price-square bg-danger" data-width="28%"></div>
-                                                <div class="budget-price-label">$5,472</div>
+                                                <div class="budget-price-label">5,472FCFA</div>
                                             </div>
                                         </div>
                                     </div>
@@ -237,7 +233,7 @@
                 </div>
             </div>
             <div class="row row-deck">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
                             <h4>Best Products</h4>
@@ -314,7 +310,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                {{-- <div class="col-md-6">
                     <div class="card">
                         <div class="card-header">
                             <h4>Top Countries</h4>
@@ -394,7 +390,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
             <div class="row row-deck">
                 <div class="col-md-8">
