@@ -146,7 +146,7 @@
                     </li>
                     <li class="dropdown"><a href="#" data-toggle="dropdown"
                             class="nav-link dropdown-toggle nav-link-lg nav-link-user">
-                            <img alt="image" src="{{ asset('assets/img/avatar/avatar-1.png') }}"
+                            <img alt="image" src="{{ asset('assets/img/avatar/images.png') }}"
                                 class="rounded-circle mr-1">
                             <div class="d-sm-none d-lg-inline-block">Hi,
                                 {{ Auth::check() ? Auth::user()->name : 'Guest' }}</div>
