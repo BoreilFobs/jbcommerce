@@ -32,6 +32,7 @@ Route::get('/team', [AboutController::class, 'team']);
 Route::get('/about', [AboutController::class, 'index']);
 Route::get('/contact', [MessageController::class, 'contact']);
 Route::post('/message/create', [MessageController::class, 'store']);
+Route::get('/message/delete/{id}', [MessageController::class, 'delete']);
 
 
 

@@ -10,6 +10,7 @@
                 <th scope="col">phone</th>
                 <th scope="col">Object</th>
                 <th scope="col">Message</th>
+                <th scope="col">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -21,6 +22,9 @@
                     <td>{{ $message->phone }}</td>
                     <td>{{ $message->object }}</td>
                     <td>{{ $message->message }}</td>
+                    <td><a title="delete message" href={{ url('/message/delete/' . $message->id) }}><i
+                                class="fa fa-trash text-danger fs-1"></i></a>
+                    </td>
                 </tr>
             @endforeach
 
