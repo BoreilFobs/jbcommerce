@@ -279,15 +279,15 @@
                     <div class="header-center">
                         <nav class="main-nav">
                             <ul class="menu sf-arrows">
-                                <li class=" {{ request()->is('/') ? 'active' : '' }}">
+                                <li class=" {{ request()->is('') ? 'active' : '' }}">
                                     <a href={{ url('/') }}>Home</a>
 
                                     <!-- End .megamenu -->
                                 </li>
-                                <li class="{{ request()->is('/about') ? 'active' : '' }}">
+                                <li class="{{ request()->is('about') ? 'active' : '' }}">
                                     <a href={{ url('/about') }}>About us</a>
                                 </li>
-                                <li class=" {{ request()->is('/contact') ? 'active' : '' }}">
+                                <li class=" {{ request()->is('contact') ? 'active' : '' }}">
                                     <a href={{ url('/contact') }}>Contact us</a>
                                 </li>
                             </ul>
@@ -467,17 +467,14 @@
                     aria-labelledby="mobile-menu-link">
                     <nav class="mobile-nav">
                         <ul class="mobile-menu">
-                            <li class={{ request()->is('/') ? 'active' : '' }}>
+                            <li class={{ request()->is('') ? 'active' : '' }}>
                                 <a href={{ url('/') }}>Home</a>
 
                             </li>
-                            <li class={{ request()->is('/products') ? 'active' : '' }}>
-                                <a href={{ url('/products') }} class="sf-with-ul">Product</a>
-                            </li>
-                            <li class={{ request()->is('/about') ? 'active' : '' }}>
+                            <li class={{ request()->is('about') ? 'active' : '' }}>
                                 <a href={{ url('/about') }} class="sf-with-ul">About us</a>
                             </li>
-                            <li class={{ request()->is('/contact') ? 'active' : '' }}>
+                            <li class={{ request()->is('contact') ? 'active' : '' }}>
                                 <a href={{ url('/contact') }} class="sf-with-ul">Contact us</a>
                             </li>
                         </ul>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\OffersController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WelcomeController;
@@ -12,9 +13,6 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/', [WelcomeController::class, 'index']);
 
-Route::get('/contact', function () {
-    return view('contact');
-});
 
 //routes for admin
 Route::get('/dashboard', function () {
@@ -32,12 +30,15 @@ Route::get('/offers/update/{id}', [OffersController::class, 'updateF']);
 Route::put('/offers/{id}/update', [OffersController::class, 'update']);
 Route::get('/team', [AboutController::class, 'team']);
 Route::get('/about', [AboutController::class, 'index']);
+Route::get('/contact', [MessageController::class, 'contact']);
+Route::post('/message/create', [MessageController::class, 'store']);
 
 
 
 Route::middleware('auth')->group(function () {
 
     Route::get('/users', [UserController::class, 'index']);
+    Route::get('/messages', [MessageController::class, 'index']);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
