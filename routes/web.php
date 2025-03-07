@@ -3,6 +3,7 @@
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\OffersController;
 use App\Http\Controllers\ProfileController;
@@ -22,18 +23,11 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/offers', [OffersController::class, 'index']);
-Route::get('/offers/create-offer', [OffersController::class, 'createF']);
-Route::post('/offers/create', [OffersController::class, 'store']);
-Route::get('/offers/delete/{id}', [OffersController::class, 'delete']);
-Route::get('/offers/update/{id}', [OffersController::class, 'updateF']);
-Route::put('/offers/{id}/update', [OffersController::class, 'update']);
+
 Route::get('/team', [AboutController::class, 'team']);
 Route::get('/about', [AboutController::class, 'index']);
 Route::get('/contact', [MessageController::class, 'contact']);
 Route::post('/message/create', [MessageController::class, 'store']);
-Route::get('/message/delete/{id}', [MessageController::class, 'delete']);
-
 
 
 Route::middleware('auth')->group(function () {
@@ -51,6 +45,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/cart/{id}', [CartController::class, 'index']);
     Route::get('/cart/delete/{id}', [CartController::class, 'delete']);
     Route::get('/cart/{Oid}/create/{Uid}', [CartController::class, 'store']);
+
+Route::get('/message/delete/{id}', [MessageController::class, 'delete']);
+
+    Route::get('/offers', [OffersController::class, 'index']);
+    Route::get('/offers/create-offer', [OffersController::class, 'createF']);
+    Route::post('/offers/create', [OffersController::class, 'store']);
+    Route::get('/offers/delete/{id}', [OffersController::class, 'delete']);
+    Route::get('/offers/update/{id}', [OffersController::class, 'updateF']);
+    Route::put('/offers/{id}/update', [OffersController::class, 'update']);
+
+    Route::get('/categories', [CategorieController::class, 'index']);
+    Route::get('/categories/create-offer', [CategorieController::class, 'createF']);
+    Route::post('/categories/create', [CategorieController::class, 'store']);
+    Route::get('/categories/delete/{id}', [CategorieController::class, 'delete']);
+    Route::get('/categories/update/{id}', [CategorieController::class, 'updateF']);
+    Route::put('/categories/{id}/update', [CategorieController::class, 'update']);
+
+
 });
 
 require __DIR__ . '/auth.php';

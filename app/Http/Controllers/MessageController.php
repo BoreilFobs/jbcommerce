@@ -33,6 +33,6 @@ class MessageController extends Controller
     }
     public function delete($id){
         Message::findOrFail($id)->delete();
-        return redirect("/messages");
+        return redirect("/messages")->with('success', 'message deleted successfully');
     }
 }

@@ -226,6 +226,18 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="dropdown {{ Request::is('categories*') ? 'active' : '' }}">
+                            <a href="#" class="nav-link has-dropdown"><i class="fas fa-tags"></i>
+                                <span>Category</span></a>
+                            <ul class="dropdown-menu">
+                                <li class="{{ Request::is('/categories') ? 'active' : '' }}"><a class="nav-link"
+                                        href="{{ url('/categories') }}">All categories</a></li>
+                                <li class="{{ Request::is('categories/create-offer') ? 'active' : '' }}"><a
+                                        class="nav-link" href="{{ url('/categories/create-offer') }}">Create
+                                        category</a>
+                                </li>
+                            </ul>
+                        </li>
 
                         <li class="dropdown {{ Request::is('users*') ? 'active' : '' }}">
                             <a href="#" class="nav-link has-dropdown"><i class="fas fa-user-cog"></i>
