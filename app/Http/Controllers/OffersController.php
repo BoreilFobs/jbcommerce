@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categorie;
 use App\Models\offers;
 use Illuminate\Container\Attributes\Storage;
 use Illuminate\Http\Request;
@@ -16,7 +17,8 @@ class OffersController extends Controller
     }
     public function createF()
     {
-        return view('offer.create');
+        $categories = Categorie::all();
+        return view('offer.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -25,7 +27,7 @@ class OffersController extends Controller
             'name' => "required",
             'price' => "required|numeric",
             'category' => "required",
-            'instock' => "required",
+            'quantity' => "required",
         ]);
 
         if ($request->hasFile('image')) { // Ensure file exists
@@ -42,7 +44,7 @@ class OffersController extends Controller
             'name' => $request->name,
             'category' => $request->category,
             'price' => $request->price,
-            'instock' => $request->instock,
+            'quantity' => $request->quantity,
             'image_path' => $img_url,
         ]);
         return redirect('/offers')->with('success', 'Offer created successfully');
@@ -50,7 +52,8 @@ class OffersController extends Controller
     public function updateF($id)
     {
         $offer = offers::findOrFail($id);
-        return view('offer.update', compact('offer'));
+        $categories = Categorie::all();
+        return view('offer.update', compact('offer', 'categories'));
     }
 
     public function update(Request $request, $id)
@@ -59,7 +62,7 @@ class OffersController extends Controller
             'name' => "required",
             'price' => "required|numeric",
             'category' => "required",
-            'instock' => "required",
+            'quantity' => "required",
         ]);
 
         if ($request->hasFile('image')) { // Ensure file exists
@@ -76,7 +79,7 @@ class OffersController extends Controller
                 'name' => $request->name,
                 'category' => $request->category,
                 'price' => $request->price,
-                'instock' => $request->instock,
+                'quantity' => $request->quantity,
                 'image_path' => $img_url,
             ]);
         } else {

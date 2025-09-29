@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('offers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('category');
+            $table->string('category')->foreignId('categories');
             $table->integer('price');
-            $table->boolean('instock')->default(true);
+            $table->integer("quantity");
             $table->string('image_path');
             $table->timestamps();
         });

@@ -32,7 +32,7 @@ Route::post('/message/create', [MessageController::class, 'store']);
 
 Route::middleware('auth')->group(function () {
 
-    Route::get('/users', [UserController::class, 'index']);
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/messages', [MessageController::class, 'index']);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -48,19 +48,19 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/message/delete/{id}', [MessageController::class, 'delete']);
 
-    Route::get('/offers', [OffersController::class, 'index']);
-    Route::get('/offers/create-offer', [OffersController::class, 'createF']);
-    Route::post('/offers/create', [OffersController::class, 'store']);
-    Route::get('/offers/delete/{id}', [OffersController::class, 'delete']);
-    Route::get('/offers/update/{id}', [OffersController::class, 'updateF']);
-    Route::put('/offers/{id}/update', [OffersController::class, 'update']);
+    Route::get('/offers', [OffersController::class, 'index'])->name('offer.index');
+    Route::get('/offers/create-offer', [OffersController::class, 'createF'])->name('offer.create');
+    Route::post('/offers/create', [OffersController::class, 'store'])->name('offer.store');
+    Route::get('/offers/delete/{id}', [OffersController::class, 'delete'])->name('offer.delete');
+    Route::get('/offers/update/{id}', [OffersController::class, 'updateF'])->name('offer.updateF');
+    Route::put('/offers/{id}/update', [OffersController::class, 'update'])->name('offer.update');
 
-    Route::get('/categories', [CategorieController::class, 'index']);
-    Route::get('/categories/create-offer', [CategorieController::class, 'createF']);
-    Route::post('/categories/create', [CategorieController::class, 'store']);
-    Route::get('/categories/delete/{id}', [CategorieController::class, 'delete']);
-    Route::get('/categories/update/{id}', [CategorieController::class, 'updateF']);
-    Route::put('/categories/{id}/update', [CategorieController::class, 'update']);
+    Route::get('/categories', [CategorieController::class, 'index'])->name('categories.index');
+    Route::get('/categories/create-offer', [CategorieController::class, 'createF'])->name('categories.create');
+    Route::post('/categories/create', [CategorieController::class, 'store'])->name('categories.store');
+    Route::get('/categories/delete/{id}', [CategorieController::class, 'delete'])->name('categories.delete');
+    Route::get('/categories/update/{id}', [CategorieController::class, 'updateF'])->name('categories.update');
+    Route::put('/categories/{id}/update', [CategorieController::class, 'update'])->name('categories.updateF');
 
 
 });

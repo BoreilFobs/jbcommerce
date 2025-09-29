@@ -17,20 +17,27 @@ class CategorieController extends Controller
     }
     public function store(Request $request){
         $request->validate([
-            'name' => "required"
+            'name' => "required",
+            'image' => 'required'
         ]);
+        $imagePath = $request->file('image')->store('category_image', 'public');
+        // dd($imagePath);
         Categorie::create([
-            "name" => $request->name
+            "name" => $request->name,
+            "image_path" => $imagePath
         ]);
         return redirect("/categories")->with('success', 'Category created successfully');
     }
 
  public function update(Request $request, $id){
         $request->validate([
-            'name' => "required"
+            'name' => "required",
+            'image' => 'required'
         ]);
+        $imagePath = $request->file('image')->store('category_image', 'public');
         Categorie::findOrFail($id)->update([
-            "name" => $request->name
+            "name" => $request->name,
+            "image_path" => $imagePath
         ]);
         return redirect("/categories")->with('success', 'Category updated successfully');
     }

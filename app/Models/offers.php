@@ -11,7 +11,7 @@ class offers extends Model
         'name',
         'category',
         'price',
-        'instock',
+        'quantity',
         'image_path',
     ];
 }
