@@ -4,6 +4,7 @@ use App\Http\Controllers\AboutController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategorieController;
+use App\Http\Controllers\CheackoutController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\OffersController;
 use App\Http\Controllers\ProfileController;
@@ -12,7 +13,8 @@ use App\Http\Controllers\WishesController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-Route::get('/', [WelcomeController::class, 'index']);
+Route::get('/', [WelcomeController::class, 'index'])->name("home");
+Route::get('/shop', [WelcomeController::class, 'index'])->name("shop");
 
 
 //routes for admin
@@ -26,7 +28,7 @@ Route::get('/dashboard', function () {
 
 Route::get('/team', [AboutController::class, 'team']);
 Route::get('/about', [AboutController::class, 'index']);
-Route::get('/contact', [MessageController::class, 'contact']);
+Route::get('/contact', [MessageController::class, 'contact'])->name("contact");
 Route::post('/message/create', [MessageController::class, 'store']);
 
 
@@ -39,10 +41,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     // Route::get('/products', [OffersController::class, 'index']);
     Route::get('/wish-list/{id}', [WishesController::class, 'index']);
+    Route::get('/wish-list', [WishesController::class, 'redirect']);
+
     Route::get('/wish-list/{Oid}/create/{Uid}', [WishesController::class, 'store']);
     Route::get('/wish-list/create', [WishesController::class, 'store']);
     Route::get('/wish-list/delete/{id}', [WishesController::class, 'delete']);
     Route::get('/cart/{id}', [CartController::class, 'index']);
+    Route::get('/cart', [CartController::class, 'redirect']);
     Route::get('/cart/delete/{id}', [CartController::class, 'delete']);
     Route::get('/cart/{Oid}/create/{Uid}', [CartController::class, 'store']);
 
@@ -64,5 +69,7 @@ Route::get('/message/delete/{id}', [MessageController::class, 'delete']);
 
 
 });
+    Route::get("/cheackout", [CheackoutController::class, 'index'])->name("cheackout");
+
 
 require __DIR__ . '/auth.php';

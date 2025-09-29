@@ -28,4 +28,7 @@ class CartController extends Controller
         $wish->delete();
         return redirect()->back();
     }
+    public function redirect(){
+        return redirect()->route("login");
+    }
 }
