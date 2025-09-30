@@ -18,14 +18,12 @@
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
-        <link href="lib/animate/animate.min.css" rel="stylesheet">
-        <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+        <link href="{{ asset('lib/animate/animate.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
 
-
-        <link href="css/bootstrap.min.css" rel="stylesheet">
-
-        <link href="css/style.css" rel="stylesheet">
-    </head>
+        <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+        </head>
 
 
     <body>
@@ -89,8 +87,8 @@
                         <div class="d-flex border rounded-pill">
                             <input class="form-control border-0 rounded-pill w-100 py-3" type="text" data-bs-target="#dropdownToggle123" placeholder="Rechercher un produit ..."> <select class="form-select text-dark border-0 border-start rounded-0 p-3" style="width: 200px;">
                                 <option value="All Category">Toutes Catégories</option>
-                            @foreach ($categories as $loop => $Category)
-                                <option value="Pest Control-{{$loop}}">{{ $Category->name }}</option>
+                            @foreach ($categories as $category)
+                                <option value="Pest Control-1">{{ $category->name }}</option>
                             @endforeach
                             </select>
                             <button type="submit" class="btn btn-primary rounded-pill py-3 px-5" style="border: 0;"><i class="fas fa-search"></i></button>
@@ -123,11 +121,14 @@
                             <div class="navbar-nav ms-auto py-0">
                                 <ul class="list-unstyled categories-bars">
                                     {{-- Category items translated --}}
-                                    <li><div class="categories-bars-item"><a href="#">Accessoires</a><span>(3)</span></div></li>
-                                    <li><div class="categories-bars-item"><a href="#">Électronique & Ordinateurs</a><span>(5)</span></div></li>
-                                    <li><div class="categories-bars-item"><a href="#">Ordinateurs Portables & Bureaux</a><span>(2)</span></div></li>
-                                    <li><div class="categories-bars-item"><a href="#">Mobiles & Tablettes</a><span>(8)</span></div></li>
-                                    <li><div class="categories-bars-item"><a href="#">Smartphones & Télés Intelligentes</a><span>(5)</span></div></li>
+                                    @foreach ($categories as $category)
+                                        <li>
+                                            <div class="categories-bars-item">
+                                                <a href="#">{{ $category->name }}</a>
+                                                <span>({{ $offers->where('category', $category->id)->count() }})</span>
+                                            </div>
+                                        </li>
+                                    @endforeach
                                 </ul>
                             </div>
                         </div>
@@ -145,10 +146,10 @@
                             <div class="navbar-nav ms-auto py-0">
                                 <a href="{{ url('/') }}" class="nav-item nav-link {{ request()->pathInfo == '/' ? 'active' : '' }}">Accueil</a> <a href="{{ url('/shop') }}" class="nav-item nav-link {{ request()->is('shop') ? 'active' : '' }}">Boutique</a> <a href="{{ url('/contact') }}" class="nav-item nav-link {{ request()->is('contact') ? 'active' : '' }}">Contactez-nous</a> {{-- Retaining original links not covered by the required routes, translated for the French view --}}
                                 <div class="nav-item dropdown">
-                                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
+                                    {{-- <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                                     <div class="dropdown-menu m-0">
                                         <a href="bestseller.html" class="dropdown-item">Meilleures Ventes</a> <a href="cart.html" class="dropdown-item">Page Panier</a> <a href="cheackout.html" class="dropdown-item">Paiement</a> <a href="404.html" class="dropdown-item">Page 404</a>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                             <a href="tel:#" class="btn btn-secondary rounded-pill py-2 px-4 px-lg-3 mb-3 mb-md-3 mb-lg-0"><i class="fa fa-mobile-alt me-2"></i> {{ $phone }}</a>
@@ -274,12 +275,23 @@
     <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/wow/wow.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    
+    <script src="{{ asset('lib/wow/wow.min.js') }}"></script>
+    <script src="{{ asset('lib/owlcarousel/owl.carousel.min.js') }}"></script>
+    <script src="{{ asset('js/main.js') }}"></script>
+    <!-- Tailwind CSS via CDN -->
+    <script>
+        tailwind.config = {
+            theme: {
+            extend: {
+                colors: {
+                brand: '#ff7e00', // ElectroSphere orange
+                }
+            }
+            }
+        }
+    </script>
 
-    <!-- Template Javascript -->
-    <script src="js/main.js"></script>
-    </body>
+
+</body>
 
 </html>

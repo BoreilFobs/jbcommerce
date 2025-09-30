@@ -66,10 +66,11 @@ Route::get('/message/delete/{id}', [MessageController::class, 'delete']);
     Route::get('/categories/delete/{id}', [CategorieController::class, 'delete'])->name('categories.delete');
     Route::get('/categories/update/{id}', [CategorieController::class, 'updateF'])->name('categories.update');
     Route::put('/categories/{id}/update', [CategorieController::class, 'update'])->name('categories.updateF');
-
-
-});
     Route::get("/cheackout", [CheackoutController::class, 'index'])->name("cheackout");
 
+});
 
+Route::fallback(function () {
+    return response()->view('404', [], 404);
+});
 require __DIR__ . '/auth.php';

@@ -12,4 +12,8 @@ class cart extends Model
         'offer_id',
         'quantity',
     ];
+    public function offer()
+    {
+        return $this->belongsTo(offers::class, 'offer_id');
+    }
 }

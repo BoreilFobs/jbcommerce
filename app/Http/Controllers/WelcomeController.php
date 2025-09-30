@@ -16,7 +16,7 @@ class WelcomeController extends Controller
         if (request()->path() === '/') {
             return view("welcome", compact("offers", 'categories'));
         } else {
-            return view("store", compact("offers"));
+            return view("store", compact("offers", 'categories'));
         }
     }
 }

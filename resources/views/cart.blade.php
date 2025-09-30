@@ -27,15 +27,16 @@
                           </tr>
                         </thead>
                         <tbody>
+                            @foreach ($carts as $cart)
                             <tr>
                                 <th scope="row">
-                                    <p class="mb-0 py-4">Apple iPad Mini</p>
+                                    <p class="mb-0 py-4">{{ $cart->offer->name}}</p>
                                 </th>
                                 <td>
-                                    <p class="mb-0 py-4">G2356</p>
+                                    <p class="mb-0 py-4">G{{rand(1000,9999)}}</p>
                                 </td>
                                 <td>
-                                    <p class="mb-0 py-4">2.99 $</p>
+                                    <p class="mb-0 py-4">{{ number_format($cart->offer->price, 0, '.', ',') }}FCFA</p>
                                 </td>
                                 <td>
                                     <div class="input-group quantity py-4" style="width: 100px;">
@@ -56,11 +57,12 @@
                                     <p class="mb-0 py-4">2.99 $</p>
                                 </td>
                                 <td class="py-4">
-                                    <button class="btn btn-md rounded-circle bg-light border" >
+                                    <a href="{{ url('/cart/delete/' . $cart->id) }}" class="btn btn-md rounded-circle bg-light border" >
                                         <i class="fa fa-times text-danger"></i>
-                                    </button>
+                                    </a>
                                 </td>
                             </tr>
+                            @endforeach
                             <tr>
                                 <th scope="row">
                                     <p class="mb-0 py-4">Apple iPad Mini</p>
@@ -132,10 +134,10 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="mt-5">
+                {{-- <div class="mt-5">
                     <input type="text" class="border-0 border-bottom rounded me-5 py-3 mb-4" placeholder="Coupon Code">
                     <button class="btn btn-primary rounded-pill px-4 py-3" type="button">Apply Coupon</button>
-                </div>
+                </div> --}}
                 <div class="row g-4 justify-content-end">
                     <div class="col-8"></div>
                     <div class="col-sm-8 col-md-7 col-lg-6 col-xl-4">
@@ -165,4 +167,44 @@
             </div>
         </div>
         <!-- Cart Page End -->
+        <script>
+            document.querySelectorAll('.quantity').forEach(function(group) {
+                const minusBtn = group.querySelector('.btn-minus');
+                const plusBtn = group.querySelector('.btn-plus');
+                const qtyInput = group.querySelector('input');
+                const row = group.closest('tr');
+                const priceText = row.querySelector('td:nth-child(3) p');
+                const totalText = row.querySelector('td:nth-child(5) p');
+
+                function getPrice() {
+                    let priceStr = priceText.textContent.replace(/[^\d.,]/g, '').replace(',', '');
+                    return parseFloat(priceStr) || 0;
+                }
+
+                function updateTotal() {
+                    let qty = parseInt(qtyInput.value) || 1;
+                    let price = getPrice();
+                    let total = price * qty;
+                    totalText.textContent = priceText.textContent.includes('FCFA')
+                        ? `${total.toLocaleString()}FCFA`
+                        : `${total.toFixed(2)} $`;
+                }
+
+                minusBtn.addEventListener('click', function() {
+                    let qty = parseInt(qtyInput.value) || 1;
+                    if (qty >= 1) qtyInput.value = qty;
+                    updateTotal();
+                });
+
+                plusBtn.addEventListener('click', function() {
+                    let qty = parseInt(qtyInput.value) || 1;
+                    qtyInput.value = qty ;
+                    updateTotal();
+                });
+
+                qtyInput.addEventListener('input', updateTotal);
+
+                updateTotal();
+            });
+        </script>
 @endsection

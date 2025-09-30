@@ -10,4 +10,9 @@ class Categorie extends Model
         'name',
         'image_path'
     ];
+
+    public function offers()
+    {
+        return $this->hasMany(offers::class, 'category', 'id');
+    }
 }

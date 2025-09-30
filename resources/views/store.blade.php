@@ -13,75 +13,87 @@
 
         <!-- Searvices Start -->
         <div class="container-fluid px-0">
-            <div class="row g-0">
-                <div class="col-6 col-md-4 col-lg-2 border-start border-end wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="p-4">
-                        <div class="d-inline-flex align-items-center">
-                            <i class="fa fa-sync-alt fa-2x text-primary"></i>
-                            <div class="ms-4">
-                                <h6 class="text-uppercase mb-2">Free Return</h6>
-                                <p class="mb-0">30 days money back guarantee!</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.2s">
-                    <div class="p-4">
-                        <div class="d-flex align-items-center">
-                            <i class="fab fa-telegram-plane fa-2x text-primary"></i>
-                            <div class="ms-4">
-                                <h6 class="text-uppercase mb-2">Free Shipping</h6>
-                                <p class="mb-0">Free shipping on all order</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="p-4">
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-life-ring fa-2x text-primary"></i>
-                            <div class="ms-4">
-                                <h6 class="text-uppercase mb-2">Support 24/7</h6>
-                                <p class="mb-0">We support online 24 hrs a day</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.4s">
-                    <div class="p-4">
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-credit-card fa-2x text-primary"></i>
-                            <div class="ms-4">
-                                <h6 class="text-uppercase mb-2">Receive Gift Card</h6>
-                                <p class="mb-0">Recieve gift all over oder $50</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="p-4">
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-lock fa-2x text-primary"></i>
-                            <div class="ms-4">
-                                <h6 class="text-uppercase mb-2">Secure Payment</h6>
-                                <p class="mb-0">We Value Your Security</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.6s">
-                    <div class="p-4">
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-blog fa-2x text-primary"></i>
-                            <div class="ms-4">
-                                <h6 class="text-uppercase mb-2">Online Service</h6>
-                                <p class="mb-0">Free return products in 30 days</p>
-                            </div>
-                        </div>
+        <div class="row g-0">
+        <!-- Livraison gratuite -->
+        <div class="col-6 col-md-4 col-lg-2 border-start border-end wow fadeInUp" data-wow-delay="0.1s">
+            <div class="p-4">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-truck fa-2x text-primary"></i>
+                    <div class="ms-4">
+                        <h6 class="text-uppercase mb-2">Livraison Gratuite</h6>
+                        <p class="mb-0">Partout au Cameroun dès 10 000 FCFA</p>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Retour facile -->
+        <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.2s">
+            <div class="p-4">
+                <div class="d-flex align-items-center">
+                    <i class="fa fa-sync-alt fa-2x text-primary"></i>
+                    <div class="ms-4">
+                        <h6 class="text-uppercase mb-2">Retour Facile</h6>
+                        <p class="mb-0">30 jours pour changer d’avis</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Support 24/7 -->
+        <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.3s">
+            <div class="p-4">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-headset fa-2x text-primary"></i>
+                    <div class="ms-4">
+                        <h6 class="text-uppercase mb-2">Support H24</h6>
+                        <p class="mb-0">Disponible par WhatsApp & Appel</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paiement Mobile Money -->
+        <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.4s">
+            <div class="p-4">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-mobile-alt fa-2x text-primary"></i>
+                    <div class="ms-4">
+                        <h6 class="text-uppercase mb-2">Paiement Sécurisé</h6>
+                        <p class="mb-0">MTN & Orange Money acceptés</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cadeaux & promos -->
+        <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.5s">
+            <div class="p-4">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-gift fa-2x text-primary"></i>
+                    <div class="ms-4">
+                        <h6 class="text-uppercase mb-2">Cadeaux & Bonus</h6>
+                        <p class="mb-0">Réductions dès 50 000 FCFA</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service en ligne -->
+        <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.6s">
+            <div class="p-4">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-globe fa-2x text-primary"></i>
+                    <div class="ms-4">
+                        <h6 class="text-uppercase mb-2">Service en Ligne</h6>
+                        <p class="mb-0">Commandez 24h/24 depuis votre téléphone</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
         <!-- Searvices End -->
 
 
@@ -121,14 +133,16 @@
                 <div class="row g-4">
                     <div class="col-lg-3 wow fadeInUp" data-wow-delay="0.1s">
                         <div class="product-categories mb-4">
-                            <h4>Products Categories</h4>
+                            <h4>Category de Produit</h4>
                             <ul class="list-unstyled">
-                                <li>
-                                    <div class="categories-item">
-                                        <a href="#" class="text-dark"><i class="fas fa-apple-alt text-secondary me-2"></i> Accessories</a>
-                                        <span>(3)</span>
-                                    </div>
-                                </li>
+                               @foreach ($categories as $category)
+                                    <li>
+                                        <div class="categories-item">
+                                            <a href="#" class="text-dark"><i class="fas fa-apple-alt text-secondary me-2"></i> {{$category->name}}</a>
+                                            <span>({{ $offers->where('category', $category->id)->count() }})</span>
+                                        </div>
+                                    </li>
+                               @endforeach
                                 <li>
                                     <div class="categories-item">
                                         <a href="#" class="text-dark"><i class="fas fa-apple-alt text-secondary me-2"></i> Electronics & Computer</a>
@@ -155,7 +169,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="price mb-4">
+                        {{-- <div class="price mb-4">
                             <h4 class="mb-2">Price</h4>
                             <input type="range" class="form-range w-100" id="rangeInput" name="rangeInput" min="0" max="500" value="0" oninput="amount.value=rangeInput.value">
                             <output id="amount" name="amount" min-velue="0" max-value="500" for="rangeInput">0</output>
@@ -206,7 +220,7 @@
                                 <input type="radio" class="me-2" id="Categories-5" name="Categories-1" value="Beverages">
                                 <label for="Categories-5" class="text-dark"> SmartPhone & Smart TV</label>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="featured-product mb-4">
                             <h4 class="mb-3">Featured products</h4>
                             <div class="featured-product-item">
@@ -317,12 +331,12 @@
                                     <label for="electronics">Sort By:</label>
                                     <select id="electronics" name="electronicslist" class="border-0 form-select-sm bg-light me-3" form="electronicsform">
                                         <option value="volvo">Default Sorting</option>
-                                        <option value="volv">Nothing</option>
+                                        {{-- <option value="volv">Nothing</option>
                                         <option value="sab">Popularity</option>
                                         <option value="saab">Newness</option>
                                         <option value="opel">Average Rating</option>
                                         <option value="audio">Low to high</option>
-                                        <option value="audi">High to low</option>
+                                        <option value="audi">High to low</option> --}}
                                     </select>
                                 </div>
                             </div>
@@ -344,25 +358,26 @@
                         <div class="tab-content">
                             <div id="tab-5" class="tab-pane fade show p-0 active">
                                 <div class="row g-4 product">
-                                    <div class="col-lg-4">
+                                    @foreach ($offers as $offer)
+                                        <div class="col-lg-4">
                                         <div class="product-item rounded wow fadeInUp" data-wow-delay="0.1s">
                                             <div class="product-item-inner border rounded">
                                                 <div class="product-item-inner-item">
-                                                    <img src="img/product-3.png" class="img-fluid w-100 rounded-top" alt="">
+                                                    <img src={{$offer->image_path}} class="img-fluid w-100 rounded-top" alt="">
                                                     <div class="product-new">New</div>
                                                     <div class="product-details">
                                                         <a href="#"><i class="fa fa-eye fa-1x"></i></a>
                                                     </div>
                                                 </div>
                                                 <div class="text-center rounded-bottom p-4">
-                                                    <a href="#" class="d-block mb-2">SmartPhone</a>
-                                                    <a href="#" class="d-block h4">Apple iPad Mini <br> G2356</a>
-                                                    <del class="me-2 fs-5">$1,250.00</del>
-                                                    <span class="text-primary fs-5">$1,050.00</span>
+                                                    <a href="#" class="d-block mb-2">{{$offer->category}}</a>
+                                                    <a href="#" class="d-block h4">{{$offer->name}} <br> G{{rand(1000,9999)}}</a>
+                                                    <del class="me-2 fs-5">{{ number_format(($offer->price) + ($offer->price * 0.15), 0, '.', ',') }}</del>
+                                                    <span class="text-primary fs-5">{{ number_format($offer->price, 0, '.', ',') }}FCFA</span>
                                                 </div>
                                             </div>
                                             <div class="product-item-add border border-top-0 rounded-bottom  text-center p-4 pt-0">
-                                                <a href="#" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-4"><i class="fas fa-shopping-cart me-2"></i> Add To Cart</a>
+                                                <a href="{{ url('/cart/' . $offer->id . '/create/' . Auth::id()) }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-4"><i class="fas fa-shopping-cart me-2"></i> Add To Cart</a>
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <div class="d-flex">
                                                         <i class="fas fa-star text-primary"></i>
@@ -372,13 +387,14 @@
                                                         <i class="fas fa-star"></i>
                                                     </div>
                                                     <div class="d-flex">
-                                                        <a href="#" class="text-primary d-flex align-items-center justify-content-center me-3"><span class="rounded-circle btn-sm-square border"><i class="fas fa-random"></i></i></a>
-                                                        <a href="#" class="text-primary d-flex align-items-center justify-content-center me-0"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
+                                                        {{-- <a href="#" class="text-primary d-flex align-items-center justify-content-center me-3"><span class="rounded-circle btn-sm-square border"><i class="fas fa-random"></i></i></a> --}}
+                                                        <a href="{{ url('/wish-list/' . $offer->id . '/create/' . Auth::id()) }}" class="text-primary d-flex align-items-center justify-content-center me-0"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    @endforeach
                                     <div class="col-lg-4">
                                         <div class="product-item rounded wow fadeInUp" data-wow-delay="0.3s">
                                             <div class="product-item-inner border rounded">
