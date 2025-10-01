@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\cart;
+use App\Models\Cart;
 use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
 
@@ -30,5 +30,17 @@ class CartController extends Controller
     }
     public function redirect(){
         return redirect()->route("login");
+    }
+    public function qty(Request $request)
+    {
+        $cartId = $request->input('cart_id');
+        $quantity = $request->input('quantity');
+        $cart = cart::find($cartId);
+        if ($cart && $quantity > 0) {
+            $cart->quantity = $quantity;
+            $cart->save();
+            return response()->json(['success' => true, 'quantity' => $cart->quantity]);
+        }
+        return response()->json(['success' => false], 400);
     }
 }

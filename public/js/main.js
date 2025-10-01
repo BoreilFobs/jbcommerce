@@ -141,20 +141,95 @@
 
 
 
-    // Product Quantity
-    $('.quantity button').on('click', function () {
-        var button = $(this);
-        var oldValue = button.parent().parent().find('input').val();
-        if (button.hasClass('btn-plus')) {
-            var newVal = parseFloat(oldValue) + 1;
+    // Gestion du panier : quantité, total par produit et total général
+    function getCartPrice(str) {
+        // Prend en charge FCFA et $
+        let priceStr = str.replace(/[^\d.,]/g, '').replace(',', '');
+        return parseFloat(priceStr) || 0;
+    }
+
+    function updateRowTotal(row) {
+        var priceText = row.find('td:nth-child(3) p').text();
+        var qtyInput = row.find('.quantity input');
+        var totalText = row.find('td:nth-child(5) p');
+        var qty = parseInt(qtyInput.val()) || 1;
+        var price = getCartPrice(priceText);
+        var total = price * qty;
+        if (priceText.includes('FCFA')) {
+            totalText.text(total.toLocaleString() + ' FCFA');
         } else {
-            if (oldValue > 0) {
-                var newVal = parseFloat(oldValue) - 1;
-            } else {
-                newVal = 0;
-            }
+            totalText.text(total.toFixed(2) + ' $');
         }
-        button.parent().parent().find('input').val(newVal);
+    }
+
+    function updateCartTotal() {
+        var subtotal = 0;
+        $('tbody tr').each(function() {
+            var totalText = $(this).find('td:nth-child(5) p').text();
+            var total = getCartPrice(totalText);
+            subtotal += total;
+        });
+        // Livraison fixe 1000 FCFA
+        var livraison = 1000;
+        var totalGeneral = subtotal + livraison;
+        // Mettre à jour les éléments du total
+        $(".cart-subtotal").text(subtotal.toLocaleString() + ' FCFA');
+        $(".cart-livraison").text(livraison.toLocaleString() + ' FCFA');
+        $(".cart-total-general").text(totalGeneral.toLocaleString() + ' FCFA');
+    }
+
+    // Initialisation des boutons quantité et calculs
+    $(document).ready(function() {
+        // Pour chaque ligne du panier
+        $('tbody tr').each(function() {
+            var row = $(this);
+            var minusBtn = row.find('.btn-minus');
+            var plusBtn = row.find('.btn-plus');
+            var qtyInput = row.find('.quantity input');
+
+            // Récupérer l'id du panier depuis un attribut data-cart-id
+            var cartId = row.data('cart-id');
+
+            function updateAll(sendAjax = false) {
+                updateRowTotal(row);
+                updateCartTotal();
+                if (sendAjax && cartId) {
+                    $.ajax({
+                        url: '/cart/qty',
+                        type: 'POST',
+                        data: {
+                            cart_id: cartId,
+                            quantity: qtyInput.val(),
+                            _token: $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            // Optionally show a success message
+                        },
+                        error: function() {
+                            // Optionally show an error message
+                        }
+                    });
+                }
+            }
+
+            minusBtn.on('click', function() {
+                var qty = parseInt(qtyInput.val()) || 1;
+                if (qty > 1) qtyInput.val(qty - 1);
+                updateAll(true);
+            });
+            plusBtn.on('click', function() {
+                var qty = parseInt(qtyInput.val()) || 1;
+                qtyInput.val(qty + 1);
+                updateAll(true);
+            });
+            qtyInput.on('input', function() {
+                updateAll(true);
+            });
+            // Calcul initial
+            updateAll();
+        });
+        // Calcul initial du total général
+        updateCartTotal();
     });
 
 

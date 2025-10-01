@@ -139,7 +139,7 @@
                                     <li>
                                         <div class="categories-item">
                                             <a href="#" class="text-dark"><i class="fas fa-apple-alt text-secondary me-2"></i> {{$category->name}}</a>
-                                            <span>({{ $offers->where('category', $category->id)->count() }})</span>
+                                            <span>({{ $offers->where('category', $category->name)->count() }})</span>
                                         </div>
                                     </li>
                                @endforeach
@@ -223,25 +223,30 @@
                         </div> --}}
                         <div class="featured-product mb-4">
                             <h4 class="mb-3">Featured products</h4>
-                            <div class="featured-product-item">
-                                <div class="rounded me-4" style="width: 100px; height: 100px;">
-                                    <img src="img/product-3.png" class="img-fluid rounded" alt="Image">
-                                </div>
-                                <div>
-                                    <h6 class="mb-2">SmartPhone</h6>
-                                    <div class="d-flex mb-2">
-                                        <i class="fa fa-star text-secondary"></i>
-                                        <i class="fa fa-star text-secondary"></i>
-                                        <i class="fa fa-star text-secondary"></i>
-                                        <i class="fa fa-star text-secondary"></i>
-                                        <i class="fa fa-star"></i>
+                            @php
+                                $randomOffers = $offers->shuffle()->take(3);
+                            @endphp
+                            @foreach ($randomOffers as $offer)
+                                <div class="featured-product-item">
+                                    <div class="rounded me-4" style="width: 100px; height: 100px;">
+                                        <img src={{$offer->image_path}} class="img-fluid rounded" alt="Image">
                                     </div>
-                                    <div class="d-flex mb-2">
-                                        <h5 class="fw-bold me-2">2.99 $</h5>
-                                        <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
+                                    <div>
+                                        <h6 class="mb-2">{{$offer->name}}</h6>
+                                        <div class="d-flex mb-2">
+                                            <i class="fa fa-star text-secondary"></i>
+                                            <i class="fa fa-star text-secondary"></i>
+                                            <i class="fa fa-star text-secondary"></i>
+                                            <i class="fa fa-star text-secondary"></i>
+                                            <i class="fa fa-star"></i>
+                                        </div>
+                                        <div class="d-flex mb-2">
+                                            <h5 class="fw-bold me-2">{{ number_format($offer->price, 0, '.', ',')}}F</h5>
+                                            <h5 class="text-danger text-decoration-line-through">{{ number_format(($offer->price) + ($offer->price * 0.15), 0, '.', ',') }}F</h5>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            @endforeach
                             <div class="featured-product-item">
                                 <div class="rounded me-4" style="width: 100px; height: 100px;">
                                     <img src="img/product-4.png" class="img-fluid rounded" alt="Image">
@@ -360,40 +365,40 @@
                                 <div class="row g-4 product">
                                     @foreach ($offers as $offer)
                                         <div class="col-lg-4">
-                                        <div class="product-item rounded wow fadeInUp" data-wow-delay="0.1s">
-                                            <div class="product-item-inner border rounded">
-                                                <div class="product-item-inner-item">
-                                                    <img src={{$offer->image_path}} class="img-fluid w-100 rounded-top" alt="">
-                                                    <div class="product-new">New</div>
-                                                    <div class="product-details">
-                                                        <a href="#"><i class="fa fa-eye fa-1x"></i></a>
+                                            <div class="product-item rounded wow fadeInUp" data-wow-delay="0.1s">
+                                                <div class="product-item-inner border rounded">
+                                                    <div class="product-item-inner-item">
+                                                        <img src={{$offer->image_path}} class="img-fluid w-100 rounded-top" alt="">
+                                                        <div class="product-new">New</div>
+                                                        <div class="product-details">
+                                                            <a href="#"><i class="fa fa-eye fa-1x"></i></a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-center rounded-bottom p-4">
+                                                        <a href="#" class="d-block mb-2">{{$offer->category}}</a>
+                                                        <a href="#" class="d-block h4">{{$offer->name}} <br> G{{rand(1000,9999)}}</a>
+                                                        <del class="me-2 fs-5">{{ number_format(($offer->price) + ($offer->price * 0.15), 0, '.', ',') }}</del>
+                                                        <span class="text-primary fs-5">{{ number_format($offer->price, 0, '.', ',') }}FCFA</span>
                                                     </div>
                                                 </div>
-                                                <div class="text-center rounded-bottom p-4">
-                                                    <a href="#" class="d-block mb-2">{{$offer->category}}</a>
-                                                    <a href="#" class="d-block h4">{{$offer->name}} <br> G{{rand(1000,9999)}}</a>
-                                                    <del class="me-2 fs-5">{{ number_format(($offer->price) + ($offer->price * 0.15), 0, '.', ',') }}</del>
-                                                    <span class="text-primary fs-5">{{ number_format($offer->price, 0, '.', ',') }}FCFA</span>
-                                                </div>
-                                            </div>
-                                            <div class="product-item-add border border-top-0 rounded-bottom  text-center p-4 pt-0">
-                                                <a href="{{ url('/cart/' . $offer->id . '/create/' . Auth::id()) }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-4"><i class="fas fa-shopping-cart me-2"></i> Add To Cart</a>
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <div class="d-flex">
-                                                        <i class="fas fa-star text-primary"></i>
-                                                        <i class="fas fa-star text-primary"></i>
-                                                        <i class="fas fa-star text-primary"></i>
-                                                        <i class="fas fa-star text-primary"></i>
-                                                        <i class="fas fa-star"></i>
-                                                    </div>
-                                                    <div class="d-flex">
-                                                        {{-- <a href="#" class="text-primary d-flex align-items-center justify-content-center me-3"><span class="rounded-circle btn-sm-square border"><i class="fas fa-random"></i></i></a> --}}
-                                                        <a href="{{ url('/wish-list/' . $offer->id . '/create/' . Auth::id()) }}" class="text-primary d-flex align-items-center justify-content-center me-0"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
+                                                <div class="product-item-add border border-top-0 rounded-bottom  text-center p-4 pt-0">
+                                                    <a href="{{ url('/cart/' . $offer->id . '/create/' . Auth::id()) }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-4"><i class="fas fa-shopping-cart me-2"></i> Add To Cart</a>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div class="d-flex">
+                                                            <i class="fas fa-star text-primary"></i>
+                                                            <i class="fas fa-star text-primary"></i>
+                                                            <i class="fas fa-star text-primary"></i>
+                                                            <i class="fas fa-star text-primary"></i>
+                                                            <i class="fas fa-star"></i>
+                                                        </div>
+                                                        <div class="d-flex">
+                                                            {{-- <a href="#" class="text-primary d-flex align-items-center justify-content-center me-3"><span class="rounded-circle btn-sm-square border"><i class="fas fa-random"></i></i></a> --}}
+                                                            <a href="{{ url('/wish-list/' . $offer->id . '/create/' . Auth::id()) }}" class="text-primary d-flex align-items-center justify-content-center me-0"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
                                     @endforeach
                                     <div class="col-lg-4">
                                         <div class="product-item rounded wow fadeInUp" data-wow-delay="0.3s">

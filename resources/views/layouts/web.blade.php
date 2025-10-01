@@ -2,6 +2,11 @@
     $categories = App\Models\Categorie::all();
     $offers = App\Models\offers::all()->shuffle();
     $phone = '+237-658-904-098'; // Define the phone number variable
+    $carts = App\Models\Cart::where('user_id', Auth::id())->get();
+    $totalCartPrice = $carts->sum(function($cart) {
+        return optional($cart->offer)->price * $cart->quantity;
+    });
+    // dd($totalCartPrice)
 @endphp
 <!DOCTYPE html>
 <html lang="fr"> <head>
@@ -104,7 +109,7 @@
                         </div>
                         {{-- Cart (Panier) --}}
                         <div class="cart">
-                            <a href="{{ url('/cart/' . Auth::id()) }}" class="text-muted d-flex align-items-center justify-content-center" title="Panier"> <span class="rounded-circle btn-md-square border"><i class="fas fa-shopping-cart"></i></span> <span class="text-dark ms-2">0.00 FCFA</span> </a>
+                            <a href="{{ url('/cart/' . Auth::id()) }}" class="text-muted d-flex align-items-center justify-content-center" title="Panier"> <span class="rounded-circle btn-md-square border"><i class="fas fa-shopping-cart"></i></span> <span class="text-dark ms-2">{{number_format($totalCartPrice, 0, '.', ',') }} FCFA</span> </a>
                         </div>
                         
                     </div>

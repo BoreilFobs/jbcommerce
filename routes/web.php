@@ -49,7 +49,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/cart/{id}', [CartController::class, 'index']);
     Route::get('/cart', [CartController::class, 'redirect']);
     Route::get('/cart/delete/{id}', [CartController::class, 'delete']);
+
     Route::get('/cart/{Oid}/create/{Uid}', [CartController::class, 'store']);
+    Route::post('/cart/qty', [CartController::class, 'qty'])->name('cart.qty');
 
 Route::get('/message/delete/{id}', [MessageController::class, 'delete']);
 
