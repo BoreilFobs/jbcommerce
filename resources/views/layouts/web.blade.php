@@ -83,9 +83,58 @@
                 <div class="col-md-4 col-lg-3 text-center text-lg-start">
                     <div class="d-inline-flex align-items-center">
                         <a href="{{ url('/') }}" class="navbar-brand p-0" style="font-family: cursive; font-weight:500; font-size: 35px;">
-                            <h1 class="display-5 text-primary m-0" style="font-size: 35px;"><i class="fas fa-shopping-bag text-secondary me-2"></i>JB-Commerce</h1>
+                            <h1 class="display-5 text-primary m-0" style="font-size: 35px;">
+                                <i class="fas fa-shopping-bag text-secondary me-2"></i>JB Shop
+                            </h1>
                         </a>
+                        <nav style="position: relative; left:150px" class="ms-3 ps-3 d-flex align-items-center">
+                            <a href="{{ url('/') }}"
+                               class="text-muted d-flex align-items-center justify-content-center me-3 {{ request()->is('/') ? 'active' : '' }}"
+                               title="Accueil"
+                               style="text-decoration:none;">
+                                <span class="rounded-circle btn-md-square border {{ request()->is('/') ? 'orange-active' : '' }}">
+                                    <i class="fas fa-home fa-lg"></i>
+                                </span>
+                            </a>
+                            <a href="{{ url('/shop') }}"
+                               class="text-muted d-flex align-items-center justify-content-center me-3 {{ request()->is('shop') ? 'active' : '' }}"
+                               title="Boutique"
+                               style="text-decoration:none;">
+                                <span class="rounded-circle btn-md-square border {{ request()->is('shop') ? 'orange-active' : '' }}">
+                                    <i class="fas fa-store fa-lg"></i>
+                                </span>
+                            </a>
+                            <a href="{{ url('/contact') }}"
+                               class="text-muted d-flex align-items-center justify-content-center {{ request()->is('contact') ? 'active' : '' }}"
+                               title="Contact"
+                               style="text-decoration:none;">
+                                <span class="rounded-circle btn-md-square border {{ request()->is('contact') ? 'orange-active' : '' }}">
+                                    <i class="fas fa-envelope fa-lg"></i>
+                                </span>
+                            </a>
+                        </nav>
                     </div>
+                    <style>
+                        .btn-md-square {
+                            width: 40px;
+                            height: 40px;
+                            display: inline-flex;
+                            align-items: center;
+                            justify-content: center;
+                            transition: border-color 0.2s, color 0.2s, background 0.2s;
+                            background: #fff;
+                        }
+                        .btn-md-square:hover,
+                        .btn-md-square:focus {
+                            border-color: #ff7e00 !important;
+                            color: #ff7e00 !important;
+                            background: #fff;
+                        }
+                        .orange-active {
+                            border-color: #ff7e00 !important;
+                            color: #ff7e00 !important;
+                        }
+                    </style>
                 </div>
                 <div class="col-md-4 col-lg-6 text-center">
                     <div class="position-relative ps-4">
@@ -116,56 +165,33 @@
                 </div>
             </div>
         </div>
-        <div class="container-fluid nav-bar p-0">
-            <div class="row gx-0 bg-primary px-5 align-items-center">
-                <div class="col-lg-3 d-none d-lg-block">
-                    <nav class="navbar navbar-light position-relative" style="width: 250px;">
-                        <button class="navbar-toggler border-0 fs-4 w-100 px-0 text-start" type="button" data-bs-toggle="collapse" data-bs-target="#allCat">
-                            <h4 class="m-0"><i class="fa fa-bars me-2"></i>Toutes les Catégories</h4> </button>
-                        <div class="collapse navbar-collapse rounded-bottom" id="allCat">
-                            <div class="navbar-nav ms-auto py-0">
-                                <ul class="list-unstyled categories-bars">
-                                    {{-- Category items translated --}}
-                                    @foreach ($categories as $category)
-                                        <li>
-                                            <div class="categories-bars-item">
-                                                <a href="#">{{ $category->name }}</a>
-                                                <span>({{ $offers->where('category', $category->id)->count() }})</span>
-                                            </div>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </div>
-                    </nav>
-                </div>
-                <div class="col-12 col-lg-9">
-                    <nav class="navbar navbar-expand-lg navbar-light bg-primary ">
-                        <a href="{{ url('/') }}" class="navbar-brand d-block d-lg-none">
-                            <h1 class="display-5 text-secondary m-0"><i class="fas fa-shopping-bag text-white me-2"></i>ElectroSphere</h1>
-                        </a>
-                        <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                            <span class="fa fa-bars fa-1x"></span>
-                        </button>
-                        <div class="collapse navbar-collapse" id="navbarCollapse">
-                            <div class="navbar-nav ms-auto py-0">
-                                <a href="{{ url('/') }}" class="nav-item nav-link {{ request()->pathInfo == '/' ? 'active' : '' }}">Accueil</a> <a href="{{ url('/shop') }}" class="nav-item nav-link {{ request()->is('shop') ? 'active' : '' }}">Boutique</a> <a href="{{ url('/contact') }}" class="nav-item nav-link {{ request()->is('contact') ? 'active' : '' }}">Contactez-nous</a> {{-- Retaining original links not covered by the required routes, translated for the French view --}}
-                                <div class="nav-item dropdown">
-                                    {{-- <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
-                                    <div class="dropdown-menu m-0">
-                                        <a href="bestseller.html" class="dropdown-item">Meilleures Ventes</a> <a href="cart.html" class="dropdown-item">Page Panier</a> <a href="cheackout.html" class="dropdown-item">Paiement</a> <a href="404.html" class="dropdown-item">Page 404</a>
-                                    </div> --}}
-                                </div>
-                            </div>
-                            <a href="tel:#" class="btn btn-secondary rounded-pill py-2 px-4 px-lg-3 mb-3 mb-md-3 mb-lg-0"><i class="fa fa-mobile-alt me-2"></i> {{ $phone }}</a>
-                        </div>
-                    </nav>
-                </div>
-            </div>
-        </div>
+        
         
 
+
         @yield('content')
+
+        <!-- Mobile Bottom Navigation -->
+        <nav class="mobile-bottom-nav d-lg-none d-md-block d-sm-block d-xs-block fixed-bottom bg-white border-top shadow-lg" style="z-index:9999;">
+            <div class="d-flex justify-content-around align-items-center py-2">
+            <a href="{{ url('/') }}" class="text-center flex-fill nav-tab {{ request()->is('/') ? 'active' : '' }}">
+                <span class="d-block"><i class="fas fa-home fa-lg"></i></span>
+                <small>Accueil</small>
+            </a>
+            <a href="{{ url('/shop') }}" class="text-center flex-fill nav-tab {{ request()->is('shop') ? 'active' : '' }}">
+                <span class="d-block"><i class="fas fa-store fa-lg"></i></span>
+                <small>Boutique</small>
+            </a>
+            <a href="{{ url('/cart/' . (Auth::id() ?? '')) }}" class="text-center flex-fill nav-tab {{ request()->is('cart*') ? 'active' : '' }}">
+                <span class="d-block"><i class="fas fa-shopping-cart fa-lg"></i></span>
+                <small>Panier</small>
+            </a>
+            <a href="{{ url('/wish-list/' . (Auth::id() ?? '')) }}" class="text-center flex-fill nav-tab {{ request()->is('wish-list*') ? 'active' : '' }}">
+                <span class="d-block"><i class="fas fa-heart fa-lg"></i></span>
+                <small>Souhaits</small>
+            </a>
+            </div>
+        </nav>
 
         @php
     // Assuming $phone is available in this scope, as defined in the header
@@ -283,6 +309,48 @@
     <script src="{{ asset('lib/wow/wow.min.js') }}"></script>
     <script src="{{ asset('lib/owlcarousel/owl.carousel.min.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
+    <style>
+            /* Glassy effect for JB Shop logo */
+            .jbshop-glass {
+                background: rgba(255,255,255,0.25);
+                border-radius: 12px;
+                box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+                backdrop-filter: blur(4px);
+                padding: 0.25em 0.75em;
+                color: #0d6efd !important;
+                font-family: cursive;
+                font-weight: 500;
+                letter-spacing: 1px;
+            }
+        /* Mobile bottom nav styles */
+        .mobile-bottom-nav {
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+        }
+        .mobile-bottom-nav .nav-tab {
+            color: #333;
+            text-decoration: none;
+            font-size: 13px;
+        }
+        .mobile-bottom-nav .nav-tab.active,
+        .mobile-bottom-nav .nav-tab:active {
+            color: #ff7e00;
+        }
+        /* Reduce text size for home page */
+        body.home-page, .home-page * {
+            font-size: 0.95rem !important;
+        }
+        @media (max-width: 576px) {
+            body.home-page, .home-page * {
+                font-size: 0.85rem !important;
+            }
+        }
+    </style>
+    <script>
+        // Add home-page class to body if on home
+        if (window.location.pathname != '/hey' || window.location.pathname === '/home') {
+            document.body.classList.add('home-page');
+        }
+    </script>
     <!-- Tailwind CSS via CDN -->
     <script>
         tailwind.config = {
