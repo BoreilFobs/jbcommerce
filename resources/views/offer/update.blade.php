@@ -29,6 +29,10 @@
                 <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
                 <input type="text" name="name" id="name" value="{{ old('name', $offer->name) }}" placeholder="Enter product name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" required>
             </div>
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea name="description" id="description" rows="3" placeholder="Enter product description" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" required>{{ old('description', $offer->description) }}</textarea>
+                </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -52,13 +56,23 @@
             </div>
             
             <div>
-                <label for="image" class="block text-sm font-medium text-gray-700 mb-1">Update Product Image</label>
-                <input type="file" name="image" id="image" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                <label for="images" class="block text-sm font-medium text-gray-700 mb-1">Update Product Images (up to 5)</label>
+                <input type="file" name="images[]" id="images" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" multiple accept="image/*">
             </div>
-            
             <div id="image-preview-container" class="mt-4">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Current Image</label>
-                <img id="image-preview" src="{{ $offer->image }}" alt="Current Image" class="w-48 h-48 object-cover rounded-lg border border-gray-300 shadow-sm">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Current Images</label>
+                <div id="image-preview-list" class="flex gap-4 flex-wrap">
+                    @php
+                        $offer_images = $offer->images ? json_decode($offer->images, true) : [];
+                    @endphp
+                    @if ($offer_images && is_array($offer_images))
+                        @foreach ($offer_images as $index => $img)
+                            <img src="{{'/storage/offer_img/product' . $offer->id . "/" . $offer_images[$index]}}" alt="Current Image" class="w-32 h-32 object-cover rounded-lg border border-gray-300 shadow-sm">
+                        @endforeach
+                    @else
+                        <img src="{{ $offer->image }}" alt="Current Image" class="w-32 h-32 object-cover rounded-lg border border-gray-300 shadow-sm">
+                    @endif
+                </div>
             </div>
 
             <div class="flex justify-end">
@@ -71,11 +85,17 @@
 </div>
 
 <script>
-    document.getElementById('image').addEventListener('change', function(event) {
-        const [file] = event.target.files;
-        if (file) {
-            const previewImage = document.getElementById('image-preview');
-            previewImage.src = URL.createObjectURL(file);
+    document.getElementById('images').addEventListener('change', function(event) {
+        const files = event.target.files;
+        const previewList = document.getElementById('image-preview-list');
+        previewList.innerHTML = '';
+        if (files.length > 0) {
+            Array.from(files).slice(0, 5).forEach(file => {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.className = 'w-32 h-32 object-cover rounded-lg border border-gray-300 shadow-sm';
+                previewList.appendChild(img);
+            });
         }
     });
 </script>

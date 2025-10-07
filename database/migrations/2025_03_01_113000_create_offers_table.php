@@ -17,7 +17,12 @@ return new class extends Migration
             $table->string('category')->foreignId('categories');
             $table->integer('price');
             $table->integer("quantity");
-            $table->string('image_path');
+            $table->text('description')->nullable();
+            $table->string('images')->nullable();
+            // $table->string('img2')->nullable();
+            // $table->string('img3')->nullable();
+            // $table->string('img4')->nullable();
+            // $table->string('img5')->nullable();
             $table->timestamps();
         });
     }

@@ -5,16 +5,20 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\CheackoutController;
+use App\Http\Controllers\DetailController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\OffersController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\WishesController;
+use App\Models\offers;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
+
 Route::get('/', [WelcomeController::class, 'index'])->name("home");
 Route::get('/shop', [WelcomeController::class, 'index'])->name("shop");
+Route::get('/offers/new-arrivals', [WelcomeController::class, 'newArrivals'])->name('offers.newArrivals');
 
 
 //routes for admin
@@ -69,6 +73,9 @@ Route::get('/message/delete/{id}', [MessageController::class, 'delete']);
     Route::get('/categories/update/{id}', [CategorieController::class, 'updateF'])->name('categories.update');
     Route::put('/categories/{id}/update', [CategorieController::class, 'update'])->name('categories.updateF');
     Route::get("/cheackout", [CheackoutController::class, 'index'])->name("cheackout");
+
+Route::get('/product/details/{id}', [OffersController::class, 'show'])->name('product.details');
+
 
 });
 

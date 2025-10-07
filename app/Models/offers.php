@@ -12,6 +12,7 @@ class offers extends Model
         'category',
         'price',
         'quantity',
-        'image_path',
+        'images',
+        'description',
     ];
 }

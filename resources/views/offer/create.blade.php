@@ -51,13 +51,16 @@
             </div>
             
             <div>
-                <label for="image" class="block text-sm font-medium text-gray-700 mb-1">Product Image</label>
-                <input type="file" name="image" id="image" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" required>
+                <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <textarea name="description" id="description" rows="3" placeholder="Enter product description" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" required></textarea>
             </div>
-            
+            <div>
+                <label for="images" class="block text-sm font-medium text-gray-700 mb-1">Product Images (up to 5)</label>
+                <input type="file" name="images[]" id="images" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" multiple accept="image/*" required>
+            </div>
             <div id="image-preview-container" class="mt-4 hidden">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Image Preview</label>
-                <img id="image-preview" src="#" alt="Image Preview" class="w-48 h-48 object-cover rounded-lg border border-gray-300 shadow-sm">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Image Previews</label>
+                <div id="image-preview-list" class="flex gap-4 flex-wrap"></div>
             </div>
 
             <div class="flex justify-end">
@@ -70,13 +73,21 @@
 </div>
 
 <script>
-    document.getElementById('image_path').addEventListener('change', function(event) {
-        const [file] = event.target.files;
-        if (file) {
-            const previewContainer = document.getElementById('image-preview-container');
-            const previewImage = document.getElementById('image-preview');
-            previewImage.src = URL.createObjectURL(file);
+    document.getElementById('images').addEventListener('change', function(event) {
+        const files = event.target.files;
+        const previewContainer = document.getElementById('image-preview-container');
+        const previewList = document.getElementById('image-preview-list');
+        previewList.innerHTML = '';
+        if (files.length > 0) {
             previewContainer.classList.remove('hidden');
+            Array.from(files).slice(0, 5).forEach(file => {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.className = 'w-32 h-32 object-cover rounded-lg border border-gray-300 shadow-sm';
+                previewList.appendChild(img);
+            });
+        } else {
+            previewContainer.classList.add('hidden');
         }
     });
 </script>

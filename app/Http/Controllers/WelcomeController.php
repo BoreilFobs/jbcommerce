@@ -19,4 +19,12 @@ class WelcomeController extends Controller
             return view("store", compact("offers", 'categories'));
         }
     }
+
+    // New arrivals filter (offers < 1 month old)
+    public function newArrivals()
+    {
+        $oneMonthAgo = now()->subMonth();
+        $offers = offers::where('created_at', '>=', $oneMonthAgo)->orderBy('created_at', 'desc')->get();
+        return response()->json($offers);
+    }
 }

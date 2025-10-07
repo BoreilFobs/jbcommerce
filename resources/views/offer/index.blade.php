@@ -23,8 +23,7 @@
             @foreach ($offers as $offer)
                 <div class="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-105 transition-transform duration-200">
                     <figure class="relative h-64 overflow-hidden">
-                        <img src="{{ $offer->image_path }}" alt="Product image" class="w-full h-full object-cover">
-                        
+                        <img src="{{'storage/offer_img/product' . $offer->id . "/" . json_decode($offer->images, true)[0]}}" alt="Product image" class="w-full h-full object-cover">
                         <!-- Actions overlay -->
                         <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center space-x-4 opacity-0 hover:opacity-100 transition-opacity duration-300">
                             <a href="{{ url('/offers/delete/' . $offer->id) }}" class="btn bg-red-500 text-white font-bold py-2 px-4 rounded-full hover:bg-red-600 transition-colors duration-200" title="Delete product">

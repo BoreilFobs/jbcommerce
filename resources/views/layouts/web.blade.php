@@ -172,26 +172,28 @@
         @yield('content')
 
         <!-- Mobile Bottom Navigation -->
-        <nav class="mobile-bottom-nav d-lg-none d-md-block d-sm-block d-xs-block fixed-bottom bg-white border-top shadow-lg" style="z-index:9999;">
-            <div class="d-flex justify-content-around align-items-center py-2">
-            <a href="{{ url('/') }}" class="text-center flex-fill nav-tab {{ request()->is('/') ? 'active' : '' }}">
-                <span class="d-block"><i class="fas fa-home fa-lg"></i></span>
-                <small>Accueil</small>
-            </a>
-            <a href="{{ url('/shop') }}" class="text-center flex-fill nav-tab {{ request()->is('shop') ? 'active' : '' }}">
-                <span class="d-block"><i class="fas fa-store fa-lg"></i></span>
-                <small>Boutique</small>
-            </a>
-            <a href="{{ url('/cart/' . (Auth::id() ?? '')) }}" class="text-center flex-fill nav-tab {{ request()->is('cart*') ? 'active' : '' }}">
-                <span class="d-block"><i class="fas fa-shopping-cart fa-lg"></i></span>
-                <small>Panier</small>
-            </a>
-            <a href="{{ url('/wish-list/' . (Auth::id() ?? '')) }}" class="text-center flex-fill nav-tab {{ request()->is('wish-list*') ? 'active' : '' }}">
-                <span class="d-block"><i class="fas fa-heart fa-lg"></i></span>
-                <small>Souhaits</small>
-            </a>
-            </div>
-        </nav>
+        @if (!request()->is('login') && !request()->is('register'))
+            <nav class="mobile-bottom-nav d-lg-none d-md-block d-sm-block d-xs-block fixed-bottom bg-white border-top shadow-lg" style="z-index:9999;">
+                <div class="d-flex justify-content-around align-items-center py-2">
+                    <a href="{{ url('/') }}" class="text-center flex-fill nav-tab {{ request()->is('/') ? 'active' : '' }}">
+                        <span class="d-block"><i class="fas fa-home fa-lg"></i></span>
+                        <small>Accueil</small>
+                    </a>
+                    <a href="{{ url('/shop') }}" class="text-center flex-fill nav-tab {{ request()->is('shop') ? 'active' : '' }}">
+                        <span class="d-block"><i class="fas fa-store fa-lg"></i></span>
+                        <small>Boutique</small>
+                    </a>
+                    <a href="{{ url('/cart/' . (Auth::id() ?? '')) }}" class="text-center flex-fill nav-tab {{ request()->is('cart*') ? 'active' : '' }}">
+                        <span class="d-block"><i class="fas fa-shopping-cart fa-lg"></i></span>
+                        <small>Panier</small>
+                    </a>
+                    <a href="{{ url('/wish-list/' . (Auth::id() ?? '')) }}" class="text-center flex-fill nav-tab {{ request()->is('wish-list*') ? 'active' : '' }}">
+                        <span class="d-block"><i class="fas fa-heart fa-lg"></i></span>
+                        <small>Souhaits</small>
+                    </a>
+                </div>
+            </nav>
+        @endif
 
         @php
     // Assuming $phone is available in this scope, as defined in the header
