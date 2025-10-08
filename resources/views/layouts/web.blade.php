@@ -1,7 +1,16 @@
 @php
     $categories = App\Models\Categorie::all();
     $offers = App\Models\offers::all()->shuffle();
-    $phone = '+237-658-904-098'; // Define the phone number variable
+    // Définition des numéros de téléphone
+        $phone1 = '+237-657-528-859';
+        $phone2 = '+237-682-252-932';
+
+        // Nettoyage des numéros pour le lien 'tel:'
+        $phone = str_replace('-', '', $phone1);
+        $tel2 = str_replace('-', '', $phone2);
+        $email = 'brayeljunior8@gmail.com';
+
+
     $carts = App\Models\Cart::where('user_id', Auth::id())->get();
     $totalCartPrice = $carts->sum(function($cart) {
         return optional($cart->offer)->price * $cart->quantity;
@@ -41,10 +50,10 @@
             <div class="row gx-0 align-items-center">
                 <div class="col-lg-4 text-center text-lg-start mb-lg-0">
                     <div class="d-inline-flex align-items-center" style="height: 45px;">
-                        <a href="tel:#" class="text-muted"><i class="fa fa-phone me-1"></i>Appelez: {{ $phone }}</a> </div>
+                        <a href="tel:{{$phone}}" class="text-muted"><i class="fa fa-phone me-1"></i>Appelez: {{ $phone1 }} / {{$phone2}}</a> </div>
                 </div>
                 <div class="col-lg-4 text-center d-flex align-items-center justify-content-center">
-                    <small class="text-dark">Appelez-nous:</small> <a href="tel:#" class="text-muted">{{ $phone }}</a>
+                    <small class="text-dark">Appelez-nous:</small> <a href="tel:{{$phone}}" class="text-muted">{{ $phone1 }} / {{$phone2}}</a>
                 </div>
 
                 <div class="col-lg-4 text-center text-lg-end">
@@ -138,15 +147,16 @@
                 </div>
                 <div class="col-md-4 col-lg-6 text-center">
                     <div class="position-relative ps-4">
-                        <div class="d-flex border rounded-pill">
-                            <input class="form-control border-0 rounded-pill w-100 py-3" type="text" data-bs-target="#dropdownToggle123" placeholder="Rechercher un produit ..."> <select class="form-select text-dark border-0 border-start rounded-0 p-3" style="width: 200px;">
-                                <option value="All Category">Toutes Catégories</option>
-                            @foreach ($categories as $category)
-                                <option value="Pest Control-1">{{ $category->name }}</option>
-                            @endforeach
+                        <form action="{{ route('search') }}" method="GET" class="d-flex border rounded-pill">
+                            <input class="form-control border-0 rounded-pill w-100 py-3" type="text" name="search" placeholder="Rechercher un produit ..." value="{{ request('search') }}">
+                            <select class="form-select text-dark border-0 border-start rounded-0 p-3" name="category" style="width: 200px;">
+                                <option value="">Toutes Catégories</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->name }}" {{ request('category') == $category->name ? 'selected' : '' }}>{{ $category->name }}</option>
+                                @endforeach
                             </select>
                             <button type="submit" class="btn btn-primary rounded-pill py-3 px-5" style="border: 0;"><i class="fas fa-search"></i></button>
-                        </div>
+                        </form>
                     </div>
                 </div>
                 <div class="col-md-4 col-lg-3 text-center text-lg-end">
@@ -169,7 +179,9 @@
         
 
 
-        @yield('content')
+        <div class="px-3">
+            @yield('content')
+        </div>
 
         <!-- Mobile Bottom Navigation -->
         @if (!request()->is('login') && !request()->is('register'))
@@ -195,11 +207,6 @@
             </nav>
         @endif
 
-        @php
-    // Assuming $phone is available in this scope, as defined in the header
-    $phone = '+237-658-904-098'; 
-@endphp
-
 <div class="container-fluid footer py-5 wow fadeIn" data-wow-delay="0.2s">
             <div class="container py-5">
                 <div class="row g-4 rounded mb-5" style="background: rgba(255, 255, 255, .03);">
@@ -210,7 +217,7 @@
                                 <i class="fas fa-map-marker-alt fa-2x text-primary"></i>
                             </div>
                             <div>
-                                <h4 class="text-white">Adresse</h4> <p class="mb-2">Douala, Cameroun</p> </div>
+                                <h4 class="text-white">Adresse</h4> <p class="mb-2">Bafoussam, Cameroun</p> </div>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-6 col-xl-3">
@@ -219,7 +226,7 @@
                                 <i class="fas fa-envelope fa-2x text-primary"></i>
                             </div>
                             <div>
-                                <h4 class="text-white">Envoyez-nous</h4> <p class="mb-2">contact@electrosphere.com</p> </div>
+                                <h4 class="text-white">Envoyez-nous</h4> <p class="mb-2">{{$email}}</p> </div>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-6 col-xl-3">
@@ -228,7 +235,7 @@
                                 <i class="fa fa-phone-alt fa-2x text-primary"></i>
                             </div>
                             <div>
-                                <h4 class="text-white">Téléphone</h4> <p class="mb-2">{{ $phone }}</p> </div>
+                                <h4 class="text-white">Téléphone</h4> <p class="mb-2">{{ $phone1 }} / {{$phone2}}</p> </div>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-6 col-xl-3">
@@ -237,7 +244,7 @@
                                 <i class="fab fa-firefox-browser fa-2x text-primary"></i>
                             </div>
                             <div>
-                                <h4 class="text-white">Site Web</h4> <p class="mb-2">www.electrosphere.com</p>
+                                <h4 class="text-white">Site Web</h4> <p class="mb-2">www.example.com</p>
                             </div>
                         </div>
                     </div>

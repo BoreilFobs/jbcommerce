@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Dashboard')
 @section('content')
-<div class="p-6">
+{{-- <div class="p-6">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         <div class="card bg-white rounded-lg shadow-md overflow-hidden">
             <div class="relative p-6">
@@ -332,5 +332,6 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
+les statistique de vente et de stock et livraison seron present ici
 @endsection

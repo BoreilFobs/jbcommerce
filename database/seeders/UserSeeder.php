@@ -23,10 +23,14 @@ class UserSeeder extends Seeder
 
         User::create([
             'name' => 'admin',
-            'phone' => '999999999',
-            'password' => Hash::make("admin"),
+            'phone' => '657528859',
+            'password' => Hash::make("Juniorbrayel2009"),
         ]);
 
-      
+      User::create([
+            'name' => 'Fobs',
+            'phone' => '999999999',
+            'password' => Hash::make("0000000000"),
+        ]);
     }
 }

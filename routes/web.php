@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/', [WelcomeController::class, 'index'])->name("home");
 Route::get('/shop', [WelcomeController::class, 'index'])->name("shop");
+Route::get('/search', [WelcomeController::class, 'search'])->name('search');
 Route::get('/offers/new-arrivals', [WelcomeController::class, 'newArrivals'])->name('offers.newArrivals');
 
 

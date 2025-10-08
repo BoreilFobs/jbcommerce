@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-    <title>@yield('title', 'Blank Page') &mdash; ElectreoSphere</title>
+    <title>@yield('title', 'Tableau de bord') &mdash; ElectreoSphere</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -12,45 +12,104 @@
     <style type="text/tailwindcss">
         @layer base {
             body {
-                @apply bg-gray-100 font-sans leading-normal tracking-normal;
+                @apply bg-gray-100 font-sans leading-normal tracking-normal text-gray-800;
+            }
+            
+            @media (max-width: 640px) {
+                body {
+                    @apply text-sm;
+                }
             }
         }
         @layer components {
+            /* Mobile-first sidebar */
+            .main-sidebar {
+                @apply fixed inset-y-0 left-0 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:w-64;
+            }
+            .main-sidebar.show {
+                @apply translate-x-0;
+            }
+            
+            /* Improved sidebar menu items */
             .sidebar-menu a {
-                @apply flex items-center p-3 text-gray-700 hover:bg-gray-200 transition-colors duration-200 rounded-md;
+                @apply flex items-center p-4 text-gray-700 hover:bg-gray-50 transition-colors duration-200 rounded-lg mb-1;
             }
             .sidebar-menu a.active {
-                @apply bg-blue-600 text-white;
+                @apply bg-blue-600 text-white hover:bg-blue-700;
             }
             .sidebar-menu .dropdown-menu {
-                @apply pl-6;
+                @apply pl-4 space-y-1 mt-1;
             }
+            
+            /* Responsive main content */
             .main-content {
-                @apply p-6;
+                @apply p-4 lg:p-6;
             }
+            
+            /* Improved section headers */
             .section-header {
-                @apply flex justify-between items-center pb-4 mb-6 border-b border-gray-300;
+                @apply flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 mb-6 border-b border-gray-200;
             }
             .section-header h1 {
-                @apply text-2xl font-semibold text-gray-800;
+                @apply text-xl lg:text-2xl font-bold text-gray-800 mb-2 sm:mb-0;
             }
+            
+            /* Enhanced cards */
             .card {
-                @apply bg-white p-6 rounded-lg shadow-md;
+                @apply bg-white p-4 lg:p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300;
             }
+            
+            /* Mobile-friendly navbar */
             .navbar {
-                @apply bg-white shadow-md;
+                @apply bg-white shadow-sm sticky top-0;
             }
             .navbar-nav .nav-link {
-                @apply p-4 text-gray-600 hover:text-gray-900;
+                @apply p-3 lg:p-4 text-gray-600 hover:text-gray-900;
             }
+            
+            /* Improved dropdowns */
             .dropdown-menu {
-                @apply absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50;
+                @apply absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50;
             }
             .dropdown-item {
-                @apply block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100;
+                @apply block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200;
             }
+            
+            /* Enhanced search input */
             .search-element input {
-                @apply border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500;
+                @apply w-full sm:w-64 border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300;
+            }
+            
+            /* Touch-friendly buttons */
+            .btn {
+                @apply px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+            }
+            .btn-primary {
+                @apply bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500;
+            }
+            
+            /* Table improvements */
+            .table-responsive {
+                @apply overflow-x-auto -mx-4 sm:mx-0;
+            }
+            .table {
+                @apply min-w-full divide-y divide-gray-200;
+            }
+            .table th {
+                @apply px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
+            }
+            .table td {
+                @apply px-4 py-3 text-sm;
+            }
+            
+            /* Form elements */
+            .form-input {
+                @apply w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition-colors duration-200;
+            }
+            
+            /* Status badges */
+            .badge {
+                @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
             }
         }
     </style>
@@ -71,14 +130,14 @@
                     <a href="{{ url('/') }}" class="text-xl font-bold text-blue-600">ES</a>
                 </div>
                 <ul class="sidebar-menu flex-grow p-4 space-y-2">
-                    <li class="menu-header uppercase text-sm text-gray-500 px-3 pt-4">Dashboard</li>
+                    <li class="menu-header uppercase text-sm text-gray-500 px-3 pt-4">Tableau de Bord</li>
                     <li class="{{ Request::is('dashboard') ? 'active' : '' }}">
                         <a href="{{ route('dashboard') }}" class="nav-link {{ Request::is('dashboard') ? 'active' : '' }}">
-                            <i class="fas fa-fire mr-3"></i><span>Dashboard</span>
+                            <i class="fas fa-chart-line mr-3"></i><span>Vue d'ensemble</span>
                         </a>
                     </li>
 
-                    <li class="menu-header uppercase text-sm text-gray-500 px-3 pt-4">Admin Management</li>
+                    <li class="menu-header uppercase text-sm text-gray-500 px-3 pt-4">Gestion du Magasin</li>
 
                     <li class="dropdown {{ Request::is('offers*') ? 'active' : '' }}">
                         <a href="{{route("offer.index")}}" class="nav-link has-dropdown flex items-center justify-between">
@@ -144,16 +203,16 @@
         </div>
 
         <div class="flex flex-col flex-1">
-            <nav class="navbar bg-white shadow-md sticky top-0 z-40">
+            <nav class="navbar bg-white shadow-sm sticky top-0 z-40">
                 <div class="container mx-auto flex items-center justify-between p-4">
                     <div class="flex items-center">
-                        <button class="nav-link-lg lg:hidden text-gray-600 mr-4 focus:outline-none" data-toggle="sidebar">
-                            <i class="fas fa-bars text-xl"></i>
+                        <button class="nav-link-lg lg:hidden text-gray-600 mr-4 focus:outline-none hover:text-blue-600 transition-colors" id="sidebarToggle" data-toggle="sidebar">
+                            <i class="fas fa-bars text-2xl"></i>
                         </button>
-                        <form class="form-inline">
+                        <form class="form-inline hidden sm:block">
                             <div class="search-element relative">
-                                <input class="form-control rounded-full pl-4 pr-10 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 w-64" type="search" placeholder="Search" aria-label="Search">
-                                <button class="btn absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700" type="submit">
+                                <input class="form-control rounded-full pl-4 pr-10 py-2.5 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 w-full sm:w-64" type="search" placeholder="Rechercher..." aria-label="Rechercher">
+                                <button class="btn absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600 transition-colors" type="submit">
                                     <i class="fas fa-search"></i>
                                 </button>
                             </div>
@@ -233,7 +292,7 @@
                 </div>
             </nav>
 
-            <div class="main-content flex-1 p-6">
+            <div class="main-content flex-1 p-1">
                 <section class="section">
                     <div class="section-header">
                         <h1>@yield('title', 'Blank Page')</h1>
@@ -247,7 +306,7 @@
             <footer class="main-footer bg-white p-4 text-center text-gray-600 border-t border-gray-200 mt-auto">
                 <div class="footer-left">
                     <div class="bullet inline-block w-1 h-1 bg-gray-500 rounded-full mx-2"></div>
-                    <a href="https://github.com/BoreilFobs" class="text-blue-600 hover:underline">ElectreoSphere</a>
+                    <a href="https://github.com/BoreilFobs" class="text-blue-600 hover:underline">JB shop</a>
                 </div>
                 <div class="footer-right">
                     </div>
@@ -257,38 +316,92 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Improved dropdown handling
             const dropdownToggles = document.querySelectorAll('[data-toggle="dropdown"]');
+            const closeAllDropdowns = (except = null) => {
+                dropdownToggles.forEach(toggle => {
+                    if (toggle !== except) {
+                        const dropdownMenu = toggle.nextElementSibling;
+                        if (dropdownMenu?.classList.contains('dropdown-menu')) {
+                            dropdownMenu.classList.add('hidden');
+                        }
+                    }
+                });
+            };
+
             dropdownToggles.forEach(toggle => {
                 toggle.addEventListener('click', (e) => {
                     e.preventDefault();
                     const dropdownMenu = toggle.nextElementSibling;
-                    if (dropdownMenu && dropdownMenu.classList.contains('dropdown-menu')) {
+                    if (dropdownMenu?.classList.contains('dropdown-menu')) {
+                        closeAllDropdowns(toggle);
                         dropdownMenu.classList.toggle('hidden');
                     }
                 });
             });
 
+            // Enhanced mobile sidebar handling
             const sidebarToggle = document.querySelector('[data-toggle="sidebar"]');
             const sidebar = document.querySelector('.main-sidebar');
-            const app = document.getElementById('app');
+            const overlay = document.createElement('div');
+            overlay.className = 'fixed inset-0 bg-gray-900 bg-opacity-50 z-40 lg:hidden hidden';
+            document.body.appendChild(overlay);
+
+            const toggleSidebar = () => {
+                sidebar.classList.toggle('show');
+                overlay.classList.toggle('hidden');
+                document.body.classList.toggle('overflow-hidden');
+            };
 
             if (sidebarToggle && sidebar) {
-                sidebarToggle.addEventListener('click', () => {
-                    sidebar.classList.toggle('hidden');
-                });
+                sidebarToggle.addEventListener('click', toggleSidebar);
+                overlay.addEventListener('click', toggleSidebar);
             }
 
-            // Close dropdowns when clicking outside
-            window.addEventListener('click', (e) => {
-                dropdownToggles.forEach(toggle => {
-                    const dropdownMenu = toggle.nextElementSibling;
-                    if (dropdownMenu && !toggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                        dropdownMenu.classList.add('hidden');
+            // Handle clicks outside dropdowns
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('[data-toggle="dropdown"]')) {
+                    closeAllDropdowns();
+                }
+            });
+
+            // Swipe to close sidebar on mobile
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            sidebar.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, false);
+
+            sidebar.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                if (touchStartX > touchEndX + 50) { // Swipe left
+                    toggleSidebar();
+                }
+            }, false);
+
+            // Close sidebar on navigation
+            const navLinks = sidebar.querySelectorAll('a[href]:not([href="#"])');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth < 1024) { // lg breakpoint
+                        toggleSidebar();
                     }
                 });
             });
-        });
 
+            // Active link highlighting
+            const currentPath = window.location.pathname;
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                    const dropdownParent = link.closest('.dropdown');
+                    if (dropdownParent) {
+                        dropdownParent.classList.add('active');
+                    }
+                }
+            });
+        });
     </script>
 </body>
 

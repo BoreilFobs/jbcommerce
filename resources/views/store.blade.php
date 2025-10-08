@@ -2,11 +2,21 @@
 @section('content')
 <!-- Single Page Header start -->
         <div class="container-fluid page-header py-5">
-            <h1 class="text-center text-white display-6 wow fadeInUp" data-wow-delay="0.1s">Shop Page</h1>
+            @if(request('search'))
+                <h1 class="text-center text-white display-6 wow fadeInUp" data-wow-delay="0.1s">
+                    Search Results for: {{ request('search') }}
+                </h1>
+            @else
+                <h1 class="text-center text-white display-6 wow fadeInUp" data-wow-delay="0.1s">Shop Page</h1>
+            @endif
             <ol class="breadcrumb justify-content-center mb-0 wow fadeInUp" data-wow-delay="0.3s">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Pages</a></li>
-                <li class="breadcrumb-item active text-white">Shop</li>
+                <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url('/shop') }}">Shop</a></li>
+                @if(request('search'))
+                    <li class="breadcrumb-item active text-white">Search Results</li>
+                @else
+                    <li class="breadcrumb-item active text-white">Shop</li>
+                @endif
             </ol>
         </div>
         <!-- Single Page Header End -->
@@ -27,51 +37,17 @@
                             <div class="position-absolute rounded d-flex flex-column align-items-center justify-content-center text-center" style="width: 100%; height: 250px; top: 0; left: 0; background: rgba(242, 139, 0, 0.3);">
                                 <h4 class="display-5 text-primary">SALE</h4>
                                 <h3 class="display-4 text-white mb-4">Get UP To 50% Off</h3>
-                                <a href="#" class="btn btn-primary rounded-pill">Shop Now</a>
+                                {{-- <a href="#" class="btn btn-primary rounded-pill">Shop Now</a> --}}
                             </div>
                         </div>
-                        <div class="row g-4">
-                            <div class="col-xl-7">
-                                <div class="input-group w-100 mx-auto d-flex">
-                                    <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
-                                    <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 text-end">
-                                <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between">
-                                    <label for="electronics">Sort By:</label>
-                                    <select id="electronics" name="electronicslist" class="border-0 form-select-sm bg-light me-3" form="electronicsform">
-                                        <option value="volvo">Default Sorting</option>
-                                        {{-- <option value="volv">Nothing</option>
-                                        <option value="sab">Popularity</option>
-                                        <option value="saab">Newness</option>
-                                        <option value="opel">Average Rating</option>
-                                        <option value="audio">Low to high</option>
-                                        <option value="audi">High to low</option> --}}
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-xl-2">
-                                <ul class="nav nav-pills d-inline-flex text-center py-2 px-2 rounded bg-light mb-4">
-                                    <li class="nav-item me-4">
-                                        <a class="bg-light" data-bs-toggle="pill" href="#tab-5">
-                                            <i class="fas fa-th fa-3x text-primary"></i>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="bg-light" data-bs-toggle="pill" href="#tab-6">
-                                            <i class="fas fa-bars fa-3x text-primary"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+                        
                         <div class="tab-content">
                             <div id="tab-5" class="tab-pane fade show p-0 active">
                                 <div class="row g-4 product">
-                                    @foreach ($offers as $offer)
-                                        <div class="col-lg-4">
-                                            <div class="product-item rounded wow fadeInUp" data-wow-delay="0.1s">
+                                    @if($offers->count() > 0)
+                                        @foreach ($offers as $offer)
+                                            <div class="col-lg-4">
+                                                <div class="product-item rounded wow fadeInUp" data-wow-delay="0.1s">
                                                 <div class="product-item-inner border rounded">
                                                     <div class="product-item-inner-item">
                                                         <img src={{'/storage/offer_img/product' . $offer->id . "/" . json_decode($offer->images, true)[0]}} class="img-fluid w-100 rounded-top" alt="">
@@ -107,7 +83,16 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    @endforeach
+                                        @endforeach
+                                    @else
+                                        <div class="col-12 text-center py-5">
+                                            <h3 class="text-muted">Aucun produit</h3>
+                                            @if(request('search'))
+                                                <p class="mt-3"> Aucun resultat trouve pour "{{ request('search') }}"</p>
+                                                <a href="{{ url('/shop') }}" class="btn btn-primary mt-3">View All Products</a>
+                                            @endif
+                                        </div>
+                                    @endif
                                     <div class="col-12 wow fadeInUp" data-wow-delay="0.1s">
                                         <div class="pagination d-flex justify-content-center mt-5">
                                             <a href="#" class="rounded">&laquo;</a>

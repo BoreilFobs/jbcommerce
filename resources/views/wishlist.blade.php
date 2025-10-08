@@ -1,90 +1,102 @@
 @extends('layouts.web')
 @section('content')
-    <main class="main">
-        <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
-            <div class="container">
-                <h1 class="page-title">Wishlist<span>Shop</span></h1>
-            </div><!-- End .container -->
-        </div><!-- End .page-header -->
-        <nav aria-label="breadcrumb" class="breadcrumb-nav">
-            <div class="container">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href={{ url('/') }}>Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Wishlist</li>
-                </ol>
-            </div><!-- End .container -->
-        </nav><!-- End .breadcrumb-nav -->
-
-        <div class="page-content">
-            <div class="container">
-                <table class="table table-wishlist table-mobile">
+    <div class="container-fluid page-header py-5">
+        <h1 class="text-center text-white display-6 wow fadeInUp" data-wow-delay="0.1s">Liste de Souhaits</h1>
+        <ol class="breadcrumb justify-content-center mb-0 wow fadeInUp" data-wow-delay="0.3s">
+            <li class="breadcrumb-item"><a href="{{ route('home') }}">Accueil</a></li>
+            <li class="breadcrumb-item active text-white">Liste de Souhaits</li>
+        </ol>
+    </div>
+    <div class="container-fluid py-5">
+        <div class="container py-5">
+            {{--
+                La classe table-responsive est cruciale pour le mobile.
+                Elle permet à la table de défiler horizontalement si elle dépasse la largeur de l'écran,
+                ce qui est la méthode standard pour les grandes tables sur petit écran.
+            --}}
+            <div class="table-responsive">
+                <table class="table align-middle">
                     <thead>
                         <tr>
-                            <th>Product</th>
-                            <th>Price</th>
-                            <th>Stock Status</th>
-                            <th></th>
-                            <th></th>
+                            {{-- On donne plus de largeur à la colonne Produit --}}
+                            <th scope="col" style="width: 40%;">Produit</th>
+                            <th scope="col" style="width: 20%;">Prix</th>
+                            <th scope="col" style="width: 20%;">Stock</th>
+                            <th scope="col" style="width: 20%;">Action</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         @foreach ($wishes as $wish)
-                            <tr>
-                                <td class="product-col">
-                                    <div class="product">
-                                        <figure class="product-media">
-                                            <a href="#">
-                                                <img src={{ App\Models\offers::findOrFail($wish->offer_id)->image_path }}
-                                                    alt="Product image">
+                            @php
+                                // Récupérer les données de l'offre
+                                $offer = App\Models\offers::findOrFail($wish->offer_id);
+                                $quantity = $offer->quantity; // Utiliser la quantité pour la vérification du stock
+                                $isAvailable = $quantity > 0;
+                            @endphp
+                            <tr data-wish-id="{{ $wish->id }}">
+                                <th scope="row" class="py-3">
+                                    <div class="d-flex align-items-center">
+                                        {{-- Image du Produit: Réduction de la taille de l'image pour le mobile --}}
+                                        {{-- <img src="{{ $offer->image_path }}" class="img-fluid me-3 rounded" style="width: 60px; height: 60px; object-fit: cover;" alt="{{ $offer->name }}"> --}}
+                                        {{-- Nom du Produit --}}
+                                        <p class="mb-0 fw-bold">{{ $offer->name }}</p>
+                                    </div>
+                                </th>
+                                <td class="py-3">
+                                    <p class="mb-0">{{ number_format($offer->price, 0, '.', ',') }}FCFA</p>
+                                </td>
+                                <td class="py-3">
+                                    <p class="mb-0">
+                                        @if ($isAvailable)
+                                            <span class="text-success fw-bold">{{ $quantity }} </span>
+                                        @else
+                                            <span class="text-danger fw-bold">Rupture</span>
+                                        @endif
+                                    </p>
+                                </td>
+                                <td class="py-3">
+                                    <div class="d-flex flex-column align-items-start">
+                                        {{-- Bouton Ajouter au Panier --}}
+                                        @if ($isAvailable)
+                                            <a href="{{ url('/cart/' . $wish->offer_id . '/create/' . $wish->user_id) }}"
+                                                class="btn btn-sm btn-primary rounded-pill px-3 py-2 mb-2 w-100">
+                                                <i class="fa fa-shopping-bag me-1"></i> Panier
                                             </a>
-                                        </figure>
+                                        @else
+                                            <button class="btn btn-sm btn-secondary rounded-pill px-3 py-2 mb-2 w-100" disabled>
+                                                <i class="fa fa-ban me-1"></i> Indisponible
+                                            </button>
+                                        @endif
 
-                                        <h3 class="product-title">
-                                            <a href="#">{{ App\Models\offers::findOrFail($wish->offer_id)->name }}</a>
-                                        </h3><!-- End .product-title -->
-                                    </div><!-- End .product -->
-                                </td>
-                                <td class="price-col">{{ App\Models\offers::findOrFail($wish->offer_id)->price }}FCFA</td>
-                                <td class="stock-col">
-                                    @if (App\Models\offers::findOrFail($wish->offer_id)->instock)
-                                        <span class="in-stock">In stock</span>
-                                    @else
-                                        <span class="out-of-stock">Out of stock</span>
-                                    @endif
-                                </td>
-                                <td class="action-col">
-                                    <div class="dropdown">
-                                        <a href={{ url('/cart/' . $wish->offer_id . '/create/' . $wish->user_id) }}
-                                            class="btn btn-block btn-outline-primary-2" data-toggle="dropdown"
-                                            aria-haspopup="true" aria-expanded="false">
-                                            <i class="icon-list-alt"></i>Add to cart
+                                        {{-- Bouton Supprimer --}}
+                                        <a href="{{ url('wish-list/delete/' . $wish->id) }}"
+                                            class="btn btn-sm rounded-pill bg-light border w-100" title="Supprimer">
+                                            <i class="fa fa-times text-danger"></i> Supprimer
                                         </a>
-
                                     </div>
                                 </td>
-                                <td class="remove-col"><a href={{ url('wish-list/delete/' . $wish->id) }}
-                                        class="btn-remove"><i class="icon-close"></i></a></td>
                             </tr>
                         @endforeach
                     </tbody>
-                </table><!-- End .table table-wishlist -->
-                <div class="wishlist-share">
-                    <div class="social-icons social-icons-sm mb-2">
-                        <label class="social-label">Share on:</label>
-                        <a href="#" class="social-icon" title="Facebook" target="_blank"><i
-                                class="icon-facebook-f"></i></a>
-                        <a href="#" class="social-icon" title="Twitter" target="_blank"><i
-                                class="icon-twitter"></i></a>
-                        <a href="#" class="social-icon" title="Instagram" target="_blank"><i
-                                class="icon-instagram"></i></a>
-                        <a href="#" class="social-icon" title="Youtube" target="_blank"><i
-                                class="icon-youtube"></i></a>
-                        <a href="#" class="social-icon" title="Pinterest" target="_blank"><i
-                                class="icon-pinterest"></i></a>
-                    </div><!-- End .soial-icons -->
-                </div><!-- End .wishlist-share -->
-            </div><!-- End .container -->
-        </div><!-- End .page-content -->
-    </main><!-- End .main -->
-@endsection
+                </table>
+            </div>
+
+            {{-- Bloc Récapitulatif --}}
+            <div class="row g-4 justify-content-end mt-4">
+                <div class="col-sm-12 col-md-7 col-lg-6 col-xl-4">
+                    <div class="bg-light rounded p-4">
+                        <h1 class="display-6 mb-4">Total <span class="fw-normal">des Articles</span></h1>
+                        <div class="d-flex justify-content-between mb-4">
+                            <h5 class="mb-0 me-4">Nombre d'articles :</h5>
+                            <p class="mb-0">{{ count($wishes) }}</p>
+                        </div>
+                        <p class="mb-0 text-end">Votre liste de souhaits.</p>
+                        <div class="py-4 mt-4 border-top border-bottom d-flex justify-content-center">
+                            <a href="{{ route('home') }}" class="btn btn-primary rounded-pill px-4 py-3 text-uppercase w-100">Continuer vos achats</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endsection

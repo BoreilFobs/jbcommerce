@@ -1,3 +1,12 @@
+@php
+    $phone1 = '+237-657-528-859';
+    $phone2 = '+237-682-252-932';
+
+    // Nettoyage des numéros pour le lien 'tel:'
+    $phone = str_replace('-', '', $phone1);
+    $tel2 = str_replace('-', '', $phone2);
+    $email = 'brayeljunior8@gmail.com';
+@endphp
 @extends('layouts.web')
 @section('content')
         <!-- Single Page Header start -->
@@ -93,7 +102,7 @@
                                             </div>
                                             <div>
                                                 <h4>Adresse</h4>
-                                                <p class="mb-2">123 Rue New York, USA</p>
+                                                <p class="mb-2">Bafoussam, Cameroun</p>
                                             </div>
                                         </div>
                                     </div>
@@ -104,7 +113,7 @@
                                             </div>
                                             <div>
                                                 <h4>Envoyez-nous un mail</h4>
-                                                <p class="mb-2">info@example.com</p>
+                                                <p class="mb-2">{{$email}}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -115,7 +124,7 @@
                                             </div>
                                             <div>
                                                 <h4>Téléphone</h4>
-                                                <p class="mb-2">(+012) 3456 7890</p>
+                                                <p class="mb-2">{{$phone1}} / {{$phone2}}</p>
                                             </div>
                                         </div>
                                     </div>

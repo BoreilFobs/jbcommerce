@@ -1,10 +1,21 @@
-<div class="store-sidebar">
-    <div class="store-search mb-4">
+<div class="store-sidebar m">
+<div class="store-search mb-4 mx-3">
+    <form action="{{ route('search') }}" method="GET">
         <div class="input-group w-100 mx-auto d-flex">
-            <input type="search" class="form-control p-3" placeholder="Mots-clés" aria-describedby="search-icon-1">
-            <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+            <input 
+                type="search" 
+                class="form-control p-3" 
+                name="search" 
+                placeholder="Rechercher un produit ..." 
+                value="{{ request('search') }}" 
+                aria-describedby="search-icon-1"
+            >
+            <button type="submit" class="input-group-text p-3" id="search-icon-1" style="border: 0; background: rgb(167, 165, 165);">
+                <i class="fa fa-search"></i>
+            </button>
         </div>
-    </div>
+    </form>
+</div>
     <div class="product-categories mb-4">
         <h4>Catégories de produits</h4>
         <ul class="list-unstyled">
