@@ -15,6 +15,9 @@
                     <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">Sur une sélection d'ordinateurs portables, de bureaux ou de smartphones</h1>
                     <p class="text-dark wow fadeInRight" data-wow-delay="0.5s">Conditions générales applicables</p>
                     <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s" href="{{route("shop")}}">Acheter maintenant</a>
+                    @if (!Auth::user())
+                        <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s" href="{{route("login")}}">Se Connecter</a>
+                    @endif
                     </div>
                 </div>
                 <div class="row g-0 header-carousel-item align-items-center">
@@ -26,6 +29,9 @@
                     <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">Sur une sélection d'ordinateurs portables, de bureaux ou de smartphones</h1>
                     <p class="text-dark wow fadeInRight" data-wow-delay="0.5s">Conditions générales applicables</p>
                     <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s" href="{{route("shop")}}">Acheter maintenant</a>
+                    @if (!Auth::user())
+                        <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s" href="{{route("login")}}">Se Connecter</a>
+                    @endif
                     </div>
                 </div>
                 </div>

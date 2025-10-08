@@ -179,7 +179,7 @@
         
 
 
-        <div class="px-3">
+        <div class="px-1">
             @yield('content')
         </div>
 
