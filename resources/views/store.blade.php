@@ -66,7 +66,11 @@
                                                     </div>
                                                 </div>
                                                 <div class="product-item-add border border-top-0 rounded-bottom  text-center p-4 pt-0">
-                                                    <a href="{{ url('/cart/' . $offer->id . '/create/' . Auth::id()) }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-4"><i class="fas fa-shopping-cart me-2"></i> Add To Cart</a>
+                                                    @if(Auth::check())
+                                                        <a href="{{ url('/cart/' . $offer->id . '/create/' . Auth::id()) }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-4"><i class="fas fa-shopping-cart me-2"></i> Add To Cart</a>
+                                                    @else
+                                                        <a href="{{ route('login') }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-4"><i class="fas fa-shopping-cart me-2"></i> Add To Cart</a>
+                                                    @endif
                                                     <div class="d-flex justify-content-between align-items-center">
                                                         <div class="d-flex">
                                                             <i class="fas fa-star text-primary"></i>
@@ -77,7 +81,11 @@
                                                         </div>
                                                         <div class="d-flex">
                                                             {{-- <a href="#" class="text-primary d-flex align-items-center justify-content-center me-3"><span class="rounded-circle btn-sm-square border"><i class="fas fa-random"></i></i></a> --}}
-                                                            <a href="{{ url('/wish-list/' . $offer->id . '/create/' . Auth::id()) }}" class="text-primary d-flex align-items-center justify-content-center me-0"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
+                                                            @if(Auth::check())
+                                                                <a href="{{ url('/wish-list/' . $offer->id . '/create/' . Auth::id()) }}" class="text-primary d-flex align-items-center justify-content-center me-0"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
+                                                            @else
+                                                                <a href="{{ route('login') }}" class="text-primary d-flex align-items-center justify-content-center me-0"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
+                                                            @endif
                                                         </div>
                                                     </div>
                                                 </div>

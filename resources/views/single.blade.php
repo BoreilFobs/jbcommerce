@@ -57,7 +57,11 @@
                                             </button>
                                         </div>
                                     </div> --}}
-                                    <a href="{{url("/cart/". $offer->id . "/create/" . Auth::user()->id)}}" class="btn btn-primary border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"><i class="fa fa-shopping-bag me-2 text-white"></i> Ajouter au panier</a>
+                                    @if(Auth::check())
+                                        <a href="{{url("/cart/". $offer->id . "/create/" . Auth::id())}}" class="btn btn-primary border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"><i class="fa fa-shopping-bag me-2 text-white"></i> Ajouter au panier</a>
+                                    @else
+                                        <a href="{{ route('login') }}" class="btn btn-primary border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"><i class="fa fa-shopping-bag me-2 text-white"></i> Ajouter au panier</a>
+                                    @endif
                                 </div>
                                 {{-- <div class="col-lg-12">
                                     <nav>

@@ -14,8 +14,8 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        //
-   User::create([
+
+        User::create([
             'name' => 'test',
             'phone' => '000000000',
             'password' => Hash::make("test"),
@@ -25,12 +25,14 @@ class UserSeeder extends Seeder
             'name' => 'admin',
             'phone' => '657528859',
             'password' => Hash::make("Juniorbrayel2009"),
+            'role' => 'admin',
         ]);
 
-      User::create([
-            'name' => 'Fobs',
-            'phone' => '999999999',
-            'password' => Hash::make("0000000000"),
-        ]);
+        User::create([
+                'name' => 'Fobs',
+                'phone' => '999999999',
+                'password' => Hash::make("0000000000"),
+                'role' => 'admin',
+            ]);
     }
 }

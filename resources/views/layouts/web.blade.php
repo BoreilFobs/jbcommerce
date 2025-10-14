@@ -1,21 +1,21 @@
 @php
     $categories = App\Models\Categorie::all();
     $offers = App\Models\offers::all()->shuffle();
+    
     // Définition des numéros de téléphone
-        $phone1 = '+237-657-528-859';
-        $phone2 = '+237-682-252-932';
+    $phone1 = '+237-657-528-859';
+    $phone2 = '+237-693-662-715';
+    
+    // Nettoyage des numéros pour le lien 'tel:'
+    $phone = str_replace('-', '', $phone1);
+    $tel2 = str_replace('-', '', $phone2);
+    $email = 'brayeljunior8@gmail.com';
 
-        // Nettoyage des numéros pour le lien 'tel:'
-        $phone = str_replace('-', '', $phone1);
-        $tel2 = str_replace('-', '', $phone2);
-        $email = 'brayeljunior8@gmail.com';
-
-
-    $carts = App\Models\Cart::where('user_id', Auth::id())->get();
+    // Handle cart for authenticated users only
+    $carts = Auth::check() ? App\Models\Cart::where('user_id', Auth::id())->get() : collect();
     $totalCartPrice = $carts->sum(function($cart) {
         return optional($cart->offer)->price * $cart->quantity;
     });
-    // dd($totalCartPrice)
 @endphp
 <!DOCTYPE html>
 <html lang="fr"> <head>
@@ -163,12 +163,29 @@
                     <div class="d-inline-flex align-items-center">
                         {{-- Wishlist (Liste de souhaits) --}}
                         <div class="wishlist">
-                            <a href="{{ url('/wish-list/' . Auth::id()) }}" class="text-muted d-flex align-items-center justify-content-center me-3" title="Liste de souhaits"> <span class="rounded-circle btn-md-square border"><i class="fas fa-heart"></i></span>
-                            </a>
+                            @if(Auth::check())
+                                <a href="{{ url('/wish-list/' . Auth::id()) }}" class="text-muted d-flex align-items-center justify-content-center me-3" title="Liste de souhaits"> 
+                                    <span class="rounded-circle btn-md-square border"><i class="fas fa-heart"></i></span>
+                                </a>
+                            @else
+                                <a href="{{ route('login') }}" class="text-muted d-flex align-items-center justify-content-center me-3" title="Liste de souhaits"> 
+                                    <span class="rounded-circle btn-md-square border"><i class="fas fa-heart"></i></span>
+                                </a>
+                            @endif
                         </div>
                         {{-- Cart (Panier) --}}
                         <div class="cart">
-                            <a href="{{ url('/cart/' . Auth::id()) }}" class="text-muted d-flex align-items-center justify-content-center" title="Panier"> <span class="rounded-circle btn-md-square border"><i class="fas fa-shopping-cart"></i></span> <span class="text-dark ms-2">{{number_format($totalCartPrice, 0, '.', ',') }} FCFA</span> </a>
+                            @if(Auth::check())
+                                <a href="{{ url('/cart/' . Auth::id()) }}" class="text-muted d-flex align-items-center justify-content-center" title="Panier"> 
+                                    <span class="rounded-circle btn-md-square border"><i class="fas fa-shopping-cart"></i></span> 
+                                    <span class="text-dark ms-2">{{number_format($totalCartPrice, 0, '.', ',') }} FCFA</span> 
+                                </a>
+                            @else
+                                <a href="{{ route('login') }}" class="text-muted d-flex align-items-center justify-content-center" title="Panier"> 
+                                    <span class="rounded-circle btn-md-square border"><i class="fas fa-shopping-cart"></i></span> 
+                                    <span class="text-dark ms-2">0 FCFA</span> 
+                                </a>
+                            @endif
                         </div>
                         
                     </div>
