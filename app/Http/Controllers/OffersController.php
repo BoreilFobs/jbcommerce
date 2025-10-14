@@ -4,56 +4,120 @@ namespace App\Http\Controllers;
 
 use App\Models\Categorie;
 use App\Models\offers;
-use Illuminate\Container\Attributes\Storage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class OffersController extends Controller
 {
-    //
-    public function index()
+    /**
+     * Display a listing of offers with search and filters
+     */
+    public function index(Request $request)
     {
-        $offers = offers::all();
-        return view("offer.index", compact('offers'));
+        $query = offers::query();
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $query->search($request->search);
+        }
+
+        // Filter by category
+        if ($request->filled('category')) {
+            $query->byCategory($request->category);
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Sort options
+        $sortBy = $request->get('sort_by', 'created_at');
+        $sortOrder = $request->get('sort_order', 'desc');
+        $query->orderBy($sortBy, $sortOrder);
+
+        // Paginate results
+        $offers = $query->paginate(12)->withQueryString();
+        
+        // Get categories for filter
+        $categories = Categorie::all();
+
+        return view("offer.index", compact('offers', 'categories'));
     }
+
+    /**
+     * Show the form for creating a new offer
+     */
     public function createF()
     {
         $categories = Categorie::all();
         return view('offer.create', compact('categories'));
     }
 
+    /**
+     * Store a newly created offer
+     */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => "required",
-            'price' => "required|numeric",
-            'category' => "required",
-            'quantity' => "required",
-            'description' => "required",
-            'images' => 'required|array|max:5',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        $validated = $request->validate([
+            'name' => "required|string|max:255",
+            'price' => "required|numeric|min:0",
+            'category' => "required|string",
+            'brand' => "nullable|string|max:255",
+            'quantity' => "required|integer|min:0",
+            'discount_percentage' => "nullable|integer|min:0|max:100",
+            'description' => "required|string",
+            'specifications' => "nullable|array",
+            'specifications.*' => "nullable|string",
+            'featured' => "nullable|boolean",
+            'status' => "nullable|in:active,inactive,out_of_stock",
+            'images' => 'required|array|min:1|max:5',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:500',
         ]);
 
         $offer = new offers();
-        $offer->name = $request->name;
-        $offer->category = $request->category;
-        $offer->price = $request->price;
-        $offer->quantity = $request->quantity;
-        $offer->description = $request->description;
+        $offer->name = $validated['name'];
+        $offer->category = $validated['category'];
+        $offer->brand = $validated['brand'] ?? null;
+        $offer->sku = $this->generateSKU($validated['name']);
+        $offer->price = $validated['price'];
+        $offer->discount_percentage = $validated['discount_percentage'] ?? 0;
+        $offer->quantity = $validated['quantity'];
+        $offer->description = $validated['description'];
+        $offer->specifications = $validated['specifications'] ?? null;
+        $offer->featured = $request->has('featured') ? true : false;
+        $offer->status = $validated['status'] ?? 'active';
+        $offer->meta_title = $validated['meta_title'] ?? $validated['name'];
+        $offer->meta_description = $validated['meta_description'] ?? null;
         $offer->save();
 
+        // Handle image uploads
         $img_urls = [];
         if ($request->hasFile('images')) {
             $productDir = 'storage/offer_img/product' . $offer->id;
+            
+            // Create directory if it doesn't exist
+            if (!file_exists(public_path($productDir))) {
+                mkdir(public_path($productDir), 0755, true);
+            }
+
             foreach ($request->file('images') as $image) {
-                $img_name = uniqid() . '.' . $image->getClientOriginalExtension();
+                $img_name = uniqid() . '_' . time() . '.' . $image->getClientOriginalExtension();
                 $image->move(public_path($productDir), $img_name);
                 $img_urls[] = $img_name;
             }
-            $offer->images = json_encode($img_urls);
+            $offer->images = $img_urls; // Will be automatically cast to JSON
             $offer->save();
         }
-        return redirect('/offers')->with('success', 'Offer created successfully');
+
+        return redirect()->route('offer.index')->with('success', 'Produit créé avec succès!');
     }
+
+    /**
+     * Show the form for editing the specified offer
+     */
     public function updateF($id)
     {
         $offer = offers::findOrFail($id);
@@ -61,54 +125,95 @@ class OffersController extends Controller
         return view('offer.update', compact('offer', 'categories'));
     }
 
+    /**
+     * Update the specified offer
+     */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'name' => "required",
-            'price' => "required|numeric",
-            'category' => "required",
-            'quantity' => "required",
-            'description' => "required",
+        $validated = $request->validate([
+            'name' => "required|string|max:255",
+            'price' => "required|numeric|min:0",
+            'category' => "required|string",
+            'brand' => "nullable|string|max:255",
+            'quantity' => "required|integer|min:0",
+            'discount_percentage' => "nullable|integer|min:0|max:100",
+            'description' => "required|string",
+            'specifications' => "nullable|array",
+            'specifications.*' => "nullable|string",
+            'featured' => "nullable|boolean",
+            'status' => "nullable|in:active,inactive,out_of_stock",
             'images' => 'nullable|array|max:5',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:3048',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:3048',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:500',
         ]);
 
         $offer = offers::findOrFail($id);
-        $offer->name = $request->name;
-        $offer->category = $request->category;
-        $offer->price = $request->price;
-        $offer->quantity = $request->quantity;
-        $offer->description = $request->description;
+        $offer->name = $validated['name'];
+        $offer->category = $validated['category'];
+        $offer->brand = $validated['brand'] ?? null;
+        $offer->price = $validated['price'];
+        $offer->discount_percentage = $validated['discount_percentage'] ?? 0;
+        $offer->quantity = $validated['quantity'];
+        $offer->description = $validated['description'];
+        $offer->specifications = $validated['specifications'] ?? null;
+        $offer->featured = $request->has('featured') ? true : false;
+        $offer->status = $validated['status'] ?? 'active';
+        $offer->meta_title = $validated['meta_title'] ?? $validated['name'];
+        $offer->meta_description = $validated['meta_description'] ?? null;
 
+        // Handle image uploads if new images are provided
         if ($request->hasFile('images')) {
             $productDir = 'storage/offer_img/product' . $offer->id;
+            
             // Remove old images
             if ($offer->images) {
-                $oldImages = json_decode($offer->images, true);
+                $oldImages = is_array($offer->images) ? $offer->images : json_decode($offer->images, true);
                 foreach ($oldImages as $img) {
                     $imgPath = public_path($productDir . '/' . $img);
-                    if (file_exists($imgPath)) unlink($imgPath);
+                    if (file_exists($imgPath)) {
+                        unlink($imgPath);
+                    }
                 }
             }
+
+            // Create directory if it doesn't exist
+            if (!file_exists(public_path($productDir))) {
+                mkdir(public_path($productDir), 0755, true);
+            }
+
+            // Upload new images
             $img_urls = [];
             foreach ($request->file('images') as $image) {
-                $img_name = uniqid() . '.' . $image->getClientOriginalExtension();
+                $img_name = uniqid() . '_' . time() . '.' . $image->getClientOriginalExtension();
                 $image->move(public_path($productDir), $img_name);
                 $img_urls[] = $img_name;
             }
-            $offer->images = json_encode($img_urls);
+            $offer->images = $img_urls;
         }
+
         $offer->save();
-        return redirect('/offers')->with('success', 'Offer updated successfully');
+        
+        return redirect()->route('offer.index')->with('success', 'Produit mis à jour avec succès!');
     }
 
-    public function show(Request $request, $id){
+    /**
+     * Display the specified product (for customer view)
+     */
+    public function show(Request $request, $id)
+    {
         $offer = offers::findOrFail($id);
-        $offers = offers::all();
+        $offer->incrementViews(); // Track product views
+        
+        $offers = offers::active()->inStock()->limit(8)->get();
         $categories = Categorie::all();
+        
         return view("single", compact('offer', 'categories', 'offers'));
     }
 
+    /**
+     * Remove the specified offer
+     */
     public function delete($id)
     {
         $offer = offers::findOrFail($id);
@@ -116,15 +221,64 @@ class OffersController extends Controller
         // Delete all images for this product
         if ($offer->images) {
             $productDir = public_path('storage/offer_img/product' . $offer->id);
-            $imgs = json_decode($offer->images, true);
-            foreach ($imgs as $img) {
-                $imgPath = $productDir . '/' . $img;
-                if (file_exists($imgPath)) unlink($imgPath);
+            $imgs = is_array($offer->images) ? $offer->images : json_decode($offer->images, true);
+            
+            if (is_array($imgs)) {
+                foreach ($imgs as $img) {
+                    $imgPath = $productDir . '/' . $img;
+                    if (file_exists($imgPath)) {
+                        unlink($imgPath);
+                    }
+                }
             }
+            
             // Optionally remove the directory if empty
-            @rmdir($productDir);
+            if (file_exists($productDir) && count(scandir($productDir)) == 2) {
+                @rmdir($productDir);
+            }
         }
+
         $offer->delete();
-        return redirect('/offers')->with('success', 'Offer deleted successfully');
+        
+        return redirect()->route('offer.index')->with('success', 'Produit supprimé avec succès!');
+    }
+
+    /**
+     * Toggle featured status
+     */
+    public function toggleFeatured($id)
+    {
+        $offer = offers::findOrFail($id);
+        $offer->featured = !$offer->featured;
+        $offer->save();
+
+        return back()->with('success', 'Statut vedette mis à jour!');
+    }
+
+    /**
+     * Bulk delete offers
+     */
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:offers,id'
+        ]);
+
+        foreach ($request->ids as $id) {
+            $this->delete($id);
+        }
+
+        return redirect()->route('offer.index')->with('success', 'Produits supprimés avec succès!');
+    }
+
+    /**
+     * Generate unique SKU for product
+     */
+    private function generateSKU($name)
+    {
+        $base = strtoupper(Str::substr(Str::slug($name, ''), 0, 6));
+        $unique = strtoupper(Str::random(4));
+        return $base . '-' . $unique;
     }
 }
