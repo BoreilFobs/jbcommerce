@@ -11,6 +11,7 @@ use App\Http\Controllers\OffersController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\WishesController;
+use App\Http\Controllers\DashboardController;
 use App\Models\offers;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -24,9 +25,7 @@ Route::get('/offers/new-arrivals', [WelcomeController::class, 'newArrivals'])->n
 
 //routes for admin - Protected by auth and admin middleware
 Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Users management
     Route::get('/users', [UserController::class, 'index'])->name('users.index');

@@ -68,7 +68,8 @@ class OffersController extends Controller
             'discount_percentage' => "nullable|integer|min:0|max:100",
             'description' => "required|string",
             'specifications' => "nullable|array",
-            'specifications.*' => "nullable|string",
+            'specifications.*.key' => "nullable|string|max:255",
+            'specifications.*.value' => "nullable|string|max:255",
             'featured' => "nullable|boolean",
             'status' => "nullable|in:active,inactive,out_of_stock",
             'images' => 'required|array|min:1|max:5',
@@ -76,6 +77,18 @@ class OffersController extends Controller
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
         ]);
+
+        // Process specifications from key-value pairs to associative array
+        $specifications = null;
+        if ($request->has('specifications') && is_array($request->specifications)) {
+            $specifications = [];
+            foreach ($request->specifications as $spec) {
+                if (!empty($spec['key']) && !empty($spec['value'])) {
+                    $specifications[$spec['key']] = $spec['value'];
+                }
+            }
+            $specifications = !empty($specifications) ? $specifications : null;
+        }
 
         $offer = new offers();
         $offer->name = $validated['name'];
@@ -86,7 +99,7 @@ class OffersController extends Controller
         $offer->discount_percentage = $validated['discount_percentage'] ?? 0;
         $offer->quantity = $validated['quantity'];
         $offer->description = $validated['description'];
-        $offer->specifications = $validated['specifications'] ?? null;
+        $offer->specifications = $specifications;
         $offer->featured = $request->has('featured') ? true : false;
         $offer->status = $validated['status'] ?? 'active';
         $offer->meta_title = $validated['meta_title'] ?? $validated['name'];
@@ -139,7 +152,8 @@ class OffersController extends Controller
             'discount_percentage' => "nullable|integer|min:0|max:100",
             'description' => "required|string",
             'specifications' => "nullable|array",
-            'specifications.*' => "nullable|string",
+            'specifications.*.key' => "nullable|string|max:255",
+            'specifications.*.value' => "nullable|string|max:255",
             'featured' => "nullable|boolean",
             'status' => "nullable|in:active,inactive,out_of_stock",
             'images' => 'nullable|array|max:5',
@@ -147,6 +161,18 @@ class OffersController extends Controller
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
         ]);
+
+        // Process specifications from key-value pairs to associative array
+        $specifications = null;
+        if ($request->has('specifications') && is_array($request->specifications)) {
+            $specifications = [];
+            foreach ($request->specifications as $spec) {
+                if (!empty($spec['key']) && !empty($spec['value'])) {
+                    $specifications[$spec['key']] = $spec['value'];
+                }
+            }
+            $specifications = !empty($specifications) ? $specifications : null;
+        }
 
         $offer = offers::findOrFail($id);
         $offer->name = $validated['name'];
@@ -156,7 +182,7 @@ class OffersController extends Controller
         $offer->discount_percentage = $validated['discount_percentage'] ?? 0;
         $offer->quantity = $validated['quantity'];
         $offer->description = $validated['description'];
-        $offer->specifications = $validated['specifications'] ?? null;
+        $offer->specifications = $specifications;
         $offer->featured = $request->has('featured') ? true : false;
         $offer->status = $validated['status'] ?? 'active';
         $offer->meta_title = $validated['meta_title'] ?? $validated['name'];

@@ -13,6 +13,6 @@ class Categorie extends Model
 
     public function offers()
     {
-        return $this->hasMany(offers::class, 'category', 'id');
+        return $this->hasMany(offers::class, 'category', 'name');
     }
 }
