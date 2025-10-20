@@ -92,7 +92,9 @@
                     <h5 class="mb-0 ps-4 me-4">Total général</h5>
                     <p class="mb-0 pe-4 cart-total-general">0 FCFA</p>
                     </div>
-                    <button class="btn btn-primary rounded-pill px-4 py-3 text-uppercase mb-4 ms-4" type="button">Procéder au paiement</button>
+                    <a href="{{ route('checkout.index') }}" class="btn btn-primary rounded-pill px-4 py-3 text-uppercase mb-4 ms-4">
+                        <i class="fas fa-lock me-2"></i>Procéder au Paiement
+                    </a>
                 </div>
                 </div>
             </div>

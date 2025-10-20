@@ -186,6 +186,9 @@
                         <a href="{{ url('/wish-list/' . Auth::id()) }}" class="mobile-menu-item {{ request()->is('wish-list*') ? 'active' : '' }}">
                             <i class="fas fa-heart me-3"></i>Liste de Souhaits
                         </a>
+                        <a href="{{ route('orders.index') }}" class="mobile-menu-item {{ request()->is('orders*') ? 'active' : '' }}">
+                            <i class="fas fa-box me-3"></i>Mes Commandes
+                        </a>
                     @endif
                     <a href="{{ url('/contact') }}" class="mobile-menu-item {{ request()->is('contact') ? 'active' : '' }}">
                         <i class="fas fa-envelope me-3"></i>Contact
@@ -423,7 +426,13 @@
                                 <a href="{{ url('/wish-list/' . Auth::id()) }}" class=""><i class="fas fa-angle-right me-2"></i> Ma Liste de Souhaits</a> @else
                                 <a href='#' onclick="alert('Veuillez vous connecter pour accéder à cette page')" class=""><i class="fas fa-angle-right me-2"></i> Ma Liste de Souhaits</a> @endif
 
-                            <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Marques</a> <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Bons Cadeaux</a> <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Affiliés</a> <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Suivre Votre Commande</a> </div>
+                            {{-- My Orders --}}
+                            @if (Auth::check())
+                                <a href="{{ route('orders.index') }}" class=""><i class="fas fa-angle-right me-2"></i> Mes Commandes</a> @else
+                                <a href='#' onclick="alert('Veuillez vous connecter pour accéder à cette page')" class=""><i class="fas fa-angle-right me-2"></i> Mes Commandes</a> @endif
+
+                            <a href="{{ route('orders.track') }}" class=""><i class="fas fa-angle-right me-2"></i> Suivre une Commande</a>
+                            <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Marques</a> <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Bons Cadeaux</a> <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Affiliés</a> </div>
                     </div>
                 </div>
             </div>
