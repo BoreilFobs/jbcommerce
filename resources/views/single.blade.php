@@ -12,7 +12,7 @@
                                 <div class="col-xl-6">
                                     <div class="single-carousel owl-carousel">
                                         @php
-                                            $offer_images = $offer->images ? json_decode($offer->images, true) : [];
+                                            $offer_images = is_string($offer->images) ? json_decode($offer->images, true) : ($offer->images ?: []);
                                         @endphp
                                     @foreach ($offer_images as $index => $img)
                                             <div class="single-item" data-dot="<img class='img-fluid' src='{{'/storage/offer_img/product' . $offer->id . "/" . $offer_images[$index]}}' alt=''>">

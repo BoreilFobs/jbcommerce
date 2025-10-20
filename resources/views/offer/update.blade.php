@@ -80,7 +80,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Images Actuelles</label>
                 <div id="image-preview-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                     @php
-                        $offer_images = $offer->images ? json_decode($offer->images, true) : [];
+                        $offer_images = is_string($offer->images) ? json_decode($offer->images, true) : ($offer->images ?: []);
                     @endphp
                     @if ($offer_images && is_array($offer_images))
                         @foreach ($offer_images as $index => $img)

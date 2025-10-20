@@ -37,6 +37,14 @@
 
         <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
         <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/store-filters.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/mobile-responsive.css') }}" rel="stylesheet">
+        
+        <!-- Mobile Optimization -->
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="theme-color" content="#f28b00">
         </head>
 
 
@@ -87,6 +95,116 @@
                 </div>
             </div>
         </div>
+        <!-- Mobile Header -->
+        <div class="container-fluid px-3 py-3 d-lg-none bg-white border-bottom">
+            <div class="row align-items-center">
+                <div class="col-2">
+                    <button class="btn btn-link p-0 text-dark" id="mobileNavToggle" aria-label="Menu">
+                        <i class="fas fa-bars fa-2x"></i>
+                    </button>
+                </div>
+                <div class="col-8 text-center">
+                    <a href="{{ url('/') }}" class="navbar-brand p-0" style="font-family: cursive; font-weight:500;">
+                        <h1 class="text-primary m-0" style="font-size: 24px;">
+                            <i class="fas fa-shopping-bag text-secondary me-1"></i>JB Shop
+                        </h1>
+                    </a>
+                </div>
+                <div class="col-2 text-end">
+                    <button class="btn btn-link p-0 text-dark" id="mobileSearchToggle" aria-label="Rechercher">
+                        <i class="fas fa-search fa-lg"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Search Bar (Hidden by default) -->
+            <div class="row mt-3 d-none" id="mobileSearchBar">
+                <div class="col-12">
+                    <form action="{{ route('search') }}" method="GET">
+                        <div class="input-group">
+                            <input class="form-control" type="text" name="search" placeholder="Rechercher un produit..." value="{{ request('search') }}">
+                            <select class="form-select" name="category" style="max-width: 120px;">
+                                <option value="">Toutes</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->name }}" {{ request('category') == $category->name ? 'selected' : '' }}>{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Side Menu (Hidden by default) -->
+        <div class="mobile-side-menu" id="mobileSideMenu">
+            <div class="mobile-side-menu-overlay" id="mobileSideMenuOverlay"></div>
+            <div class="mobile-side-menu-content">
+                <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                    <h5 class="m-0">Menu</h5>
+                    <button class="btn btn-link text-dark p-0" id="closeMobileMenu" aria-label="Fermer">
+                        <i class="fas fa-times fa-2x"></i>
+                    </button>
+                </div>
+                
+                <!-- User Account Section -->
+                <div class="p-3 border-bottom">
+                    @auth
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-user-circle fa-2x text-primary me-2"></i>
+                            <div>
+                                <strong>{{ Auth::user()->name }}</strong>
+                                <br><small class="text-muted">{{ Auth::user()->email }}</small>
+                            </div>
+                        </div>
+                        <form action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-outline-danger w-100">
+                                <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+                            </button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" class="btn btn-primary w-100">
+                            <i class="fas fa-sign-in-alt me-2"></i>Connexion / Inscription
+                        </a>
+                    @endauth
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="mobile-menu-links">
+                    <a href="{{ url('/') }}" class="mobile-menu-item {{ request()->is('/') ? 'active' : '' }}">
+                        <i class="fas fa-home me-3"></i>Accueil
+                    </a>
+                    <a href="{{ url('/shop') }}" class="mobile-menu-item {{ request()->is('shop') ? 'active' : '' }}">
+                        <i class="fas fa-store me-3"></i>Boutique
+                    </a>
+                    @if(Auth::check())
+                        <a href="{{ url('/cart/' . Auth::id()) }}" class="mobile-menu-item {{ request()->is('cart*') ? 'active' : '' }}">
+                            <i class="fas fa-shopping-cart me-3"></i>Mon Panier
+                            <span class="badge bg-primary float-end">{{ $carts->sum('quantity') }}</span>
+                        </a>
+                        <a href="{{ url('/wish-list/' . Auth::id()) }}" class="mobile-menu-item {{ request()->is('wish-list*') ? 'active' : '' }}">
+                            <i class="fas fa-heart me-3"></i>Liste de Souhaits
+                        </a>
+                    @endif
+                    <a href="{{ url('/contact') }}" class="mobile-menu-item {{ request()->is('contact') ? 'active' : '' }}">
+                        <i class="fas fa-envelope me-3"></i>Contact
+                    </a>
+                    <a href="{{ url('/about') }}" class="mobile-menu-item {{ request()->is('about') ? 'active' : '' }}">
+                        <i class="fas fa-info-circle me-3"></i>À Propos
+                    </a>
+                </div>
+                
+                <!-- Contact Info -->
+                <div class="p-3 border-top mt-auto">
+                    <small class="text-muted">
+                        <i class="fas fa-phone me-2"></i>{{ $phone1 }}<br>
+                        <i class="fas fa-envelope me-2"></i>{{ $email }}
+                    </small>
+                </div>
+            </div>
+        </div>
+
         <div class="container-fluid px-5 py-4 d-none d-lg-block">
             <div class="row gx-0 align-items-center text-center">
                 <div class="col-md-4 col-lg-3 text-center text-lg-start">
@@ -370,12 +488,182 @@
                 font-size: 0.85rem !important;
             }
         }
+        
+        /* Mobile Side Menu Styles */
+        .mobile-side-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 99999;
+            pointer-events: none;
+        }
+        
+        .mobile-side-menu-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .mobile-side-menu-content {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 85%;
+            max-width: 320px;
+            height: 100%;
+            background: white;
+            transition: left 0.3s ease;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .mobile-side-menu.active {
+            pointer-events: auto;
+        }
+        
+        .mobile-side-menu.active .mobile-side-menu-overlay {
+            opacity: 1;
+        }
+        
+        .mobile-side-menu.active .mobile-side-menu-content {
+            left: 0;
+        }
+        
+        .mobile-menu-item {
+            display: block;
+            padding: 1rem 1.5rem;
+            color: #333;
+            text-decoration: none;
+            border-bottom: 1px solid #eee;
+            transition: all 0.2s;
+        }
+        
+        .mobile-menu-item:hover,
+        .mobile-menu-item.active {
+            background: #f8f9fa;
+            color: #f28b00;
+            padding-left: 2rem;
+        }
+        
+        .mobile-menu-item i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Add padding for mobile bottom nav */
+        @media (max-width: 991px) {
+            .px-1 {
+                padding-bottom: 70px !important;
+            }
+        }
     </style>
     <script>
         // Add home-page class to body if on home
         if (window.location.pathname != '/hey' || window.location.pathname === '/home') {
             document.body.classList.add('home-page');
         }
+        
+        // Mobile Navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile nav toggle
+            const mobileNavToggle = document.getElementById('mobileNavToggle');
+            const mobileSideMenu = document.getElementById('mobileSideMenu');
+            const closeMobileMenu = document.getElementById('closeMobileMenu');
+            const mobileSideMenuOverlay = document.getElementById('mobileSideMenuOverlay');
+            
+            if (mobileNavToggle) {
+                mobileNavToggle.addEventListener('click', function() {
+                    mobileSideMenu.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+            
+            if (closeMobileMenu) {
+                closeMobileMenu.addEventListener('click', function() {
+                    mobileSideMenu.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            }
+            
+            if (mobileSideMenuOverlay) {
+                mobileSideMenuOverlay.addEventListener('click', function() {
+                    mobileSideMenu.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            }
+            
+            // Mobile search toggle
+            const mobileSearchToggle = document.getElementById('mobileSearchToggle');
+            const mobileSearchBar = document.getElementById('mobileSearchBar');
+            
+            if (mobileSearchToggle && mobileSearchBar) {
+                mobileSearchToggle.addEventListener('click', function() {
+                    mobileSearchBar.classList.toggle('d-none');
+                    if (!mobileSearchBar.classList.contains('d-none')) {
+                        mobileSearchBar.querySelector('input').focus();
+                    }
+                });
+            }
+            
+            // Close mobile menu on window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 991) {
+                    mobileSideMenu.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+            
+            // Smooth scroll for all anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    if (href !== '#' && document.querySelector(href)) {
+                        e.preventDefault();
+                        document.querySelector(href).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Add active class to current nav items
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.mobile-menu-item').forEach(item => {
+                if (item.getAttribute('href') === currentPath) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Prevent iOS zoom on input focus
+            if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+                const viewportmeta = document.querySelector('meta[name="viewport"]');
+                if (viewportmeta) {
+                    viewportmeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0';
+                    document.body.addEventListener('blur', function() {
+                        viewportmeta.content = 'width=device-width, initial-scale=1.0';
+                    }, true);
+                }
+            }
+            
+            // Add touch feedback
+            document.querySelectorAll('.btn, .mobile-menu-item, .nav-tab').forEach(element => {
+                element.addEventListener('touchstart', function() {
+                    this.style.opacity = '0.7';
+                }, { passive: true });
+                
+                element.addEventListener('touchend', function() {
+                    this.style.opacity = '1';
+                }, { passive: true });
+            });
+        });
     </script>
     <!-- Tailwind CSS via CDN -->
     <script>

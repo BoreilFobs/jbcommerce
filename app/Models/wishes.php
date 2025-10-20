@@ -11,4 +11,20 @@ class wishes extends Model
         'user_id',
         'offer_id',
     ];
+
+    /**
+     * Get the offer that belongs to the wishlist item.
+     */
+    public function offer()
+    {
+        return $this->belongsTo(offers::class, 'offer_id');
+    }
+
+    /**
+     * Get the user that owns the wishlist item.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

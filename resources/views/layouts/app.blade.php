@@ -164,18 +164,13 @@
                         </ul>
                     </li>
 
-                    <li class="dropdown {{ Request::is('users*') ? 'active' : '' }}">
-                        <a href="{{route('users.index')}}" class="nav-link has-dropdown flex items-center justify-between">
+                    <li class="dropdown {{ Request::is('admin/users*') ? 'active' : '' }}">
+                        <a href="{{route('admin.users.index')}}" class="nav-link has-dropdown flex items-center justify-between">
                             <div class="flex items-center">
-                                <i class="fas fa-user-cog mr-3"></i>
-                                <span>Users</span>
+                                <i class="fas fa-users mr-3"></i>
+                                <span>Utilisateurs</span>
                             </div>
                         </a>
-                        {{-- <ul class="dropdown-menu mt-2 space-y-1 {{ Request::is('users*') ? 'block' : 'hidden' }}">
-                            <li>
-                                <a class="nav-link {{ Request::is('users') ? 'active' : '' }}" href="{{ url('/users') }}">All Users</a>
-                            </li>
-                        </ul> --}}
                     </li>
                     {{-- <li class="dropdown {{ Request::is('messages*') ? 'active' : '' }}">
                         <a href="#" class="nav-link has-dropdown flex items-center justify-between">

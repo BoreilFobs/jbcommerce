@@ -60,6 +60,14 @@ class offers extends Model
     }
 
     /**
+     * Get order items for this product
+     */
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class, 'offer_id');
+    }
+
+    /**
      * Get the first image URL
      */
     public function getFirstImageAttribute()

@@ -24,7 +24,7 @@ class IsAdmin
         // Check if the authenticated user is admin
         // You can change this logic based on your needs
         // Option 1: Check by name (current implementation)
-        if (Auth::user()->name !== 'admin') {
+        if (Auth::user()->role !== 'admin') {
             // Redirect regular users to homepage
             return redirect('/')->with('error', 'Accès non autorisé. Cette page est réservée aux administrateurs.');
         }

@@ -197,7 +197,13 @@
                                         <div class="product-item rounded wow fadeInUp" data-wow-delay="0.1s">
                                             <div class="product-item-inner border rounded">
                                                 <div class="product-item-inner-item">
-                                                    <img src={{'/storage/offer_img/product' . $offer->id . "/" . json_decode($offer->images, true)[0]}} class="img-fluid w-100 rounded-top" alt="">
+                                                    @php
+                                                        $images = is_string($offer->images) ? json_decode($offer->images, true) : $offer->images;
+                                                        $firstImage = $images && is_array($images) && count($images) > 0 
+                                                            ? '/storage/offer_img/product' . $offer->id . "/" . $images[0]
+                                                            : '/img/default-product.jpg';
+                                                    @endphp
+                                                    <img src="{{ asset($firstImage) }}" class="img-fluid w-100 rounded-top" alt="{{ $offer->name }}">
                                                     @if ($offer->created_at >= now()->subMonths())
                                                         <div class="product-new">New</div>
                                                     @endif
@@ -962,7 +968,13 @@
                                 <div class="row g-0">
                                     <div class="col-5">
                                         <div class="products-mini-img border-end h-100">
-                                            <img src="{{'/storage/offer_img/product' . $offer->id . "/" . json_decode($offer->images, true)[0]}}" class="img-fluid w-100 h-100" alt="Image">
+                                            @php
+                                                $images = is_string($offer->images) ? json_decode($offer->images, true) : $offer->images;
+                                                $firstImage = $images && is_array($images) && count($images) > 0 
+                                                    ? '/storage/offer_img/product' . $offer->id . "/" . $images[0]
+                                                    : '/img/default-product.jpg';
+                                            @endphp
+                                            <img src="{{ asset($firstImage) }}" class="img-fluid w-100 h-100" alt="{{ $offer->name }}">
                                             <div class="products-mini-icon rounded-circle bg-primary">
                                                 <a href="{{url("/product/details/". $offer->id)}}"><i class="fa fa-eye fa-1x text-white"></i></a>
                                             </div>

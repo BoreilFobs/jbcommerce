@@ -1,0 +1,741 @@
+/* ============================================
+   Mobile-Friendly & Responsive CSS
+   jbEcommerce - ElectreoSphere
+   ============================================ */
+
+/* ============================================
+   1. BASE MOBILE STYLES
+   ============================================ */
+
+/* Smooth scrolling on all devices */
+html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevent horizontal scroll */
+body {
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Touch-friendly tap targets */
+a, button, input, select, textarea {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(242, 139, 0, 0.2);
+}
+
+/* ============================================
+   2. MOBILE NAVIGATION
+   ============================================ */
+
+/* Mobile Menu Toggle Button */
+.mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 9999;
+    background: #f28b00;
+    color: white;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mobile-menu-toggle:active {
+    transform: scale(0.95);
+}
+
+.mobile-menu-toggle i {
+    font-size: 24px;
+}
+
+/* Sidebar Mobile Behavior */
+@media (max-width: 991px) {
+    .mobile-menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .store-sidebar {
+        position: fixed;
+        left: -100%;
+        top: 0;
+        width: 85%;
+        max-width: 320px;
+        height: 100vh;
+        background: white;
+        z-index: 9998;
+        transition: left 0.3s ease;
+        overflow-y: auto;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        padding-top: 80px;
+    }
+
+    .store-sidebar.active {
+        left: 0;
+    }
+
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9997;
+        display: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .sidebar-overlay.active {
+        display: block;
+        opacity: 1;
+    }
+
+    .sidebar-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: #dc3545;
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+}
+
+/* ============================================
+   3. STORE PAGE MOBILE STYLES
+   ============================================ */
+
+/* Page Header Mobile */
+@media (max-width: 768px) {
+    .page-header {
+        padding: 2rem 0 !important;
+    }
+
+    .page-header h1 {
+        font-size: 1.75rem !important;
+    }
+
+    .breadcrumb {
+        font-size: 0.85rem;
+    }
+}
+
+/* Results Header Mobile */
+@media (max-width: 768px) {
+    .results-header {
+        flex-direction: column !important;
+        gap: 1rem;
+    }
+
+    .results-header > div {
+        width: 100%;
+        text-align: center;
+    }
+
+    #sort-select {
+        width: 100% !important;
+        max-width: none !important;
+    }
+}
+
+/* Active Filters Mobile */
+@media (max-width: 768px) {
+    .active-filters {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+
+    .active-filters .badge {
+        margin-bottom: 0.5rem;
+    }
+
+    .active-filters .btn {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+}
+
+/* Product Grid Mobile */
+@media (max-width: 576px) {
+    .product-item {
+        margin-bottom: 1.5rem;
+    }
+
+    .product-item-inner img {
+        height: 200px !important;
+    }
+
+    .product-item h5 {
+        font-size: 0.95rem;
+    }
+
+    .product-item .btn {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+    }
+}
+
+/* Banner Mobile */
+@media (max-width: 768px) {
+    .banner-section {
+        height: 180px !important;
+    }
+
+    .banner-section h4 {
+        font-size: 1.5rem !important;
+    }
+
+    .banner-section h3 {
+        font-size: 1.75rem !important;
+    }
+}
+
+/* ============================================
+   4. FILTER SIDEBAR MOBILE
+   ============================================ */
+
+@media (max-width: 991px) {
+    .filter-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .filter-section h5 {
+        font-size: 1rem;
+        cursor: pointer;
+        padding: 0.75rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .filter-section h5::after {
+        content: '\f078';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        transition: transform 0.3s ease;
+    }
+
+    .filter-section.collapsed h5::after {
+        transform: rotate(-180deg);
+    }
+
+    .filter-section .filter-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+
+    .filter-section:not(.collapsed) .filter-content {
+        max-height: 500px;
+    }
+
+    /* Make filter buttons full width on mobile */
+    .filter-buttons button,
+    .filter-buttons a {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* ============================================
+   5. PRODUCT CARDS MOBILE ENHANCEMENT
+   ============================================ */
+
+@media (max-width: 576px) {
+    .product-item-add {
+        padding: 1rem !important;
+    }
+
+    .product-item-add .btn {
+        font-size: 0.9rem;
+        padding: 0.65rem 1.25rem;
+    }
+
+    /* Stack badges vertically on very small screens */
+    .position-absolute.top-0.start-0 .badge,
+    .position-absolute.top-0.end-0 .badge {
+        font-size: 0.7rem;
+        padding: 0.35rem 0.5rem;
+    }
+
+    /* Adjust star ratings */
+    .fa-star {
+        font-size: 0.75rem !important;
+    }
+
+    /* Price display */
+    .product-item .fs-5 {
+        font-size: 1rem !important;
+    }
+
+    .product-item .fs-6 {
+        font-size: 0.85rem !important;
+    }
+}
+
+/* ============================================
+   6. PAGINATION MOBILE
+   ============================================ */
+
+@media (max-width: 576px) {
+    .pagination {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .pagination .page-link {
+        min-width: 35px;
+        height: 35px;
+        padding: 0.4rem 0.6rem;
+        font-size: 0.85rem;
+    }
+
+    /* Hide some pagination numbers on very small screens */
+    .pagination .page-item:not(.active):not(:first-child):not(:last-child) {
+        display: none;
+    }
+
+    .pagination .page-item:nth-child(2),
+    .pagination .page-item:nth-last-child(2) {
+        display: list-item;
+    }
+}
+
+/* ============================================
+   7. SEARCH BOX MOBILE
+   ============================================ */
+
+@media (max-width: 576px) {
+    .store-search input {
+        font-size: 0.9rem;
+        padding: 0.65rem 1rem !important;
+    }
+
+    .store-search button {
+        padding: 0.65rem 1rem !important;
+    }
+}
+
+/* ============================================
+   8. FEATURED PRODUCTS MOBILE
+   ============================================ */
+
+@media (max-width: 576px) {
+    .featured-product-item {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .featured-product-item img {
+        margin: 0 auto 1rem auto !important;
+    }
+}
+
+/* ============================================
+   9. RELATED PRODUCTS MOBILE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .related-carousel .owl-nav {
+        display: none;
+    }
+
+    .related-item {
+        margin: 0 0.5rem;
+    }
+
+    .related-item h4 {
+        font-size: 1rem;
+    }
+}
+
+/* ============================================
+   10. PRODUCT BANNER MOBILE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .product-banner-section .col-lg-6 {
+        margin-bottom: 1.5rem;
+    }
+
+    .product-banner-section .display-5 {
+        font-size: 1.5rem !important;
+    }
+
+    .product-banner-section .display-4 {
+        font-size: 1.75rem !important;
+    }
+
+    .product-banner-section .display-2 {
+        font-size: 2rem !important;
+    }
+
+    .product-banner-section img {
+        height: 200px;
+        object-fit: cover;
+    }
+}
+
+/* ============================================
+   11. FORMS & INPUTS MOBILE
+   ============================================ */
+
+@media (max-width: 576px) {
+    .form-control,
+    .form-select {
+        font-size: 16px !important; /* Prevent zoom on iOS */
+        padding: 0.75rem;
+    }
+
+    .form-check {
+        padding-left: 2rem;
+    }
+
+    .form-check-input {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-left: -2rem;
+    }
+
+    .form-check-label {
+        font-size: 0.95rem;
+    }
+}
+
+/* ============================================
+   12. MODALS MOBILE
+   ============================================ */
+
+@media (max-width: 576px) {
+    .modal-dialog {
+        margin: 1rem;
+    }
+
+    .modal-content {
+        border-radius: 12px;
+    }
+
+    .modal-header,
+    .modal-footer {
+        padding: 1rem;
+    }
+
+    .modal-body {
+        padding: 1.25rem;
+    }
+
+    .modal-title {
+        font-size: 1.1rem;
+    }
+}
+
+/* ============================================
+   13. NAVBAR MOBILE (Web Layout)
+   ============================================ */
+
+@media (max-width: 991px) {
+    .navbar-nav {
+        padding: 1rem 0;
+    }
+
+    .navbar-nav .nav-link {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .navbar-toggler {
+        border: none;
+        padding: 0.5rem;
+    }
+
+    .navbar-toggler:focus {
+        box-shadow: none;
+    }
+}
+
+/* ============================================
+   14. FOOTER MOBILE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .footer .col-lg-3,
+    .footer .col-lg-4 {
+        margin-bottom: 2rem;
+    }
+
+    .footer h4 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+
+    .footer p,
+    .footer a {
+        font-size: 0.9rem;
+    }
+}
+
+/* ============================================
+   15. TOUCH OPTIMIZATIONS
+   ============================================ */
+
+/* Increase tap target sizes */
+@media (max-width: 768px) {
+    .btn {
+        min-height: 44px;
+        padding: 0.75rem 1.5rem;
+    }
+
+    .btn-sm {
+        min-height: 38px;
+        padding: 0.5rem 1rem;
+    }
+
+    /* Icon buttons */
+    .btn-icon,
+    .product-details a {
+        min-width: 44px;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+/* ============================================
+   16. LANDSCAPE MODE OPTIMIZATIONS
+   ============================================ */
+
+@media (max-width: 768px) and (orientation: landscape) {
+    .page-header {
+        padding: 1.5rem 0 !important;
+    }
+
+    .modal-dialog {
+        max-height: 90vh;
+    }
+
+    .modal-body {
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+}
+
+/* ============================================
+   17. LOADING STATES MOBILE
+   ============================================ */
+
+@media (max-width: 576px) {
+    .spinner-border {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    .page-loader-wrapper {
+        font-size: 0.9rem;
+    }
+}
+
+/* ============================================
+   18. ALERTS & NOTIFICATIONS MOBILE
+   ============================================ */
+
+@media (max-width: 576px) {
+    .alert {
+        font-size: 0.9rem;
+        padding: 0.75rem;
+    }
+
+    .alert i {
+        font-size: 1rem;
+    }
+
+    .toast {
+        max-width: calc(100% - 2rem);
+        margin: 1rem;
+    }
+}
+
+/* ============================================
+   19. PRICE RANGE SLIDER MOBILE
+   ============================================ */
+
+@media (max-width: 576px) {
+    #min_price,
+    #max_price {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .price-filter .px-3 {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+}
+
+/* ============================================
+   20. CATEGORY LIST MOBILE
+   ============================================ */
+
+@media (max-width: 576px) {
+    .categories-item {
+        padding: 0.65rem 1rem;
+    }
+
+    .categories-item .form-check-label {
+        font-size: 0.9rem;
+    }
+
+    .categories-item .badge {
+        font-size: 0.75rem;
+    }
+}
+
+/* ============================================
+   21. SCROLL TO TOP BUTTON MOBILE
+   ============================================ */
+
+.scroll-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #f28b00;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.scroll-to-top.show {
+    display: flex;
+}
+
+.scroll-to-top:hover {
+    background: #d17700;
+    transform: translateY(-5px);
+}
+
+@media (max-width: 576px) {
+    .scroll-to-top {
+        width: 45px;
+        height: 45px;
+        bottom: 15px;
+        right: 15px;
+    }
+}
+
+/* ============================================
+   22. ANIMATIONS FOR MOBILE
+   ============================================ */
+
+@media (max-width: 768px) {
+    /* Disable complex animations on mobile for performance */
+    .wow {
+        animation-duration: 0.5s !important;
+    }
+
+    /* Smooth transitions */
+    * {
+        transition-duration: 0.2s !important;
+    }
+}
+
+/* ============================================
+   23. SAFE AREA INSETS (iPhone X and newer)
+   ============================================ */
+
+@supports (padding: max(0px)) {
+    .navbar,
+    .store-sidebar,
+    .footer {
+        padding-left: max(15px, env(safe-area-inset-left));
+        padding-right: max(15px, env(safe-area-inset-right));
+    }
+
+    .mobile-menu-toggle {
+        left: max(15px, env(safe-area-inset-left));
+    }
+
+    .scroll-to-top {
+        right: max(20px, env(safe-area-inset-right));
+        bottom: max(20px, env(safe-area-inset-bottom));
+    }
+}
+
+/* ============================================
+   24. PRINT STYLES
+   ============================================ */
+
+@media print {
+    .mobile-menu-toggle,
+    .sidebar-overlay,
+    .scroll-to-top,
+    .navbar,
+    .footer,
+    .btn,
+    .pagination,
+    .filter-section,
+    .banner-section {
+        display: none !important;
+    }
+
+    .product-item {
+        break-inside: avoid;
+    }
+}
+
+/* ============================================
+   25. ACCESSIBILITY ENHANCEMENTS
+   ============================================ */
+
+/* Focus visible for keyboard navigation */
+@media (max-width: 768px) {
+    *:focus-visible {
+        outline: 3px solid #f28b00;
+        outline-offset: 2px;
+    }
+
+    /* Skip to content link */
+    .skip-to-content {
+        position: absolute;
+        top: -100px;
+        left: 0;
+        background: #f28b00;
+        color: white;
+        padding: 1rem;
+        z-index: 10000;
+        transition: top 0.3s;
+    }
+
+    .skip-to-content:focus {
+        top: 0;
+    }
+}

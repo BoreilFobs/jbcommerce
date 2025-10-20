@@ -29,19 +29,35 @@
                 <div class="related-item rounded">
                     <div class="related-item-inner border rounded">
                         <div class="related-item-inner-item">
-                            <img src={{'/storage/offer_img/product' . $relatedOffer->id . "/" . json_decode($relatedOffer->images, true)[0]}} class="img-fluid w-100 rounded-top" alt="">
+                            @php
+                                $images = is_string($relatedOffer->images) ? json_decode($relatedOffer->images, true) : $relatedOffer->images;
+                                $firstImage = $images && is_array($images) && count($images) > 0 
+                                    ? '/storage/offer_img/product' . $relatedOffer->id . "/" . $images[0]
+                                    : '/img/default-product.jpg';
+                            @endphp
+                            <img src="{{ asset($firstImage) }}" class="img-fluid w-100 rounded-top" alt="{{ $relatedOffer->name }}">
                                 @if ($relatedOffer->created_at >= now()->subMonths())
                                 <div class="related-new">New</div>
                             @endif
                             <div class="related-details">
-                                <a href={{url("/product/details/". $relatedOffer->id)}}><i class="fa fa-eye fa-1x"></i></a>
+                                <a href="{{ url('/product/details/' . $relatedOffer->id) }}"><i class="fa fa-eye fa-1x"></i></a>
                             </div>
                         </div>
                         <div class="text-center rounded-bottom p-4">
-                            <a href="#" class="d-block mb-2">{{$relatedOffer->category}}</a>
-                            <a href="#" class="d-block h4">{{$relatedOffer->name}} <br> G{{rand(1000,9999)}}</a>
-                            <del class="me-2 fs-5">{{ number_format(($relatedOffer->price) + ($relatedOffer->price * 0.15), 0, '.', ',') }}</del>
-                            <span class="text-primary fs-5">{{number_format(($relatedOffer->price), 0, '.', ',')}}</span>
+                            <a href="{{ route('shop') }}?category={{ $relatedOffer->category }}" class="d-block mb-2 text-muted">
+                                <i class="fas fa-tag me-1"></i>{{ $relatedOffer->category }}
+                            </a>
+                            <a href="{{ url('/product/details/' . $relatedOffer->id) }}" class="d-block h5 text-dark text-decoration-none">
+                                {{ Str::limit($relatedOffer->name, 40) }}
+                            </a>
+                            <div class="mt-2">
+                                @if($relatedOffer->discount_percentage > 0)
+                                    <del class="me-2 fs-6 text-muted">{{ number_format($relatedOffer->price, 0, '.', ',') }} FCFA</del>
+                                    <span class="text-danger fw-bold fs-5">{{ number_format($relatedOffer->discounted_price, 0, '.', ',') }} FCFA</span>
+                                @else
+                                    <span class="text-primary fw-bold fs-5">{{ number_format($relatedOffer->price, 0, '.', ',') }} FCFA</span>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>

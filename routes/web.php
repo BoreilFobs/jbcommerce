@@ -5,9 +5,11 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\CheackoutController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DetailController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\OffersController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\WishesController;
@@ -28,7 +30,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Users management
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users.index');
+    Route::get('/admin/users/{id}', [UserController::class, 'show'])->name('admin.users.show');
+    Route::delete('/admin/users/{id}', [UserController::class, 'destroy'])->name('admin.users.destroy');
     
     // Messages management
     Route::get('/messages', [MessageController::class, 'index']);
@@ -49,6 +53,15 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/categories/delete/{id}', [CategorieController::class, 'delete'])->name('categories.delete');
     Route::get('/categories/update/{id}', [CategorieController::class, 'updateF'])->name('categories.update');
     Route::put('/categories/{id}/update', [CategorieController::class, 'update'])->name('categories.updateF');
+
+    // Admin Orders management
+    Route::get('/admin/orders', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('admin.orders.index');
+    Route::get('/admin/orders/{id}', [\App\Http\Controllers\Admin\OrderController::class, 'show'])->name('admin.orders.show');
+    Route::patch('/admin/orders/{id}/status', [\App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+    Route::patch('/admin/orders/{id}/payment', [\App\Http\Controllers\Admin\OrderController::class, 'updatePaymentStatus'])->name('admin.orders.updatePayment');
+    Route::patch('/admin/orders/{id}/tracking', [\App\Http\Controllers\Admin\OrderController::class, 'updateTracking'])->name('admin.orders.updateTracking');
+    Route::delete('/admin/orders/{id}', [\App\Http\Controllers\Admin\OrderController::class, 'destroy'])->name('admin.orders.destroy');
+    Route::get('/admin/orders/{id}/invoice', [\App\Http\Controllers\Admin\OrderController::class, 'invoice'])->name('admin.orders.invoice');
 });
 
 
@@ -78,12 +91,26 @@ Route::middleware('auth')->group(function () {
     Route::get('/cart/{Oid}/create/{Uid}', [CartController::class, 'store']);
     Route::post('/cart/qty', [CartController::class, 'qty'])->name('cart.qty');
 
-    // Checkout
+    // Checkout routes (NEW)
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
+    
+    // Old checkout route (keeping for backward compatibility)
     Route::get("/cheackout", [CheackoutController::class, 'index'])->name("cheackout");
+
+    // Customer Orders management (NEW)
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders/{id}/confirmation', [OrderController::class, 'confirmation'])->name('orders.confirmation');
+    Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 
     // Product details (could be public, but keeping here for now)
     Route::get('/product/details/{id}', [OffersController::class, 'show'])->name('product.details');
 });
+
+// Public order tracking (NEW)
+Route::get('/track-order', [OrderController::class, 'track'])->name('orders.track');
+Route::post('/track-order', [OrderController::class, 'track']);
 
 Route::fallback(function () {
     return response()->view('404', [], 404);
