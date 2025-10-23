@@ -4,10 +4,12 @@
         <div class="container-fluid shop py-5">
             <div class="container py-5">
                 <div class="row g-4">
-                    <div class="col-lg-5 col-xl-3 wow fadeInUp" data-wow-delay="0.1s">
+                    <!-- Hide filter sidebar on mobile (d-none d-lg-block) -->
+                    <div class="col-lg-5 col-xl-3 d-none d-lg-block wow fadeInUp" data-wow-delay="0.1s">
                         @include('layouts.store')
                     </div>
-                        <div class="col-lg-7 col-xl-9 wow fadeInUp" data-wow-delay="0.1s">
+                        <!-- Full width on mobile (col-12), narrower on desktop (col-lg-7 col-xl-9) -->
+                        <div class="col-12 col-lg-7 col-xl-9 wow fadeInUp" data-wow-delay="0.1s">
                             <div class="row g-4 single-product">
                                 <div class="col-xl-6">
                                     <div class="single-carousel owl-carousel">

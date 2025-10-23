@@ -37,7 +37,7 @@
                         <input class="form-check-input filter-checkbox" type="radio" name="category" value="" id="cat-all" {{ !request('category') ? 'checked' : '' }}>
                         <label class="form-check-label d-flex justify-content-between w-100" for="cat-all">
                             <span><i class="fas fa-th text-secondary me-2"></i>Toutes les catégories</span>
-                            <span class="badge bg-primary">{{ $offers->total() }}</span>
+                            <span class="badge bg-primary">{{ method_exists($offers, 'total') ? $offers->total() : $offers->count() }}</span>
                         </label>
                     </div>
                 </li>

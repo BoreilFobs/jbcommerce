@@ -110,8 +110,23 @@ class WelcomeController extends Controller
                 ->count();
         }
 
+        // Get bestselling products (based on views - you can change this to orders_count when you implement orders)
+        $bestsellers = offers::where('status', 'active')
+            ->where('quantity', '>', 0)
+            ->orderBy('views', 'desc')
+            ->take(6)
+            ->get();
+
+        // Get new arrivals (products created in the last month)
+        $newArrivals = offers::where('status', 'active')
+            ->where('quantity', '>', 0)
+            ->where('created_at', '>=', now()->subMonth())
+            ->orderBy('created_at', 'desc')
+            ->take(8)
+            ->get();
+
         if ($request->path() === '/') {
-            return view("welcome", compact("offers", 'categories', 'brands', 'minPrice', 'maxPrice', 'categoryCounts'));
+            return view("welcome", compact("offers", 'categories', 'brands', 'minPrice', 'maxPrice', 'categoryCounts', 'bestsellers', 'newArrivals'));
         } else {
             return view("store", compact("offers", 'categories', 'brands', 'minPrice', 'maxPrice', 'categoryCounts'));
         }

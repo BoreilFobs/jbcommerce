@@ -11,7 +11,7 @@
     $tel2 = str_replace('-', '', $phone2);
     $email = 'brayeljunior8@gmail.com';
 
-    // Handle cart for authenticated users only
+    // Handle cart for authenticated users
     $carts = Auth::check() ? App\Models\Cart::where('user_id', Auth::id())->get() : collect();
     $totalCartPrice = $carts->sum(function($cart) {
         return optional($cart->offer)->price * $cart->quantity;
@@ -39,6 +39,7 @@
         <link href="{{ asset('css/style.css') }}" rel="stylesheet">
         <link href="{{ asset('css/store-filters.css') }}" rel="stylesheet">
         <link href="{{ asset('css/mobile-responsive.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/related-products.css') }}" rel="stylesheet">
         
         <!-- Mobile Optimization -->
         <meta name="mobile-web-app-capable" content="yes">
@@ -234,6 +235,16 @@
                                     <i class="fas fa-store fa-lg"></i>
                                 </span>
                             </a>
+                            @auth
+                            <a href="{{ route('orders.index') }}"
+                               class="text-muted d-flex align-items-center justify-content-center me-3 {{ request()->is('orders*') ? 'active' : '' }}"
+                               title="Mes Commandes"
+                               style="text-decoration:none;">
+                                <span class="rounded-circle btn-md-square border {{ request()->is('orders*') ? 'orange-active' : '' }}">
+                                    <i class="fas fa-box fa-lg"></i>
+                                </span>
+                            </a>
+                            @endauth
                             <a href="{{ url('/contact') }}"
                                class="text-muted d-flex align-items-center justify-content-center {{ request()->is('contact') ? 'active' : '' }}"
                                title="Contact"
@@ -333,126 +344,138 @@
                         <span class="d-block"><i class="fas fa-store fa-lg"></i></span>
                         <small>Boutique</small>
                     </a>
+                    @auth
+                    <a href="{{ route('orders.index') }}" class="text-center flex-fill nav-tab {{ request()->is('orders*') ? 'active' : '' }}">
+                        <span class="d-block"><i class="fas fa-box fa-lg"></i></span>
+                        <small>Commandes</small>
+                    </a>
+                    @endauth
                     <a href="{{ url('/cart/' . (Auth::id() ?? '')) }}" class="text-center flex-fill nav-tab {{ request()->is('cart*') ? 'active' : '' }}">
-                        <span class="d-block"><i class="fas fa-shopping-cart fa-lg"></i></span>
+                        <span class="d-block position-relative">
+                            <i class="fas fa-shopping-cart fa-lg"></i>
+                            @auth
+                                @if($carts->sum('quantity') > 0)
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                                        {{ $carts->sum('quantity') }}
+                                    </span>
+                                @endif
+                            @endauth
+                        </span>
                         <small>Panier</small>
                     </a>
-                    <a href="{{ url('/wish-list/' . (Auth::id() ?? '')) }}" class="text-center flex-fill nav-tab {{ request()->is('wish-list*') ? 'active' : '' }}">
+                    @auth
+                    <a href="{{ url('/wish-list/' . Auth::id()) }}" class="text-center flex-fill nav-tab {{ request()->is('wish-list*') ? 'active' : '' }}">
                         <span class="d-block"><i class="fas fa-heart fa-lg"></i></span>
                         <small>Souhaits</small>
                     </a>
+                    @else
+                    <a href="{{ route('login') }}" class="text-center flex-fill nav-tab">
+                        <span class="d-block"><i class="fas fa-user fa-lg"></i></span>
+                        <small>Compte</small>
+                    </a>
+                    @endauth
                 </div>
             </nav>
         @endif
 
+<!-- Minimalistic Footer Start -->
 <div class="container-fluid footer py-5 wow fadeIn" data-wow-delay="0.2s">
-            <div class="container py-5">
-                <div class="row g-4 rounded mb-5" style="background: rgba(255, 255, 255, .03);">
-                    {{-- Contact Info Section --}}
-                    <div class="col-md-6 col-lg-6 col-xl-3">
-                        <div class="rounded p-4">
-                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-4" style="width: 70px; height: 70px;">
-                                <i class="fas fa-map-marker-alt fa-2x text-primary"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white">Adresse</h4> <p class="mb-2">Bafoussam, Cameroun</p> </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-6 col-xl-3">
-                        <div class="rounded p-4">
-                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-4" style="width: 70px; height: 70px;">
-                                <i class="fas fa-envelope fa-2x text-primary"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white">Envoyez-nous</h4> <p class="mb-2">{{$email}}</p> </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-6 col-xl-3">
-                        <div class="rounded p-4">
-                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-4" style="width: 70px; height: 70px;">
-                                <i class="fa fa-phone-alt fa-2x text-primary"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white">Téléphone</h4> <p class="mb-2">{{ $phone1 }} / {{$phone2}}</p> </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-6 col-xl-3">
-                        <div class="rounded p-4">
-                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-4" style="width: 70px; height: 70px;">
-                                <i class="fab fa-firefox-browser fa-2x text-primary"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white">Site Web</h4> <p class="mb-2">www.example.com</p>
-                            </div>
-                        </div>
+    <div class="container">
+        <!-- Main Footer Content -->
+        <div class="row g-4 mb-4">
+            <!-- Brand & Description Column -->
+            <div class="col-lg-4 col-md-6">
+                <div class="footer-item">
+                    <h3 class="text-primary mb-3 fw-bold">JB Shop</h3>
+                    <p class="text-white-50 mb-4">Votre destination de confiance pour les meilleurs produits électroniques et accessoires à Bafoussam, Cameroun.</p>
+                    <!-- Social Media Icons -->
+                    <div class="d-flex gap-3">
+                        <a href="#" class="btn btn-primary btn-sm-square rounded-circle">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="btn btn-primary btn-sm-square rounded-circle">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="btn btn-primary btn-sm-square rounded-circle">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="btn btn-primary btn-sm-square rounded-circle">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
                     </div>
                 </div>
-                
-                <div class="row g-5">
-                    {{-- Newsletter Section --}}
-                    <div class="col-md-6 col-lg-6 col-xl-3">
-                        <div class="footer-item d-flex flex-column">
-                            <div class="footer-item">
-                                <h4 class="text-primary mb-4">Newsletter</h4>
-                                <p class="mb-3">Abonnez-vous pour recevoir les dernières offres, produits et actualités d'ElectroSphere.</p> <div class="position-relative mx-auto rounded-pill">
-                                    <input class="form-control rounded-pill w-100 py-3 ps-4 pe-5" type="text" placeholder="Entrez votre e-mail"> <button type="button" class="btn btn-primary rounded-pill position-absolute top-0 end-0 py-2 mt-2 me-2">S'abonner</button> </div>
-                            </div>
-                        </div>
+            </div>
+
+            <!-- Quick Links Column -->
+            <div class="col-lg-2 col-md-6">
+                <div class="footer-item">
+                    <h5 class="text-primary mb-3">Liens Rapides</h5>
+                    <div class="d-flex flex-column">
+                        <a href="{{ url('/') }}" class="text-white-50 mb-2 footer-link"><i class="fas fa-angle-right me-2"></i>Accueil</a>
+                        <a href="{{ route('shop') }}" class="text-white-50 mb-2 footer-link"><i class="fas fa-angle-right me-2"></i>Boutique</a>
+                        <a href="{{ url('/about') }}" class="text-white-50 mb-2 footer-link"><i class="fas fa-angle-right me-2"></i>À Propos</a>
+                        <a href="{{ url('/contact') }}" class="text-white-50 mb-2 footer-link"><i class="fas fa-angle-right me-2"></i>Contact</a>
                     </div>
+                </div>
+            </div>
 
-                    {{-- Customer Service Section --}}
-                    <div class="col-md-6 col-lg-6 col-xl-3">
-                        <div class="footer-item d-flex flex-column">
-                            <h4 class="text-primary mb-4">Service Client</h4> <a href="{{ url('/contact') }}" class=""><i class="fas fa-angle-right me-2"></i> Contactez-nous</a> <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Retours</a> <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Historique des commandes</a> <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Plan du site</a> <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Témoignages</a> <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Mon Compte</a> <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Notifications</a> </div>
+            <!-- Customer Service Column -->
+            <div class="col-lg-3 col-md-6">
+                <div class="footer-item">
+                    <h5 class="text-primary mb-3">Service Client</h5>
+                    <div class="d-flex flex-column">
+                        @if (Auth::check())
+                            <a href="{{ url('/cart/' . Auth::id()) }}" class="text-white-50 mb-2 footer-link"><i class="fas fa-angle-right me-2"></i>Mon Panier</a>
+                            <a href="{{ url('/wish-list/' . Auth::id()) }}" class="text-white-50 mb-2 footer-link"><i class="fas fa-angle-right me-2"></i>Mes Favoris</a>
+                            <a href="{{ route('orders.index') }}" class="text-white-50 mb-2 footer-link"><i class="fas fa-angle-right me-2"></i>Mes Commandes</a>
+                        @else
+                            <a href="{{ route('login') }}" class="text-white-50 mb-2 footer-link"><i class="fas fa-angle-right me-2"></i>Mon Compte</a>
+                        @endif
+                        <a href="{{ route('orders.track') }}" class="text-white-50 mb-2 footer-link"><i class="fas fa-angle-right me-2"></i>Suivre Commande</a>
                     </div>
+                </div>
+            </div>
 
-                    {{-- Information Section --}}
-                    <div class="col-md-6 col-lg-6 col-xl-3">
-                        <div class="footer-item d-flex flex-column">
-                            <h4 class="text-primary mb-4">Informations</h4> <a href="{{ url('/about') }}" class=""><i class="fas fa-angle-right me-2"></i> À Propos de Nous</a> <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Informations de livraison</a> <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Politique de Confidentialité</a> <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Termes & Conditions</a> <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Garantie</a> <a href="#" class=""><i class="fas fa-angle-right me-2"></i> FAQ</a>
-                            <a href="#signin-modal" data-bs-toggle="modal" class=""><i class="fas fa-angle-right me-2"></i> Connexion Vendeur</a> </div>
-                    </div>
-
-                    {{-- Extras/My Account Section (Using logic from the first layout) --}}
-                    <div class="col-md-6 col-lg-6 col-xl-3">
-                        <div class="footer-item d-flex flex-column">
-                            <h4 class="text-primary mb-4">Mon Compte</h4> {{-- View Cart --}}
-                            @if (Auth::check())
-                                <a href="{{ url('/cart/' . Auth::id()) }}" class=""><i class="fas fa-angle-right me-2"></i> Voir Panier</a> @else
-                                <a href='#' onclick="alert('Veuillez vous connecter pour accéder à cette page')" class=""><i class="fas fa-angle-right me-2"></i> Voir Panier</a> @endif
-
-                            {{-- My Wishlist --}}
-                            @if (Auth::check())
-                                <a href="{{ url('/wish-list/' . Auth::id()) }}" class=""><i class="fas fa-angle-right me-2"></i> Ma Liste de Souhaits</a> @else
-                                <a href='#' onclick="alert('Veuillez vous connecter pour accéder à cette page')" class=""><i class="fas fa-angle-right me-2"></i> Ma Liste de Souhaits</a> @endif
-
-                            {{-- My Orders --}}
-                            @if (Auth::check())
-                                <a href="{{ route('orders.index') }}" class=""><i class="fas fa-angle-right me-2"></i> Mes Commandes</a> @else
-                                <a href='#' onclick="alert('Veuillez vous connecter pour accéder à cette page')" class=""><i class="fas fa-angle-right me-2"></i> Mes Commandes</a> @endif
-
-                            <a href="{{ route('orders.track') }}" class=""><i class="fas fa-angle-right me-2"></i> Suivre une Commande</a>
-                            <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Marques</a> <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Bons Cadeaux</a> <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Affiliés</a> </div>
+            <!-- Contact Info Column -->
+            <div class="col-lg-3 col-md-6">
+                <div class="footer-item">
+                    <h5 class="text-primary mb-3">Contact</h5>
+                    <div class="d-flex flex-column text-white-50">
+                        <p class="mb-2"><i class="fas fa-map-marker-alt text-primary me-2"></i>Bafoussam, Cameroun</p>
+                        <p class="mb-2"><i class="fas fa-phone text-primary me-2"></i>{{ $phone1 }}</p>
+                        <p class="mb-2"><i class="fas fa-envelope text-primary me-2"></i>{{ $email }}</p>
+                        <p class="mb-0"><i class="fas fa-clock text-primary me-2"></i>Lun - Sam: 8h - 18h</p>
                     </div>
                 </div>
             </div>
         </div>
-        ---
-        
-<div class="container-fluid copyright py-4">
-            <div class="container">
-                <div class="row g-4 align-items-center">
-                    <div class="col-md-6 text-center text-md-start mb-md-0">
-                        <span class="text-white">
-                            <a href="{{ url('/') }}" class="border-bottom text-white">
-                                <i class="fas fa-copyright text-light me-2"></i>ElectroSphere
-                            </a>. Tous droits réservés.
-                        </span> </div>
-                    <div class="col-md-6 text-center text-md-end text-white">
-                        Conçu par <a class="border-bottom text-white" href="https://htmlcodex.com">HTML Codex</a> </div>
+
+        <!-- Divider -->
+        <hr class="text-white-50 my-4">
+
+        <!-- Bottom Footer Row -->
+        <!-- Divider -->
+        <hr class="text-white-50 my-4">
+
+        <!-- Bottom Footer Row -->
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                <span class="text-white-50">
+                    <i class="fas fa-copyright text-primary me-2"></i>
+                    <strong class="text-white">JB Shop {{ date('Y') }}</strong> - Tous droits réservés
+                </span>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                <div class="d-flex justify-content-center justify-content-md-end gap-3">
+                    <a href="#" class="text-white-50 footer-link">Politique de Confidentialité</a>
+                    <span class="text-white-50">|</span>
+                    <a href="#" class="text-white-50 footer-link">Termes & Conditions</a>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+<!-- Minimalistic Footer End -->
 
         <a href="#" class="btn btn-primary btn-lg-square back-to-top"><i class="fa fa-arrow-up"></i></a>
         
@@ -475,6 +498,23 @@
                 font-weight: 500;
                 letter-spacing: 1px;
             }
+        
+        /* Minimalistic Footer Styles */
+        .footer-link {
+            transition: all 0.3s ease;
+        }
+        .footer-link:hover {
+            color: #ff7e00 !important;
+            padding-left: 5px;
+        }
+        .btn-sm-square {
+            width: 38px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
         /* Mobile bottom nav styles */
         .mobile-bottom-nav {
             box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
@@ -680,7 +720,7 @@
             theme: {
             extend: {
                 colors: {
-                brand: '#ff7e00', // ElectroSphere orange
+                brand: '#ff7e00', // JB Shop orange
                 }
             }
             }

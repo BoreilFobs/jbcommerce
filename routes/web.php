@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\Auth;
 Route::get('/', [WelcomeController::class, 'index'])->name("home");
 Route::get('/shop', [WelcomeController::class, 'index'])->name("shop");
 Route::get('/search', [WelcomeController::class, 'search'])->name('search');
+Route::get('/product/details/{id}', [OffersController::class, 'show'])->name('product.details');
+
 Route::get('/offers/new-arrivals', [WelcomeController::class, 'newArrivals'])->name('offers.newArrivals');
 
 
@@ -71,6 +73,7 @@ Route::get('/about', [AboutController::class, 'index']);
 Route::get('/contact', [MessageController::class, 'contact'])->name("contact");
 Route::post('/message/create', [MessageController::class, 'store']);
 
+
 // Customer routes - Protected by auth middleware
 Route::middleware('auth')->group(function () {
     // Profile management
@@ -105,7 +108,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 
     // Product details (could be public, but keeping here for now)
-    Route::get('/product/details/{id}', [OffersController::class, 'show'])->name('product.details');
 });
 
 // Public order tracking (NEW)

@@ -234,7 +234,25 @@ class OffersController extends Controller
         $offers = offers::active()->inStock()->limit(8)->get();
         $categories = Categorie::all();
         
-        return view("single", compact('offer', 'categories', 'offers'));
+        // Get all brands for filter
+        $brands = offers::whereNotNull('brand')
+            ->where('brand', '!=', '')
+            ->distinct()
+            ->pluck('brand');
+        
+        // Get price range for filter
+        $minPrice = offers::min('price') ?? 0;
+        $maxPrice = offers::max('price') ?? 0;
+        
+        // Get category counts
+        $categoryCounts = [];
+        foreach ($categories as $category) {
+            $categoryCounts[$category->name] = offers::where('category', $category->name)
+                ->where('status', 'active')
+                ->count();
+        }
+        
+        return view("single", compact('offer', 'categories', 'offers', 'brands', 'minPrice', 'maxPrice', 'categoryCounts'));
     }
 
     /**

@@ -58,7 +58,7 @@
                                             @else
                                                 <i class="fas fa-shopping-bag me-2"></i>Tous les produits
                                             @endif
-                                            <span class="badge bg-primary ms-2">{{ $offers->total() }}</span>
+                                            <span class="badge bg-primary ms-2">{{ method_exists($offers, 'total') ? $offers->total() : $offers->count() }}</span>
                                         </h5>
                                     </div>
                                     <div class="d-flex align-items-center gap-2 w-100 w-md-auto mt-2 mt-md-0">
@@ -192,7 +192,11 @@
                                                                     ? '/storage/offer_img/product' . $offer->id . "/" . $images[0]
                                                                     : '/img/default-product.jpg';
                                                             @endphp
-                                                            <img src="{{ asset($firstImage) }}" class="img-fluid w-100 rounded-top" style="height: 250px; object-fit: cover;" alt="{{ $offer->name }}">
+                                                            <img src="{{ asset($firstImage) }}" 
+                                                                 class="img-fluid w-100 rounded-top" 
+                                                                 style="height: 250px; object-fit: cover;" 
+                                                                 alt="{{ $offer->name }}"
+                                                                 loading="lazy">
                                                             
                                                             <!-- Badges -->
                                                             <div class="position-absolute top-0 start-0 m-2">

@@ -1,0 +1,288 @@
+/* ============================================
+   Related & Recommended Products Section
+   Mobile-First Horizontal Scroll Design
+   ============================================ */
+
+/* Base Container */
+.related-product {
+    background: #f8f9fa;
+}
+
+.related-products-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Mobile: Horizontal Scroll */
+@media (max-width: 991px) {
+    .related-products-container {
+        display: flex;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: 1rem;
+        padding: 0.5rem 0;
+        /* Hide scrollbar but keep functionality */
+        scrollbar-width: thin;
+        scrollbar-color: rgba(0,0,0,0.2) transparent;
+    }
+
+    .related-products-container::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .related-products-container::-webkit-scrollbar-track {
+        background: rgba(0,0,0,0.05);
+        border-radius: 10px;
+    }
+
+    .related-products-container::-webkit-scrollbar-thumb {
+        background: rgba(0,0,0,0.2);
+        border-radius: 10px;
+    }
+
+    .related-products-container::-webkit-scrollbar-thumb:hover {
+        background: rgba(0,0,0,0.3);
+    }
+
+    .related-product-card {
+        flex: 0 0 280px;
+        min-width: 280px;
+        max-width: 280px;
+        scroll-snap-align: start;
+    }
+
+    /* Smaller cards for very small phones */
+    @media (max-width: 576px) {
+        .related-product-card {
+            flex: 0 0 240px;
+            min-width: 240px;
+            max-width: 240px;
+        }
+
+        .related-product-card .card-img-top {
+            height: 160px !important;
+        }
+
+        .related-product-card .card-body {
+            padding: 0.75rem !important;
+        }
+
+        .related-product-card .btn {
+            font-size: 0.8rem !important;
+            padding: 0.4rem 0.8rem !important;
+        }
+    }
+
+    /* Add subtle gradient indicators at edges */
+    .related-products-wrapper::before,
+    .related-products-wrapper::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 20px;
+        width: 40px;
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    .related-products-wrapper::before {
+        left: 0;
+        background: linear-gradient(to right, #f8f9fa, transparent);
+    }
+
+    .related-products-wrapper::after {
+        right: 0;
+        background: linear-gradient(to left, #f8f9fa, transparent);
+    }
+}
+
+/* Tablet: 2 columns with some scroll */
+@media (min-width: 576px) and (max-width: 991px) {
+    .related-product-card {
+        flex: 0 0 320px;
+        min-width: 320px;
+        max-width: 320px;
+    }
+}
+
+/* Desktop: Grid Layout */
+@media (min-width: 992px) {
+    .related-products-container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+    }
+
+    .related-product-card {
+        width: 100%;
+    }
+
+    /* 3 columns for medium desktops */
+    @media (min-width: 992px) and (max-width: 1199px) {
+        .related-products-container {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    /* 4 columns for large desktops */
+    @media (min-width: 1200px) {
+        .related-products-container {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+}
+
+/* Card Styles */
+.related-product-card .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.related-product-card .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15) !important;
+}
+
+.related-product-card .card-img-top {
+    transition: transform 0.3s ease;
+}
+
+.related-product-card .card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+/* Badge Styles */
+.related-product-card .badge {
+    font-size: 0.7rem;
+    padding: 0.35rem 0.6rem;
+    font-weight: 600;
+}
+
+/* Quick View Button */
+.related-product-card .btn-light {
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(10px);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+.related-product-card .card:hover .btn-light {
+    opacity: 1;
+}
+
+/* Mobile: Always show quick view button */
+@media (max-width: 991px) {
+    .related-product-card .btn-light {
+        opacity: 1;
+        background: rgba(255,255,255,0.95);
+    }
+}
+
+/* Product Name Truncation */
+.related-product-card .card-body a {
+    min-height: 2.6em; /* 2 lines */
+}
+
+/* Price Styling */
+.related-product-card .fs-5 {
+    font-size: 1.1rem !important;
+}
+
+/* Button Styles */
+.related-product-card .btn-primary {
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.related-product-card .btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.2);
+}
+
+/* Section Header */
+.related-product .title-border-radius {
+    border-radius: 0.5rem;
+}
+
+/* Scroll Indicator for Mobile (Optional) */
+@media (max-width: 991px) {
+    .related-products-wrapper::after {
+        content: '← Faites défiler →';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.7);
+        color: white;
+        padding: 0.25rem 1rem;
+        border-radius: 1rem;
+        font-size: 0.75rem;
+        opacity: 0;
+        animation: fadeInOut 2s ease-in-out 1s;
+        pointer-events: none;
+    }
+
+    @keyframes fadeInOut {
+        0%, 100% { opacity: 0; }
+        50% { opacity: 1; }
+    }
+}
+
+/* Loading State (Optional) */
+.related-product-card.loading {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Empty State */
+.related-products-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #6c757d;
+}
+
+.related-products-empty i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* Responsive Text Sizes */
+@media (max-width: 576px) {
+    .related-product h4 {
+        font-size: 1.25rem !important;
+    }
+
+    .related-product p {
+        font-size: 0.9rem !important;
+    }
+}
+
+/* Accessibility: Focus States */
+.related-product-card a:focus,
+.related-product-card button:focus {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
+}
+
+/* Performance: GPU Acceleration */
+.related-product-card .card,
+.related-product-card .card-img-top {
+    will-change: transform;
+}

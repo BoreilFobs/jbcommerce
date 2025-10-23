@@ -4,7 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-    <title>@yield('title', 'Tableau de bord') &mdash; ElectreoSphere</title>
+        <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>@yield('title', 'Tableau de bord') &mdash; JB Shop</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -22,20 +25,24 @@
             }
         }
         @layer components {
-            /* Mobile-first sidebar */
+            /* Mobile-first sidebar with dark theme */
             .main-sidebar {
-                @apply fixed inset-y-0 left-0 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:w-64;
+                @apply fixed inset-y-0 left-0 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:w-64 bg-gray-900;
             }
             .main-sidebar.show {
                 @apply translate-x-0;
             }
             
-            /* Improved sidebar menu items */
+            /* Dark sidebar menu items */
             .sidebar-menu a {
-                @apply flex items-center p-4 text-gray-700 hover:bg-gray-50 transition-colors duration-200 rounded-lg mb-1;
+                @apply flex items-center p-3 text-gray-300 hover:bg-gray-800 transition-colors duration-200 rounded-lg mb-1;
             }
-            .sidebar-menu a.active {
+            .sidebar-menu a.active,
+            .sidebar-menu a.nav-link.active {
                 @apply bg-blue-600 text-white hover:bg-blue-700;
+            }
+            .sidebar-menu .menu-header {
+                @apply uppercase text-sm text-gray-400 px-3 pt-4 mt-4 first:mt-0;
             }
             .sidebar-menu .dropdown-menu {
                 @apply pl-4 space-y-1 mt-1;
@@ -121,80 +128,9 @@
     </div>
 
     <div id="app" class="flex min-h-screen">
-        <div class="main-sidebar w-64 bg-white shadow-lg flex-shrink-0">
-            <aside id="sidebar-wrapper" class="h-full flex flex-col">
-                <div class="sidebar-brand p-6 border-b border-gray-200 text-center">
-                    <a href="{{ url('/') }}" class="text-2xl font-bold text-blue-600">ElectreoSphere</a>
-                </div>
-                <div class="sidebar-brand-sm p-4 text-center border-b border-gray-200 hidden">
-                    <a href="{{ url('/') }}" class="text-xl font-bold text-blue-600">ES</a>
-                </div>
-                <ul class="sidebar-menu flex-grow p-4 space-y-2">
-                    <li class="menu-header uppercase text-sm text-gray-500 px-3 pt-4">Tableau de Bord</li>
-                    <li class="{{ Request::is('dashboard') ? 'active' : '' }}">
-                        <a href="{{ route('dashboard') }}" class="nav-link {{ Request::is('dashboard') ? 'active' : '' }}">
-                            <i class="fas fa-chart-line mr-3"></i><span>Vue d'ensemble</span>
-                        </a>
-                    </li>
-
-                    <li class="menu-header uppercase text-sm text-gray-500 px-3 pt-4">Gestion du Magasin</li>
-
-                    <li class="dropdown {{ Request::is('offers*') ? 'active' : '' }}">
-                        <a href="{{route("offer.index")}}" class="nav-link has-dropdown flex items-center justify-between">
-                            <div class="flex items-center">
-                                <i class="fas fa-tags mr-3"></i>
-                                <span>Products</span>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="dropdown {{ Request::is('categories*') ? 'active' : '' }}">
-                        <a href="{{route('categories.index')}}" class="nav-link has-dropdown flex items-center justify-between">
-                            <div class="flex items-center">
-                                <i class="fas fa-tags mr-3"></i>
-                                <span>Category</span>
-                            </div>
-                        </a>
-                        <ul class="dropdown-menu mt-2 space-y-1 {{ Request::is('categories*') ? 'active' : '' }}">
-                            {{-- <li>
-                                <a class="nav-link {{ Request::is('categories') ? 'active' : '' }}" href="{{ url('/categories') }}">All Categories</a>
-                            </li>
-                            <li>
-                                <a class="nav-link {{ Request::is('categories/create-offer') ? 'active' : '' }}" href="{{ url('/categories/create-offer') }}">Create Category</a>
-                            </li> --}}
-                        </ul>
-                    </li>
-
-                    <li class="dropdown {{ Request::is('admin/users*') ? 'active' : '' }}">
-                        <a href="{{route('admin.users.index')}}" class="nav-link has-dropdown flex items-center justify-between">
-                            <div class="flex items-center">
-                                <i class="fas fa-users mr-3"></i>
-                                <span>Utilisateurs</span>
-                            </div>
-                        </a>
-                    </li>
-                    {{-- <li class="dropdown {{ Request::is('messages*') ? 'active' : '' }}">
-                        <a href="#" class="nav-link has-dropdown flex items-center justify-between">
-                            <div class="flex items-center">
-                                <i class="fas fa-user-cog mr-3"></i>
-                                <span>Messages</span>
-                            </div>
-                            <i class="fas fa-chevron-down text-xs"></i>
-                        </a>
-                        <ul class="dropdown-menu mt-2 space-y-1 {{ Request::is('messages*') ? 'block' : 'hidden' }}">
-                            <li>
-                                <a class="nav-link {{ Request::is('messages') ? 'active' : '' }}" href="{{ url('/messages') }}">All Messages</a>
-                            </li>
-                        </ul>
-                    </li> --}}
-                </ul>
-                @if (Auth::check() && Auth::user()->name === 'admin')
-                <div class="mt-auto mb-4 p-3 hidden md:block">
-                    <a href="{{ route('dashboard') }}" class="btn-primary w-full text-center py-3 px-4 rounded-md text-white font-semibold hover:bg-blue-700 transition-colors duration-200">
-                        <i class="fas fa-rocket mr-2"></i> Admin Dashboard
-                    </a>
-                </div>
-                @endif
-            </aside>
+        <!-- Admin Sidebar with Dark Theme -->
+        <div class="main-sidebar w-64 bg-gray-900 shadow-lg flex-shrink-0">
+            @include('layouts.admin-sidebar')
         </div>
 
         <div class="flex flex-col flex-1">
@@ -239,7 +175,8 @@
                                             <i class="fas fa-bell"></i>
                                         </div>
                                         <div class="dropdown-item-desc">
-                                            <div class="text-sm font-medium text-gray-800">Welcome to ElectreoSphere!</div>
+                                                                                    <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                            <div class="text-sm font-medium text-gray-800">Welcome to JB Shop!</div>
                                             <div class="time text-xs text-gray-500">Yesterday</div>
                                         </div>
                                     </a>

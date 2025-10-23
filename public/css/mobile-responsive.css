@@ -1,6 +1,6 @@
 /* ============================================
    Mobile-Friendly & Responsive CSS
-   jbEcommerce - ElectreoSphere
+   jbEcommerce - JB Shop
    ============================================ */
 
 /* ============================================
@@ -263,35 +263,195 @@ a, button, input, select, textarea {
    5. PRODUCT CARDS MOBILE ENHANCEMENT
    ============================================ */
 
-@media (max-width: 576px) {
+/* Base product grid fixes for all devices */
+.product {
+    margin-bottom: 2rem;
+}
+
+.product .row.g-4 {
+    row-gap: 1.5rem !important;
+}
+
+.product .product-item {
+    margin-bottom: 0;
+}
+
+/* Ensure columns have proper height */
+.product .row > [class*="col-"] {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Mobile-first: Always show add to cart button on mobile */
+@media (max-width: 991px) {
+    /* Make product card add section always visible on mobile */
+    .product .product-item .product-item-add {
+        position: relative !important;
+        opacity: 1 !important;
+        margin-bottom: 0 !important;
+        background: var(--bs-white) !important;
+        border-top: 1px solid #dee2e6 !important;
+    }
+
+    /* Ensure product item has proper structure to contain children */
+    .product .product-item {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    /* Optimize product card layout for mobile */
+    .product .product-item .product-item-inner {
+        border-bottom: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Prevent overlap by using flexbox */
+    .product-item .product-item-inner .text-center.rounded-bottom {
+        flex: 1;
+    }
+
+    /* Reduce padding on mobile for compact look */
     .product-item-add {
+        padding: 0.75rem 1rem !important;
+    }
+
+    /* Optimize button size for touch */
+    .product-item-add .btn {
+        font-size: 0.85rem !important;
+        padding: 0.5rem 1rem !important;
+        white-space: nowrap;
+    }
+
+    /* Compact product info */
+    .product-item .text-center.rounded-bottom {
         padding: 1rem !important;
     }
 
+    /* Smaller product titles on mobile */
+    .product-item .h4,
+    .product-item .h5 {
+        font-size: 1rem !important;
+        margin-bottom: 0.5rem !important;
+        line-height: 1.3;
+    }
+
+    /* Optimize images for faster loading */
+    .product-item-inner-item img {
+        height: 180px !important;
+        object-fit: cover;
+    }
+
+    /* Better badge visibility on mobile */
+    .product-new,
+    .product-sale {
+        font-size: 0.7rem !important;
+        padding: 0.25rem 0.5rem !important;
+    }
+
+    /* Optimize star ratings and wishlist buttons */
+    .product-item-add .d-flex {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .fa-star {
+        font-size: 0.8rem !important;
+    }
+
+    /* Make wishlist/compare buttons more touch-friendly */
+    .btn-sm-square {
+        width: 32px !important;
+        height: 32px !important;
+        min-width: 32px;
+    }
+}
+
+@media (max-width: 576px) {
+    /* Even more compact on small phones */
+    .product-item-inner-item img {
+        height: 160px !important;
+    }
+
+    .product-item-add {
+        padding: 0.5rem !important;
+    }
+
     .product-item-add .btn {
-        font-size: 0.9rem;
-        padding: 0.65rem 1.25rem;
+        font-size: 0.75rem !important;
+        padding: 0.4rem 0.8rem !important;
     }
 
     /* Stack badges vertically on very small screens */
     .position-absolute.top-0.start-0 .badge,
     .position-absolute.top-0.end-0 .badge {
-        font-size: 0.7rem;
-        padding: 0.35rem 0.5rem;
-    }
-
-    /* Adjust star ratings */
-    .fa-star {
-        font-size: 0.75rem !important;
+        font-size: 0.65rem;
+        padding: 0.25rem 0.4rem;
     }
 
     /* Price display */
     .product-item .fs-5 {
-        font-size: 1rem !important;
+        font-size: 0.95rem !important;
     }
 
     .product-item .fs-6 {
-        font-size: 0.85rem !important;
+        font-size: 0.8rem !important;
+    }
+
+    /* Hide wishlist icon text on very small screens */
+    .product-item-add .btn i {
+        margin-right: 0.25rem !important;
+    }
+}
+
+/* Desktop: Keep hover effect */
+@media (min-width: 992px) {
+    /* Ensure proper structure for hover effect */
+    .product .product-item {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product .product-item .product-item-inner {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    .product .product-item .product-item-add {
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        opacity: 0;
+        transition: 0.5s;
+        z-index: 10; /* Increased z-index to overlap cards below */
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* Add shadow for depth */
+    }
+
+    .product .product-item:hover .product-item-add {
+        background: var(--bs-white);
+        opacity: 1;
+        transform: translateY(100%); /* Slide down to overlap card below */
+    }
+
+    .product .product-item:hover .product-item-inner {
+        border-bottom: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+        z-index: 11; /* Keep inner content above other cards */
+        position: relative;
+    }
+
+    /* Ensure hovered card stays on top of everything */
+    .product .product-item:hover {
+        z-index: 100;
     }
 }
 

@@ -203,41 +203,63 @@
                                                             ? '/storage/offer_img/product' . $offer->id . "/" . $images[0]
                                                             : '/img/default-product.jpg';
                                                     @endphp
-                                                    <img src="{{ asset($firstImage) }}" class="img-fluid w-100 rounded-top" alt="{{ $offer->name }}">
+                                                    <img src="{{ asset($firstImage) }}" 
+                                                         class="img-fluid w-100 rounded-top" 
+                                                         alt="{{ $offer->name }}"
+                                                         loading="lazy"
+                                                         style="height: 250px; object-fit: cover;">
                                                     @if ($offer->created_at >= now()->subMonths())
                                                         <div class="product-new">New</div>
+                                                    @endif
+                                                    @if ($offer->discount_percentage > 0)
+                                                        <div class="product-sale">-{{ $offer->discount_percentage }}%</div>
                                                     @endif
                                                     <div class="product-details">
                                                         <a href="{{ url('/product/details/' . $offer->id) }}"><i class="fa fa-eye fa-1x"></i></a>
                                                     </div>
                                                 </div>
                                                 <div class="text-center rounded-bottom p-4">
-                                                    <a href="#" class="d-block mb-2">{{$offer->category}}</a>
-                                                    <a href="#" class="d-block h4">{{$offer->name}} <br> G{{rand(1000,9999)}}</a>
-                                                    <del class="me-2 fs-5">{{ number_format(($offer->price) + ($offer->price * 0.15), 0, '.', ',') }}</del>
-                                                    <span class="text-primary fs-5">{{ number_format($offer->price, 0, '.', ',') }}FCFA</span>
+                                                    <a href="{{ route('shop') }}?category={{ $offer->category }}" class="d-block mb-2 text-muted small">{{ $offer->category }}</a>
+                                                    <a href="{{ url('/product/details/' . $offer->id) }}" class="d-block h5 text-dark mb-2">{{ Str::limit($offer->name, 40) }}</a>
+                                                    @if($offer->discount_percentage > 0)
+                                                        <del class="me-2 text-muted">{{ number_format($offer->price / (1 - $offer->discount_percentage/100), 0, '.', ',') }} FCFA</del>
+                                                    @endif
+                                                    <span class="text-primary fw-bold fs-5">{{ number_format($offer->price, 0, '.', ',') }} FCFA</span>
                                                 </div>
                                             </div>
-                                            <div class="product-item-add border border-top-0 rounded-bottom  text-center p-4 pt-0">
+                                            <div class="product-item-add border border-top-0 rounded-bottom text-center p-4 pt-0">
                                                 @if(Auth::check())
-                                                    <a href="{{ url('/cart/' . $offer->id . '/create/' . Auth::id()) }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-4"><i class="fas fa-shopping-cart me-2"></i> Add To Cart</a>
+                                                    <a href="{{ url('/cart/' . $offer->id . '/create/' . Auth::id()) }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-3">
+                                                        <i class="fas fa-shopping-cart me-2"></i>Ajouter au panier
+                                                    </a>
                                                 @else
-                                                    <a href="{{ route('login') }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-4"><i class="fas fa-shopping-cart me-2"></i> Add To Cart</a>
+                                                    <a href="{{ route('login') }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-3">
+                                                        <i class="fas fa-shopping-cart me-2"></i>Ajouter au panier
+                                                    </a>
                                                 @endif
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <div class="d-flex">
-                                                        <i class="fas fa-star text-primary"></i>
-                                                        <i class="fas fa-star text-primary"></i>
-                                                        <i class="fas fa-star text-primary"></i>
-                                                        <i class="fas fa-star text-primary"></i>
-                                                        <i class="fas fa-star"></i>
+                                                        @for ($i = 1; $i <= 5; $i++)
+                                                            <i class="fas fa-star {{ $i <= 4 ? 'text-primary' : 'text-muted' }}"></i>
+                                                        @endfor
                                                     </div>
                                                     <div class="d-flex">
-                                                        {{-- <a href="#" class="text-primary d-flex align-items-center justify-content-center me-3"><span class="rounded-circle btn-sm-square border"><i class="fas fa-random"></i></i></a> --}}
                                                         @if(Auth::check())
-                                                            <a href="{{ url('/wish-list/' . $offer->id . '/create/' . Auth::id()) }}" class="text-primary d-flex align-items-center justify-content-center me-0"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
+                                                            <a href="{{ url('/wish-list/' . $offer->id . '/create/' . Auth::id()) }}" 
+                                                               class="text-primary d-flex align-items-center justify-content-center" 
+                                                               title="Ajouter aux favoris">
+                                                                <span class="rounded-circle btn-sm-square border">
+                                                                    <i class="fas fa-heart"></i>
+                                                                </span>
+                                                            </a>
                                                         @else
-                                                            <a href="{{ route('login') }}" class="text-primary d-flex align-items-center justify-content-center me-0"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
+                                                            <a href="{{ route('login') }}" 
+                                                               class="text-primary d-flex align-items-center justify-content-center"
+                                                               title="Connectez-vous pour ajouter aux favoris">
+                                                                <span class="rounded-circle btn-sm-square border">
+                                                                    <i class="fas fa-heart"></i>
+                                                                </span>
+                                                            </a>
                                                         @endif
                                                     </div>
                                                 </div>
@@ -1017,184 +1039,60 @@
         <div class="container-fluid products pb-5">
             <div class="container products-mini py-5">
                 <div class="mx-auto text-center mb-5" style="max-width: 700px;">
-                    <h4 class="text-primary mb-4 border-bottom border-primary border-2 d-inline-block p-2 title-border-radius wow fadeInUp" data-wow-delay="0.1s">Bestseller Products</h4>
-                    <p class="mb-0 wow fadeInUp" data-wow-delay="0.2s">Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi, asperiores ducimus sint quos tempore officia similique quia? Libero, pariatur consectetur?</p>
+                    <h4 class="text-primary mb-4 border-bottom border-primary border-2 d-inline-block p-2 title-border-radius wow fadeInUp" data-wow-delay="0.1s">Meilleures Ventes</h4>
+                    <p class="mb-0 wow fadeInUp" data-wow-delay="0.2s">Découvrez nos produits les plus populaires et les plus appréciés par nos clients</p>
                 </div>
                 <div class="row g-4">
-                    <div class="col-md-6 col-lg-6 col-xl-4 wow fadeInUp" data-wow-delay="0.1s">
-                        <div class="products-mini-item border">
-                            <div class="row g-0">
-                                <div class="col-5">
-                                    <div class="products-mini-img border-end h-100">
-                                        <img src="img/product-3.png" class="img-fluid w-100 h-100" alt="Image">
-                                        <div class="products-mini-icon rounded-circle bg-primary">
-                                            <a href="#"><i class="fa fa-eye fa-1x text-white"></i></a>
+                    @forelse ($bestsellers as $index => $bestseller)
+                        <div class="col-md-6 col-lg-6 col-xl-4 wow fadeInUp" data-wow-delay="{{ 0.1 + ($index * 0.2) }}s">
+                            <div class="products-mini-item border">
+                                <div class="row g-0">
+                                    <div class="col-5">
+                                        <div class="products-mini-img border-end h-100">
+                                            @php
+                                                $images = is_string($bestseller->images) ? json_decode($bestseller->images, true) : $bestseller->images;
+                                                $firstImage = $images && is_array($images) && count($images) > 0 
+                                                    ? '/storage/offer_img/product' . $bestseller->id . "/" . $images[0]
+                                                    : '/img/default-product.jpg';
+                                            @endphp
+                                            <img src="{{ asset($firstImage) }}" class="img-fluid w-100 h-100" alt="{{ $bestseller->name }}" style="object-fit: cover;">
+                                            <div class="products-mini-icon rounded-circle bg-primary">
+                                                <a href="{{ url('/product/details/' . $bestseller->id) }}"><i class="fa fa-eye fa-1x text-white"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-7">
+                                        <div class="products-mini-content p-3">
+                                            <a href="{{ route('shop') }}?category={{ $bestseller->category }}" class="d-block mb-2 text-muted small">{{ $bestseller->category }}</a>
+                                            <a href="{{ url('/product/details/' . $bestseller->id) }}" class="d-block h5 mb-2">{{ Str::limit($bestseller->name, 35) }}</a>
+                                            @if($bestseller->discount_percentage > 0)
+                                                <del class="me-2 fs-6 text-muted">{{ number_format($bestseller->price / (1 - $bestseller->discount_percentage/100), 0, '.', ',') }} FCFA</del>
+                                            @endif
+                                            <span class="text-primary fw-bold fs-6">{{ number_format($bestseller->price, 0, '.', ',') }} FCFA</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-7">
-                                    <div class="products-mini-content p-3">
-                                        <a href="#" class="d-block mb-2">SmartPhone</a>
-                                        <a href="#" class="d-block h4">Apple iPad Mini <br> G2356</a>
-                                        <del class="me-2 fs-5">$1,250.00</del>
-                                        <span class="text-primary fs-5">$1,050.00</span>
+                                <div class="products-mini-add border p-3">
+                                    @if(Auth::check())
+                                        <a href="{{ url('/cart/' . $bestseller->id . '/create/' . Auth::id()) }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4"><i class="fas fa-shopping-cart me-2"></i> Ajouter au panier</a>
+                                    @else
+                                        <a href="{{ route('login') }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4"><i class="fas fa-shopping-cart me-2"></i> Ajouter au panier</a>
+                                    @endif
+                                    <div class="d-flex">
+                                        @if(Auth::check())
+                                            <a href="{{ url('/wish-list/' . $bestseller->id . '/create/' . Auth::id()) }}" class="text-primary d-flex align-items-center justify-content-center me-0" title="Ajouter aux favoris"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
+                                        @else
+                                            <a href="{{ route('login') }}" class="text-primary d-flex align-items-center justify-content-center me-0" title="Connectez-vous pour ajouter aux favoris"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
+                                        @endif
                                     </div>
-                                </div>
-                            </div>
-                            <div class="products-mini-add border p-3">
-                                <a href="#" class="btn btn-primary border-secondary rounded-pill py-2 px-4"><i class="fas fa-shopping-cart me-2"></i> Add To Cart</a>
-                                <div class="d-flex">
-                                    <a href="#" class="text-primary d-flex align-items-center justify-content-center me-3"><span class="rounded-circle btn-sm-square border"><i class="fas fa-random"></i></i></a>
-                                    <a href="#" class="text-primary d-flex align-items-center justify-content-center me-0"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-6 col-lg-6 col-xl-4 wow fadeInUp" data-wow-delay="0.3s">
-                        <div class="products-mini-item border">
-                            <div class="row g-0">
-                                <div class="col-5">
-                                    <div class="products-mini-img border-end h-100">
-                                        <img src="img/product-4.png" class="img-fluid w-100 h-100" alt="Image">
-                                        <div class="products-mini-icon rounded-circle bg-primary">
-                                            <a href="#"><i class="fa fa-eye fa-1x text-white"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-7">
-                                    <div class="products-mini-content p-3">
-                                        <a href="#" class="d-block mb-2">SmartPhone</a>
-                                        <a href="#" class="d-block h4">Apple iPad Mini <br> G2356</a>
-                                        <del class="me-2 fs-5">$1,250.00</del>
-                                        <span class="text-primary fs-5">$1,050.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="products-mini-add border p-3">
-                                <a href="#" class="btn btn-primary border-secondary rounded-pill py-2 px-4"><i class="fas fa-shopping-cart me-2"></i> Add To Cart</a>
-                                <div class="d-flex">
-                                    <a href="#" class="text-primary d-flex align-items-center justify-content-center me-3"><span class="rounded-circle btn-sm-square border"><i class="fas fa-random"></i></i></a>
-                                    <a href="#" class="text-primary d-flex align-items-center justify-content-center me-0"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
-                                </div>
-                            </div>
+                    @empty
+                        <div class="col-12 text-center">
+                            <p class="text-muted">Aucun produit populaire pour le moment</p>
                         </div>
-                    </div>
-                    <div class="col-md-6 col-lg-6 col-xl-4 wow fadeInUp" data-wow-delay="0.5s">
-                        <div class="products-mini-item border">
-                            <div class="row g-0">
-                                <div class="col-5">
-                                    <div class="products-mini-img border-end h-100">
-                                        <img src="img/product-5.png" class="img-fluid w-100 h-100" alt="Image">
-                                        <div class="products-mini-icon rounded-circle bg-primary">
-                                            <a href="#"><i class="fa fa-eye fa-1x text-white"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-7">
-                                    <div class="products-mini-content p-3">
-                                        <a href="#" class="d-block mb-2">SmartPhone</a>
-                                        <a href="#" class="d-block h4">Apple iPad Mini <br> G2356</a>
-                                        <del class="me-2 fs-5">$1,250.00</del>
-                                        <span class="text-primary fs-5">$1,050.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="products-mini-add border p-3">
-                                <a href="#" class="btn btn-primary border-secondary rounded-pill py-2 px-4"><i class="fas fa-shopping-cart me-2"></i> Add To Cart</a>
-                                <div class="d-flex">
-                                    <a href="#" class="text-primary d-flex align-items-center justify-content-center me-3"><span class="rounded-circle btn-sm-square border"><i class="fas fa-random"></i></i></a>
-                                    <a href="#" class="text-primary d-flex align-items-center justify-content-center me-0"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-6 col-xl-4 wow fadeInUp" data-wow-delay="0.1s">
-                        <div class="products-mini-item border">
-                            <div class="row g-0">
-                                <div class="col-5">
-                                    <div class="products-mini-img border-end h-100">
-                                        <img src="img/product-6.png" class="img-fluid w-100 h-100" alt="Image">
-                                        <div class="products-mini-icon rounded-circle bg-primary">
-                                            <a href="#"><i class="fa fa-eye fa-1x text-white"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-7">
-                                    <div class="products-mini-content p-3">
-                                        <a href="#" class="d-block mb-2">SmartPhone</a>
-                                        <a href="#" class="d-block h4">Apple iPad Mini <br> G2356</a>
-                                        <del class="me-2 fs-5">$1,250.00</del>
-                                        <span class="text-primary fs-5">$1,050.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="products-mini-add border p-3">
-                                <a href="#" class="btn btn-primary border-secondary rounded-pill py-2 px-4"><i class="fas fa-shopping-cart me-2"></i> Add To Cart</a>
-                                <div class="d-flex">
-                                    <a href="#" class="text-primary d-flex align-items-center justify-content-center me-3"><span class="rounded-circle btn-sm-square border"><i class="fas fa-random"></i></i></a>
-                                    <a href="#" class="text-primary d-flex align-items-center justify-content-center me-0"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-6 col-xl-4 wow fadeInUp" data-wow-delay="0.3s">
-                        <div class="products-mini-item border">
-                            <div class="row g-0">
-                                <div class="col-5">
-                                    <div class="products-mini-img border-end h-100">
-                                        <img src="img/product-7.png" class="img-fluid w-100 h-100" alt="Image">
-                                        <div class="products-mini-icon rounded-circle bg-primary">
-                                            <a href="#"><i class="fa fa-eye fa-1x text-white"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-7">
-                                    <div class="products-mini-content p-3">
-                                        <a href="#" class="d-block mb-2">SmartPhone</a>
-                                        <a href="#" class="d-block h4">Apple iPad Mini <br> G2356</a>
-                                        <del class="me-2 fs-5">$1,250.00</del>
-                                        <span class="text-primary fs-5">$1,050.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="products-mini-add border p-3">
-                                <a href="#" class="btn btn-primary border-secondary rounded-pill py-2 px-4"><i class="fas fa-shopping-cart me-2"></i> Add To Cart</a>
-                                <div class="d-flex">
-                                    <a href="#" class="text-primary d-flex align-items-center justify-content-center me-3"><span class="rounded-circle btn-sm-square border"><i class="fas fa-random"></i></i></a>
-                                    <a href="#" class="text-primary d-flex align-items-center justify-content-center me-0"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-6 col-xl-4 wow fadeInUp" data-wow-delay="0.5s">
-                        <div class="products-mini-item border">
-                            <div class="row g-0">
-                                <div class="col-5">
-                                    <div class="products-mini-img border-end h-100">
-                                        <img src="img/product-11.png" class="img-fluid w-100 h-100" alt="Image">
-                                        <div class="products-mini-icon rounded-circle bg-primary">
-                                            <a href="#"><i class="fa fa-eye fa-1x text-white"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-7">
-                                    <div class="products-mini-content p-3">
-                                        <a href="#" class="d-block mb-2">SmartPhone</a>
-                                        <a href="#" class="d-block h4">Apple iPad Mini <br> G2356</a>
-                                        <del class="me-2 fs-5">$1,250.00</del>
-                                        <span class="text-primary fs-5">$1,050.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="products-mini-add border p-3">
-                                <a href="#" class="btn btn-primary border-secondary rounded-pill py-2 px-4"><i class="fas fa-shopping-cart me-2"></i> Add To Cart</a>
-                                <div class="d-flex">
-                                    <a href="#" class="text-primary d-flex align-items-center justify-content-center me-3"><span class="rounded-circle btn-sm-square border"><i class="fas fa-random"></i></i></a>
-                                    <a href="#" class="text-primary d-flex align-items-center justify-content-center me-0"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @endforelse
                 </div>
             </div>
         </div>

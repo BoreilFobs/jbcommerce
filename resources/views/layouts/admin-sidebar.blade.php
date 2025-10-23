@@ -1,7 +1,6 @@
 <aside id="sidebar-wrapper" class="h-full flex flex-col">
-    <div class="sidebar-brand p-6 border-b border-gray-200 text-center bg-gray-900">
-        <a href="{{ url('/') }}" class="text-2xl font-bold text-white">ElectreoSphere</a>
-        <p class="text-gray-400 text-xs mt-1">Administration</p>
+        <div class="sidebar-header border-b border-gray-700 p-6">
+        <a href="{{ url('/') }}" class="text-2xl font-bold text-white">JB Shop</a>
     </div>
     
     <ul class="sidebar-menu flex-grow p-4 space-y-2">
@@ -32,6 +31,13 @@
             <a href="{{route('admin.users.index')}}" class="nav-link flex items-center p-3 rounded-lg hover:bg-gray-800 transition-colors {{ Request::is('admin/users*') ? 'bg-blue-600 text-white' : 'text-gray-300' }}">
                 <i class="fas fa-users mr-3"></i>
                 <span>Utilisateurs</span>
+            </a>
+        </li>
+
+        <li class="{{ Request::is('admin/orders*') ? 'active' : '' }}">
+            <a href="{{route('admin.orders.index')}}" class="nav-link flex items-center p-3 rounded-lg hover:bg-gray-800 transition-colors {{ Request::is('admin/orders*') ? 'bg-blue-600 text-white' : 'text-gray-300' }}">
+                <i class="fas fa-shopping-bag mr-3"></i>
+                <span>Commandes</span>
             </a>
         </li>
 

@@ -20,12 +20,12 @@
         <div class="container">
             <div class="row g-4">
                 <div class="col-lg-6">
-                    <h2 class="title mb-3">Our Vision</h2>
-                    <p>At ElectroSphere, we envision a world where cutting-edge technology is accessible to everyone. We strive to be the premier destination for tech enthusiasts and everyday consumers alike, offering an unparalleled selection of electronics and smart devices that enhance and simplify modern living. Our goal is to bridge the gap between innovation and practicality, bringing tomorrow's technology into today's homes.</p>
+                    <h2 class="title mb-3">Notre Vision</h2>
+                    <p>Chez JB Shop, nous envisageons un monde où les technologies de pointe sont accessibles à tous. Nous nous efforçons d'être la destination privilégiée pour les passionnés de technologie et les consommateurs du quotidien, offrant une sélection inégalée d'électronique et d'appareils intelligents qui améliorent et simplifient la vie moderne. Notre objectif est de combler le fossé entre l'innovation et la praticité.</p>
                 </div>
                 <div class="col-lg-6">
-                    <h2 class="title mb-3">Our Mission</h2>
-                    <p>We are committed to providing our customers with high-quality tech products at competitive prices, backed by exceptional customer service and expert advice. We carefully curate our product selection to ensure reliability, performance, and value.<br>Through educational content and personalized recommendations, we empower our customers to make informed decisions about their technology purchases.</p>
+                    <h2 class="title mb-3">Notre Mission</h2>
+                    <p>Nous nous engageons à fournir à nos clients des produits technologiques de haute qualité à des prix compétitifs, soutenus par un service client exceptionnel et des conseils d'experts. Nous sélectionnons soigneusement nos produits pour garantir la fiabilité, les performances et la valeur. Grâce à un contenu éducatif et des recommandations personnalisées, nous permettons à nos clients de prendre des décisions éclairées.</p>
                 </div>
             </div>
             <div class="mb-5"></div>
@@ -34,9 +34,9 @@
             <div class="container">
                 <div class="row align-items-center g-4">
                     <div class="col-lg-5">
-                        <h2 class="title mb-3">Who We Are</h2>
-                        <p class="lead text-primary mb-3">A team of tech enthusiasts passionate about bringing the latest innovations to your fingertips with unmatched expertise and service</p>
-                        <p class="mb-2">Founded in 2015, ElectroSphere has grown from a small online retailer to a comprehensive tech marketplace. Our team combines decades of experience in consumer electronics, IT solutions, and customer service. We pride ourselves on staying ahead of tech trends while maintaining a focus on reliability and user satisfaction.</p>
+                        <h2 class="title mb-3">Qui Sommes-Nous</h2>
+                        <p class="lead text-primary mb-3">Une équipe de passionnés de technologie dédiée à apporter les dernières innovations à portée de main avec une expertise et un service inégalés</p>
+                        <p class="mb-2">Fondée en 2015, JB Shop est passée d'un petit détaillant en ligne à un marché technologique complet. Notre équipe combine des décennies d'expérience dans l'électronique grand public, les solutions informatiques et le service client. Nous sommes fiers de rester à l'avant-garde des tendances technologiques tout en maintenant l'accent sur la fiabilité et la satisfaction des utilisateurs.</p>
                         <a href="{{ url('blog') }}" class="btn btn-outline-primary btn-sm">
                             VIEW OUR NEWS <i class="icon-long-arrow-right"></i>
                         </a>
@@ -91,7 +91,7 @@
                         }'>
                         <blockquote class="testimonial text-center">
                             <img src="{{ asset('assets/images/testimonials/user-1.jpg') }}" alt="user" class="rounded-circle mb-3" style="width:80px;">
-                            <p>" ElectroSphere has completely transformed how I shop for tech. Their product descriptions are detailed and accurate, and their customer service team actually understands technology.<br>When my new laptop had an issue, their technical support walked me through troubleshooting steps that fixed it immediately. I won't shop for electronics anywhere else now. "</p>
+                            <p>" JB Shop a complètement transformé ma façon d'acheter de la technologie. Leurs descriptions de produits sont détaillées et précises, et leur équipe de service client comprend vraiment la technologie. Lorsque mon nouvel ordinateur portable a eu un problème, leur support technique m'a guidé à travers les étapes de dépannage qui l'ont résolu immédiatement. Je n'achèterai plus d'électronique ailleurs maintenant. "</p>
                             <cite>
                                 Jenson Gregory
                                 <span class="d-block text-muted">Customer</span>
@@ -99,7 +99,7 @@
                         </blockquote>
                         <blockquote class="testimonial text-center">
                             <img src="{{ asset('assets/images/testimonials/user-2.jpg') }}" alt="user" class="rounded-circle mb-3" style="width:80px;">
-                            <p>" As someone who's not particularly tech-savvy, I was nervous about purchasing smart home devices. The ElectroSphere team took the time to understand my needs and recommended products that were perfect for my situation. The installation guides were clear, and when I had questions, their support team was just a call away. My home is now smarter, and I didn't have to stress about it! "</p>
+                            <p>" En tant que personne qui n'est pas particulièrement experte en technologie, j'étais nerveux à l'idée d'acheter des appareils domotiques. L'équipe de JB Shop a pris le temps de comprendre mes besoins et a recommandé des produits parfaits pour ma situation. Les guides d'installation étaient clairs, et quand j'avais des questions, leur équipe de support était à portée de main. Ma maison est maintenant plus intelligente, et je n'ai pas eu à stresser ! "</p>
                             <cite>
                                 Victoria Ventura
                                 <span class="d-block text-muted">Customer</span>
