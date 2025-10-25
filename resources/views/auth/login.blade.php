@@ -46,12 +46,19 @@
                 <label for="password" class="block text-sm font-medium text-white">
                     Mot de Passe
                 </label>
-                <input id="password" 
-                       class="mt-1 block w-full px-4 py-3 border border-gray-300/40 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 bg-white/70 backdrop-blur-md" 
-                       type="password" 
-                       name="password" 
-                       required 
-                       autocomplete="current-password" />
+                <div class="relative">
+                    <input id="password" 
+                           class="mt-1 block w-full px-4 py-3 pr-12 border border-gray-300/40 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 bg-white/70 backdrop-blur-md" 
+                           type="password" 
+                           name="password" 
+                           required 
+                           autocomplete="current-password" />
+                    <button type="button" 
+                            onclick="togglePasswordVisibility('password', 'togglePasswordIcon')"
+                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-orange-500 focus:outline-none mt-0.5">
+                        <i id="togglePasswordIcon" class="fas fa-eye"></i>
+                    </button>
+                </div>
                 <x-input-error :messages="$errors->get('password')" class="mt-2 text-red-500 text-sm" />
             </div>
 
@@ -93,5 +100,21 @@
     </div>
 </div>
 <script src="https://cdn.tailwindcss.com"></script>
+<script>
+function togglePasswordVisibility(inputId, iconId) {
+    const passwordInput = document.getElementById(inputId);
+    const icon = document.getElementById(iconId);
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+</script>
 
 @endsection
