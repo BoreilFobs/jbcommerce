@@ -20,10 +20,53 @@
 <!DOCTYPE html>
 <html lang="fr"> <head>
         <meta charset="utf-8">
-        <title>JB-Commerce -  Produit Vente en ligne</title>
+        <title>JB Shop - Boutique en Ligne à Bafoussam | Électronique, Smartphones & Accessoires</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
-        <meta content="" name="keywords">
-        <meta content="" name="description">
+        
+        <!-- SEO Meta Tags -->
+        <meta name="description" content="JB Shop - Votre boutique en ligne de confiance à Bafoussam, Cameroun. Découvrez une large gamme d'électronique, smartphones, ordinateurs, accessoires et plus encore. Livraison rapide et paiement sécurisé.">
+        <meta name="keywords" content="JB Shop, boutique en ligne Cameroun, électronique Bafoussam, smartphones Cameroun, ordinateurs portables, accessoires électroniques, vente en ligne Bafoussam, e-commerce Cameroun, JB Commerce, produits électroniques, livraison Bafoussam">
+        <meta name="author" content="JB Shop">
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+        <meta name="googlebot" content="index, follow">
+        <meta name="bingbot" content="index, follow">
+        
+        <!-- Canonical URL -->
+        <link rel="canonical" href="https://jbshop237.com">
+        
+        <!-- Open Graph / Facebook Meta Tags -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://jbshop237.com">
+        <meta property="og:title" content="JB Shop - Boutique en Ligne à Bafoussam | Électronique & Accessoires">
+        <meta property="og:description" content="Découvrez JB Shop, votre destination e-commerce de confiance à Bafoussam. Large sélection d'électronique, smartphones, ordinateurs et accessoires. Livraison rapide au Cameroun.">
+        <meta property="og:image" content="{{ asset('img/logo.png') }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:site_name" content="JB Shop">
+        <meta property="og:locale" content="fr_FR">
+        
+        <!-- Twitter Card Meta Tags -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:url" content="https://jbshop237.com">
+        <meta name="twitter:title" content="JB Shop - Boutique en Ligne à Bafoussam">
+        <meta name="twitter:description" content="Votre boutique en ligne de confiance pour électronique, smartphones et accessoires au Cameroun.">
+        <meta name="twitter:image" content="{{ asset('img/logo.png') }}">
+        
+        <!-- Geographic Meta Tags -->
+        <meta name="geo.region" content="CM-OU">
+        <meta name="geo.placename" content="Bafoussam">
+        <meta name="geo.position" content="5.4781;10.4178">
+        <meta name="ICBM" content="5.4781, 10.4178">
+        
+        <!-- Business Meta Tags -->
+        <meta name="contact" content="brayeljunior8@gmail.com">
+        <meta name="telephone" content="+237657528859">
+        <meta name="locality" content="Bafoussam, Cameroun">
+        
+        <!-- Language & Region -->
+        <meta http-equiv="content-language" content="fr">
+        <meta name="language" content="French">
+        <meta name="country" content="Cameroon">
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,6 +89,61 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
         <meta name="theme-color" content="#f28b00">
+        
+        <!-- PWA Manifest -->
+        <link rel="manifest" href="{{ asset('manifest.json') }}">
+        
+        <!-- Favicon & App Icons -->
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+        <link rel="apple-touch-icon" href="{{ asset('img/logo.png') }}">
+        
+        <!-- Additional SEO Links -->
+        <link rel="author" href="{{ asset('humans.txt') }}">
+        
+        <!-- Structured Data / JSON-LD for SEO -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Store",
+            "name": "JB Shop",
+            "image": "{{ asset('img/logo.png') }}",
+            "description": "Boutique en ligne spécialisée dans la vente d'électronique, smartphones, ordinateurs et accessoires à Bafoussam, Cameroun.",
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Bafoussam",
+                "addressLocality": "Bafoussam",
+                "addressRegion": "Ouest",
+                "postalCode": "",
+                "addressCountry": "CM"
+            },
+            "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": "5.4781",
+                "longitude": "10.4178"
+            },
+            "telephone": "+237657528859",
+            "email": "brayeljunior8@gmail.com",
+            "url": "https://jbshop237.com",
+            "priceRange": "FCFA",
+            "openingHoursSpecification": {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday"
+                ],
+                "opens": "08:00",
+                "closes": "18:00"
+            },
+            "sameAs": [
+                "https://www.facebook.com/jbshop",
+                "https://www.instagram.com/jbshop"
+            ]
+        }
+        </script>
         </head>
 
 

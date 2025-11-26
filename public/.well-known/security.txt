@@ -1,0 +1,9 @@
+Contact: mailto:brayeljunior8@gmail.com
+Expires: 2026-12-31T23:59:59.000Z
+Preferred-Languages: fr, en
+Canonical: https://jbshop237.com/.well-known/security.txt
+
+# JB Shop Security Contact
+# Si vous découvrez une vulnérabilité de sécurité, veuillez nous contacter à:
+# Email: brayeljunior8@gmail.com
+# Téléphone: +237657528859

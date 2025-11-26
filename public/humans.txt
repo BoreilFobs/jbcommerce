@@ -1,0 +1,18 @@
+# JB Shop - Humans.txt
+# L'équipe derrière JB Shop
+
+/* ÉQUIPE */
+Développeur: Brayel Junior
+Contact: brayeljunior8@gmail.com
+Téléphone: +237657528859
+Localisation: Bafoussam, Cameroun
+
+/* SITE */
+Standards: HTML5, CSS3, JavaScript
+Composants: Laravel 12, Bootstrap 5, MySQL
+Langue: Français
+Dernière mise à jour: 2025/11/26
+Logiciels: VS Code, Git, Composer, NPM
+
+/* REMERCIEMENTS */
+Merci à tous nos clients fidèles au Cameroun!

@@ -1,2 +1,44 @@
+# JB Shop - Robots.txt
+# https://jbshop237.com
+
+# Allow all search engines
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /login
+Disallow: /register
+Disallow: /password
+Disallow: /checkout
+Disallow: /cart
+Disallow: /api
+Disallow: /vendor
+Disallow: /storage
+Disallow: /*.json$
+Disallow: /*.xml$
+Disallow: /search?*
+
+# Allow specific paths
+Allow: /storage/products/*
+Allow: /img/*
+Allow: /css/*
+Allow: /js/*
+
+# Google
+User-agent: Googlebot
+Allow: /
+Disallow: /admin
+Disallow: /checkout
+Disallow: /cart
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Disallow: /admin
+Disallow: /checkout
+
+# Sitemap location
+Sitemap: https://jbshop237.com/sitemap.xml
+
+# Crawl-delay (optional - uncomment if needed)
+# Crawl-delay: 10

@@ -14,6 +14,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\WishesController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SitemapController;
 use App\Models\offers;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -25,6 +26,9 @@ Route::get('/search', [WelcomeController::class, 'search'])->name('search');
 Route::get('/product/details/{id}', [OffersController::class, 'show'])->name('product.details');
 
 Route::get('/offers/new-arrivals', [WelcomeController::class, 'newArrivals'])->name('offers.newArrivals');
+
+// SEO Routes
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 
 //routes for admin - Protected by auth and admin middleware
