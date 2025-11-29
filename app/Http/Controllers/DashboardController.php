@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\wishes;
 use App\Models\Categorie;
 use App\Models\User;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -86,8 +87,22 @@ class DashboardController extends Controller
         $statusDistribution = offers::select('status', DB::raw('count(*) as count'))
             ->groupBy('status')
             ->get();
+        
+        // Latest 5 Orders
+        $latestOrders = Order::with(['user', 'items'])
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
+        
+        // Order statistics
+        $totalOrders = Order::count();
+        $pendingOrders = Order::where('status', 'pending')->count();
+        $processingOrders = Order::where('status', 'processing')->count();
+        $completedOrders = Order::where('status', 'delivered')->count();
+        $totalRevenue = Order::where('payment_status', 'paid')->sum('total_amount');
+        $pendingRevenue = Order::where('payment_status', 'pending')->sum('total_amount');
 
-        return view('admin.dashboard', compact(
+        return view('dashboard', compact(
             'totalProducts',
             'activeProducts',
             'totalUsers',
@@ -107,7 +122,14 @@ class DashboardController extends Controller
             'productsThisWeek',
             'averagePrice',
             'discountedProducts',
-            'statusDistribution'
+            'statusDistribution',
+            'latestOrders',
+            'totalOrders',
+            'pendingOrders',
+            'processingOrders',
+            'completedOrders',
+            'totalRevenue',
+            'pendingRevenue'
         ));
     }
 }

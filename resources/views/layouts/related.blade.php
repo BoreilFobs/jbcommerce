@@ -144,7 +144,7 @@
                                 <div class="mt-auto">
                                     @if($relatedOffer->quantity > 0)
                                         @auth
-                                            <a href="{{ url('/cart/' . $relatedOffer->id . '/create/' . Auth::id()) }}" 
+                                            <a href="{{ route('cart.add', $relatedOffer->id) }}" 
                                                class="btn btn-primary btn-sm w-100">
                                                 <i class="fas fa-shopping-cart me-1"></i>Ajouter
                                             </a>

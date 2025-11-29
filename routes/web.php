@@ -39,6 +39,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users.index');
     Route::get('/admin/users/{id}', [UserController::class, 'show'])->name('admin.users.show');
     Route::delete('/admin/users/{id}', [UserController::class, 'destroy'])->name('admin.users.destroy');
+    Route::post('/admin/users/{id}/reset-password', [UserController::class, 'resetPassword'])->name('admin.users.resetPassword');
     
     // Messages management
     Route::get('/messages', [MessageController::class, 'index']);
@@ -68,6 +69,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::patch('/admin/orders/{id}/tracking', [\App\Http\Controllers\Admin\OrderController::class, 'updateTracking'])->name('admin.orders.updateTracking');
     Route::delete('/admin/orders/{id}', [\App\Http\Controllers\Admin\OrderController::class, 'destroy'])->name('admin.orders.destroy');
     Route::get('/admin/orders/{id}/invoice', [\App\Http\Controllers\Admin\OrderController::class, 'invoice'])->name('admin.orders.invoice');
+    Route::post('/admin/orders/bulk-update', [\App\Http\Controllers\Admin\OrderController::class, 'bulkUpdateStatus'])->name('admin.orders.bulkUpdate');
 });
 
 
@@ -86,19 +88,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
     // Wishlist management
-    Route::get('/wish-list/{id}', [WishesController::class, 'index']);
-    Route::get('/wish-list', [WishesController::class, 'redirect']);
-    Route::get('/wish-list/{Oid}/create/{Uid}', [WishesController::class, 'store']);
-    Route::get('/wish-list/delete/{id}', [WishesController::class, 'delete']);
+    Route::get('/wish-list', [WishesController::class, 'index'])->name('wishlist.index');
+    Route::get('/wish-list/add/{id}', [WishesController::class, 'store'])->name('wishlist.add');
+    Route::get('/wish-list/delete/{id}', [WishesController::class, 'delete'])->name('wishlist.delete');
     
     // Cart management
-    Route::get('/cart/{id}', [CartController::class, 'index']);
-    Route::get('/cart', [CartController::class, 'redirect']);
-    Route::get('/cart/delete/{id}', [CartController::class, 'delete']);
-    Route::get('/cart/{Oid}/create/{Uid}', [CartController::class, 'store']);
-    Route::post('/cart/qty', [CartController::class, 'qty'])->name('cart.qty');
-
-    // Checkout routes (NEW)
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::get('/cart/delete/{id}', [CartController::class, 'delete'])->name('cart.delete');
+    Route::get('/cart/add/{id}', [CartController::class, 'store'])->name('cart.add');
+    Route::post('/cart/qty', [CartController::class, 'qty'])->name('cart.qty');    // Checkout routes (NEW)
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
     

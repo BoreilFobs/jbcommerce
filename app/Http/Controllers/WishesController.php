@@ -11,46 +11,43 @@ class WishesController extends Controller
     /**
      * Display the user's wishlist
      */
-    public function index($id)
+    public function index()
     {
-        // Check if the authenticated user is accessing their own wishlist
-        if (!Auth::check() || Auth::id() != $id) {
-            return redirect()->route('login')->with('error', 'Veuillez vous connecter pour accéder à votre liste de souhaits.');
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Veuillez vous connecter pour accéder à vos favoris.');
         }
 
-        $wishes = wishes::where('user_id', $id)->get();
-        return view('wishlist', compact("wishes"));
+        $wishes = wishes::where("user_id", Auth::id())->get();
+        return view("wishlist", compact('wishes'));
     }
 
     /**
      * Add item to wishlist
      */
-    public function store($Oid, $Uid)
+    public function store($id)
     {
         if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'Veuillez vous connecter pour ajouter des articles à votre liste de souhaits.');
+            return redirect()->route('login')->with('error', 'Veuillez vous connecter pour ajouter aux favoris.');
         }
 
-        // Check if user is accessing their own wishlist
-        if (Auth::id() != $Uid) {
-            return redirect()->back()->with('error', 'Action non autorisée.');
-        }
+        $userId = Auth::id();
+        $offerId = $id;
 
         // Check if item already exists in wishlist
-        $existingWish = wishes::where('user_id', $Uid)
-                             ->where('offer_id', $Oid)
+        $existingWish = wishes::where('user_id', $userId)
+                             ->where('offer_id', $offerId)
                              ->first();
 
         if ($existingWish) {
-            return redirect('/wish-list/' . $Uid)->with('info', 'Cet article est déjà dans votre liste de souhaits.');
+            return redirect()->route('wishlist.index')->with('info', 'Cet article est déjà dans vos favoris.');
         }
 
         wishes::create([
-            'user_id' => $Uid,
-            'offer_id' => $Oid,
+            'offer_id' => $offerId,
+            'user_id' => $userId,
         ]);
         
-        return redirect('/wish-list/' . $Uid)->with('success', 'Article ajouté à votre liste de souhaits.');
+        return redirect()->route('wishlist.index')->with('success', 'Article ajouté aux favoris avec succès.');
     }
 
     /**
@@ -59,7 +56,7 @@ class WishesController extends Controller
     public function delete($id)
     {
         if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'Veuillez vous connecter pour gérer votre liste de souhaits.');
+            return redirect()->route('login')->with('error', 'Veuillez vous connecter pour gérer vos favoris.');
         }
 
         $wish = wishes::findOrFail($id);
@@ -70,14 +67,6 @@ class WishesController extends Controller
         }
 
         $wish->delete();
-        return redirect()->back()->with('success', 'Article retiré de votre liste de souhaits.');
-    }
-
-    /**
-     * Redirect to login if not authenticated
-     */
-    public function redirect()
-    {
-        return redirect()->route("login")->with('error', 'Veuillez vous connecter pour accéder à votre liste de souhaits.');
+        return redirect()->back()->with('success', 'Article retiré des favoris.');
     }
 }

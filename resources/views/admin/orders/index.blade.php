@@ -170,6 +170,38 @@
         </form>
     </div>
 
+    <!-- Bulk Actions Form -->
+    <form id="bulkActionForm" action="{{ route('admin.orders.bulkUpdate') }}" method="POST">
+        @csrf
+        
+        <!-- Bulk Actions Bar (Initially Hidden) -->
+        <div id="bulkActionsBar" class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <div class="flex items-center">
+                    <i class="fas fa-check-square text-blue-600 mr-2"></i>
+                    <span class="font-medium text-gray-800">
+                        <span id="selectedCount">0</span> commande(s) sélectionnée(s)
+                    </span>
+                </div>
+                <div class="flex gap-2">
+                    <select name="status" class="rounded-lg border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm" required>
+                        <option value="">Changer le statut...</option>
+                        <option value="confirmed">Confirmée</option>
+                        <option value="processing">En cours</option>
+                        <option value="shipped">Expédiée</option>
+                        <option value="delivered">Livrée</option>
+                        <option value="cancelled">Annulée</option>
+                    </select>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                        <i class="fas fa-save mr-1"></i>Appliquer
+                    </button>
+                    <button type="button" onclick="clearSelection()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm">
+                        <i class="fas fa-times mr-1"></i>Annuler
+                    </button>
+                </div>
+            </div>
+        </div>
+
             <!-- Orders Table/Cards -->
     <!-- Orders List -->
     <div class="bg-white rounded-lg shadow-sm overflow-hidden">
@@ -190,6 +222,9 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
+                            <th class="px-6 py-3 text-left">
+                                <input type="checkbox" id="selectAll" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" onchange="toggleAllCheckboxes(this)">
+                            </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">N° Commande</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Articles</th>
@@ -203,6 +238,9 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($orders as $order)
                             <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <input type="checkbox" name="order_ids[]" value="{{ $order->id }}" class="order-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500" onchange="updateBulkActionsBar()">
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-800 text-white">
                                         {{ $order->order_number }}
@@ -239,6 +277,51 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
                                     <div class="flex items-center justify-center gap-2">
+                                        <!-- Quick Status Update -->
+                                        @if(!in_array($order->status, ['cancelled', 'delivered']))
+                                            <div class="relative inline-block text-left">
+                                                <button type="button" onclick="toggleDropdown({{ $order->id }})" class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                                    <i class="fas fa-bolt mr-1 text-blue-600"></i>
+                                                    Action
+                                                    <i class="fas fa-chevron-down ml-1 text-gray-400"></i>
+                                                </button>
+                                                <div id="dropdown-{{ $order->id }}" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                                                    <div class="py-1">
+                                                        @if($order->status !== 'confirmed')
+                                                            <form action="{{ route('admin.orders.updateStatus', $order->id) }}" method="POST" class="inline w-full">
+                                                                @csrf
+                                                                @method('PATCH')
+                                                                <input type="hidden" name="status" value="confirmed">
+                                                                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                                    <i class="fas fa-check text-green-600 mr-2"></i>Confirmer
+                                                                </button>
+                                                            </form>
+                                                        @endif
+                                                        @if($order->status !== 'processing')
+                                                            <form action="{{ route('admin.orders.updateStatus', $order->id) }}" method="POST" class="inline w-full">
+                                                                @csrf
+                                                                @method('PATCH')
+                                                                <input type="hidden" name="status" value="processing">
+                                                                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                                    <i class="fas fa-box text-blue-600 mr-2"></i>En cours
+                                                                </button>
+                                                            </form>
+                                                        @endif
+                                                        @if($order->status !== 'shipped')
+                                                            <form action="{{ route('admin.orders.updateStatus', $order->id) }}" method="POST" class="inline w-full">
+                                                                @csrf
+                                                                @method('PATCH')
+                                                                <input type="hidden" name="status" value="shipped">
+                                                                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                                    <i class="fas fa-truck text-purple-600 mr-2"></i>Prête
+                                                                </button>
+                                                            </form>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                        
                                         <a href="{{ route('admin.orders.show', $order->id) }}" class="text-blue-600 hover:text-blue-800 p-2" title="Voir">
                                             <i class="fas fa-eye"></i>
                                         </a>
@@ -351,7 +434,64 @@
             </div>
         @endif
     </div>
+    </form>
 </div>
+<script>
+    // Toggle individual dropdown
+    function toggleDropdown(orderId) {
+        const dropdown = document.getElementById(`dropdown-${orderId}`);
+        // Close all other dropdowns
+        document.querySelectorAll('[id^="dropdown-"]').forEach(d => {
+            if (d.id !== `dropdown-${orderId}`) {
+                d.classList.add('hidden');
+            }
+        });
+        dropdown.classList.toggle('hidden');
+    }
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('[onclick^="toggleDropdown"]') && !event.target.closest('[id^="dropdown-"]')) {
+            document.querySelectorAll('[id^="dropdown-"]').forEach(d => {
+                d.classList.add('hidden');
+            });
+        }
+    });
+
+    // Toggle all checkboxes
+    function toggleAllCheckboxes(source) {
+        const checkboxes = document.querySelectorAll('.order-checkbox');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = source.checked;
+        });
+        updateBulkActionsBar();
+    }
+
+    // Update bulk actions bar visibility
+    function updateBulkActionsBar() {
+        const checkboxes = document.querySelectorAll('.order-checkbox:checked');
+        const count = checkboxes.length;
+        const bulkBar = document.getElementById('bulkActionsBar');
+        const countSpan = document.getElementById('selectedCount');
+        
+        if (count > 0) {
+            bulkBar.classList.remove('hidden');
+            countSpan.textContent = count;
+        } else {
+            bulkBar.classList.add('hidden');
+            document.getElementById('selectAll').checked = false;
+        }
+    }
+
+    // Clear selection
+    function clearSelection() {
+        document.querySelectorAll('.order-checkbox').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        document.getElementById('selectAll').checked = false;
+        updateBulkActionsBar();
+    }
+</script>
 <style>
     @media print {
         .sidebar, .card-header button, .btn-group, form button, nav, .alert {

@@ -278,7 +278,7 @@
                         <i class="fas fa-store me-3"></i>Boutique
                     </a>
                     @if(Auth::check())
-                        <a href="{{ url('/cart/' . Auth::id()) }}" class="mobile-menu-item {{ request()->is('cart*') ? 'active' : '' }}">
+                        <a href="{{ route('cart.index') }}" class="mobile-menu-item {{ request()->is('cart*') ? 'active' : '' }}">
                             <i class="fas fa-shopping-cart me-3"></i>Mon Panier
                             <span class="badge bg-primary float-end">{{ $carts->sum('quantity') }}</span>
                         </a>
@@ -406,7 +406,7 @@
                         {{-- Cart (Panier) --}}
                         <div class="cart">
                             @if(Auth::check())
-                                <a href="{{ url('/cart/' . Auth::id()) }}" class="text-muted d-flex align-items-center justify-content-center" title="Panier"> 
+                                <a href="{{ route('cart.index') }}" class="text-muted d-flex align-items-center justify-content-center" title="Panier"> 
                                     <span class="rounded-circle btn-md-square border"><i class="fas fa-shopping-cart"></i></span> 
                                     <span class="text-dark ms-2">{{number_format($totalCartPrice, 0, '.', ',') }} FCFA</span> 
                                 </a>
@@ -448,7 +448,7 @@
                         <small>Commandes</small>
                     </a>
                     @endauth
-                    <a href="{{ url('/cart/' . (Auth::id() ?? '')) }}" class="text-center flex-fill nav-tab {{ request()->is('cart*') ? 'active' : '' }}">
+                    <a href="{{ route('cart.index') }}" class="text-center flex-fill nav-tab {{ request()->is('cart*') ? 'active' : '' }}">
                         <span class="d-block position-relative">
                             <i class="fas fa-shopping-cart fa-lg"></i>
                             @auth
@@ -523,7 +523,7 @@
                     <h5 class="text-primary mb-3">Service Client</h5>
                     <div class="d-flex flex-column">
                         @if (Auth::check())
-                            <a href="{{ url('/cart/' . Auth::id()) }}" class="text-white-50 mb-2 footer-link"><i class="fas fa-angle-right me-2"></i>Mon Panier</a>
+                            <a href="{{ route('cart.index') }}" class="text-white-50 mb-2 footer-link"><i class="fas fa-angle-right me-2"></i>Mon Panier</a>
                             <a href="{{ url('/wish-list/' . Auth::id()) }}" class="text-white-50 mb-2 footer-link"><i class="fas fa-angle-right me-2"></i>Mes Favoris</a>
                             <a href="{{ route('orders.index') }}" class="text-white-50 mb-2 footer-link"><i class="fas fa-angle-right me-2"></i>Mes Commandes</a>
                         @else

@@ -58,7 +58,7 @@
                                     <div class="d-flex flex-column align-items-start">
                                         {{-- Bouton Ajouter au Panier --}}
                                         @if ($isAvailable)
-                                            <a href="{{ url('/cart/' . $wish->offer_id . '/create/' . $wish->user_id) }}"
+                                            <a href="{{ route('cart.add', $wish->offer_id) }}"
                                                 class="btn btn-sm btn-primary rounded-pill px-3 py-2 mb-2 w-100">
                                                 <i class="fa fa-shopping-bag me-1"></i> Panier
                                             </a>
@@ -69,7 +69,7 @@
                                         @endif
 
                                         {{-- Bouton Supprimer --}}
-                                        <a href="{{ url('wish-list/delete/' . $wish->id) }}"
+                                        <a href="{{ route('wishlist.delete', $wish->id) }}"
                                             class="btn btn-sm rounded-pill bg-light border w-100" title="Supprimer">
                                             <i class="fa fa-times text-danger"></i> Supprimer
                                         </a>

@@ -180,24 +180,24 @@
 
                                 <div class="tracking-item {{ in_array($order->status, ['shipped', 'delivered']) ? 'completed' : ($order->status === 'processing' ? 'active' : 'cancelled') }}">
                                     <div class="tracking-icon">
-                                        <i class="fas fa-truck"></i>
+                                        <i class="fas fa-box-open"></i>
                                     </div>
                                     <div class="tracking-content">
-                                        <h6>Expédiée</h6>
+                                        <h6>Prête pour Retrait/Livraison</h6>
                                         @if($order->shipped_at)
                                             <p class="text-muted small mb-0">{{ $order->shipped_at->format('d/m/Y à H:i') }}</p>
                                         @endif
                                         @if($order->tracking_number)
                                             <p class="text-primary small mb-0">
                                                 <i class="fas fa-barcode me-1"></i>
-                                                Tracking: <strong>{{ $order->tracking_number }}</strong>
+                                                Référence: <strong>{{ $order->tracking_number }}</strong>
                                             </p>
                                         @else
                                             <p class="text-muted small mb-0">
                                                 @if($order->status === 'shipped')
-                                                    Votre colis est en route
+                                                    Disponible pour retrait en magasin ou en cours de livraison
                                                 @else
-                                                    En attente d'expédition
+                                                    Commande en préparation
                                                 @endif
                                             </p>
                                         @endif
@@ -206,22 +206,22 @@
 
                                 <div class="tracking-item {{ $order->status === 'delivered' ? 'completed' : ($order->status === 'shipped' ? 'active' : 'cancelled') }}">
                                     <div class="tracking-icon">
-                                        <i class="fas fa-home"></i>
+                                        <i class="fas fa-check-circle"></i>
                                     </div>
                                     <div class="tracking-content">
-                                        <h6>Livrée</h6>
+                                        <h6>Livrée/Retirée</h6>
                                         @if($order->delivered_at)
                                             <p class="text-muted small mb-0">{{ $order->delivered_at->format('d/m/Y à H:i') }}</p>
                                             <p class="text-success small mb-0">
                                                 <i class="fas fa-check-circle me-1"></i>
-                                                Livraison réussie
+                                                Commande complétée avec succès
                                             </p>
                                         @else
                                             <p class="text-muted small mb-0">
                                                 @if($order->status === 'shipped')
-                                                    Arrivée prévue dans 2-5 jours
+                                                    Livraison à Bafoussam: 1-2 jours | Retrait: Disponible maintenant
                                                 @else
-                                                    En attente de livraison
+                                                    En attente
                                                 @endif
                                             </p>
                                         @endif
@@ -247,8 +247,39 @@
                             </div>
                         </div>
 
+                        <!-- Next Steps Alert -->
+                        @if($order->status !== 'delivered' && $order->status !== 'cancelled')
+                            <div class="alert {{ $order->status === 'pending' ? 'alert-warning' : ($order->status === 'shipped' ? 'alert-success' : 'alert-info') }} mb-4 wow fadeInUp" data-wow-delay="0.3s">
+                                <h6 class="alert-heading mb-2">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Prochaines Étapes
+                                </h6>
+                                @if($order->status === 'pending')
+                                    <p class="mb-0 small">
+                                        Votre commande est en attente de confirmation. Nous la vérifierons et vous contacterons sous 24h pour confirmer.
+                                    </p>
+                                @elseif($order->status === 'confirmed')
+                                    <p class="mb-0 small">
+                                        Votre commande a été confirmée ! Nous la préparons actuellement. Temps estimé : 1-2 jours.
+                                    </p>
+                                @elseif($order->status === 'processing')
+                                    <p class="mb-0 small">
+                                        Votre commande est en préparation. Elle sera bientôt prête pour le retrait ou la livraison.
+                                    </p>
+                                @elseif($order->status === 'shipped')
+                                    <p class="mb-2 small">
+                                        <strong>Votre commande est prête !</strong>
+                                    </p>
+                                    <ul class="mb-0 small">
+                                        <li><strong>Retrait en magasin :</strong> Disponible maintenant à notre boutique de Bafoussam</li>
+                                        <li><strong>Livraison :</strong> Arrivée prévue dans 1-2 jours à Bafoussam</li>
+                                    </ul>
+                                @endif
+                            </div>
+                        @endif
+
                         <!-- Order Items Summary -->
-                        <div class="bg-light rounded p-4 mb-4">
+                        <div class="bg-light rounded p-4 mb-4 wow fadeInUp" data-wow-delay="0.4s">
                             <h5 class="mb-3">
                                 <i class="fas fa-box text-primary me-2"></i>
                                 Articles Commandés

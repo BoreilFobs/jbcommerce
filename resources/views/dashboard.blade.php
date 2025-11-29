@@ -1,6 +1,188 @@
 @extends('layouts.app')
-@section('title', 'Dashboard')
+@section('title', 'Tableau de Bord')
 @section('content')
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-2xl lg:text-3xl font-bold text-gray-800 flex items-center">
+            <i class="fas fa-chart-line mr-3 text-blue-600"></i>
+            Tableau de Bord - JB Shop
+        </h1>
+        <p class="text-gray-600 mt-1">Vue d'ensemble des ventes et commandes</p>
+    </div>
+
+    <!-- Order Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <!-- Total Orders -->
+        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-md p-6 text-white">
+            <div class="flex items-center justify-between mb-2">
+                <div class="text-sm font-medium opacity-90">Total Commandes</div>
+                <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                    <i class="fas fa-shopping-bag text-2xl"></i>
+                </div>
+            </div>
+            <div class="text-3xl font-bold">{{ $totalOrders ?? 0 }}</div>
+            <div class="text-xs opacity-75 mt-2">
+                <i class="fas fa-clock mr-1"></i>Toutes périodes
+            </div>
+        </div>
+
+        <!-- Pending Orders -->
+        <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg shadow-md p-6 text-white">
+            <div class="flex items-center justify-between mb-2">
+                <div class="text-sm font-medium opacity-90">En Attente</div>
+                <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                    <i class="fas fa-clock text-2xl"></i>
+                </div>
+            </div>
+            <div class="text-3xl font-bold">{{ $pendingOrders ?? 0 }}</div>
+            <div class="text-xs opacity-75 mt-2">
+                <a href="{{ route('admin.orders.index', ['status' => 'pending']) }}" class="hover:underline">
+                    <i class="fas fa-eye mr-1"></i>Voir les commandes
+                </a>
+            </div>
+        </div>
+
+        <!-- Processing Orders -->
+        <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg shadow-md p-6 text-white">
+            <div class="flex items-center justify-between mb-2">
+                <div class="text-sm font-medium opacity-90">En Cours</div>
+                <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                    <i class="fas fa-box text-2xl"></i>
+                </div>
+            </div>
+            <div class="text-3xl font-bold">{{ $processingOrders ?? 0 }}</div>
+            <div class="text-xs opacity-75 mt-2">
+                <a href="{{ route('admin.orders.index', ['status' => 'processing']) }}" class="hover:underline">
+                    <i class="fas fa-eye mr-1"></i>Voir les commandes
+                </a>
+            </div>
+        </div>
+
+        <!-- Completed Orders -->
+        <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-md p-6 text-white">
+            <div class="flex items-center justify-between mb-2">
+                <div class="text-sm font-medium opacity-90">Complétées</div>
+                <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                    <i class="fas fa-check-circle text-2xl"></i>
+                </div>
+            </div>
+            <div class="text-3xl font-bold">{{ $completedOrders ?? 0 }}</div>
+            <div class="text-xs opacity-75 mt-2">
+                <a href="{{ route('admin.orders.index', ['status' => 'delivered']) }}" class="hover:underline">
+                    <i class="fas fa-eye mr-1"></i>Voir les commandes
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Revenue Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <!-- Total Revenue -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <div class="text-sm text-gray-600 mb-1">Revenu Total (Payé)</div>
+                    <div class="text-2xl font-bold text-green-600">{{ number_format($totalRevenue ?? 0, 0, ',', ' ') }} FCFA</div>
+                </div>
+                <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-coins text-green-600 text-2xl"></i>
+                </div>
+            </div>
+            <div class="text-xs text-gray-500">
+                <i class="fas fa-check-circle mr-1"></i>Paiements confirmés
+            </div>
+        </div>
+
+        <!-- Pending Revenue -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <div class="text-sm text-gray-600 mb-1">Revenu en Attente</div>
+                    <div class="text-2xl font-bold text-yellow-600">{{ number_format($pendingRevenue ?? 0, 0, ',', ' ') }} FCFA</div>
+                </div>
+                <div class="w-14 h-14 bg-yellow-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-hourglass-half text-yellow-600 text-2xl"></i>
+                </div>
+            </div>
+            <div class="text-xs text-gray-500">
+                <i class="fas fa-exclamation-circle mr-1"></i>En attente de paiement
+            </div>
+        </div>
+    </div>
+
+    <!-- Latest Orders Widget -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+            <h2 class="text-lg font-semibold text-gray-800 flex items-center">
+                <i class="fas fa-list-ul mr-2 text-blue-600"></i>
+                Dernières Commandes
+            </h2>
+            <a href="{{ route('admin.orders.index') }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center">
+                Voir tout
+                <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+
+        @if(isset($latestOrders) && $latestOrders->count() > 0)
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">N° Commande</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Articles</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Montant</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach($latestOrders as $order)
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-800 text-white">
+                                        {{ $order->order_number }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ $order->user->name ?? 'Guest' }}</div>
+                                    <div class="text-sm text-gray-500">{{ $order->shipping_phone }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        {{ $order->items->count() }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right">
+                                    <div class="text-sm font-semibold text-gray-900">{{ number_format($order->total_amount, 0, ',', ' ') }} F</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    {!! $order->status_badge !!}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                                    {{ $order->created_at->format('d/m/Y H:i') }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <a href="{{ route('admin.orders.show', $order->id) }}" class="text-blue-600 hover:text-blue-800 font-medium text-sm">
+                                        <i class="fas fa-eye mr-1"></i>Voir
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @else
+            <div class="text-center py-12">
+                <i class="fas fa-shopping-bag text-gray-300 text-6xl mb-4"></i>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Aucune commande</h3>
+                <p class="text-gray-500">Les nouvelles commandes apparaîtront ici.</p>
+            </div>
+        @endif
+    </div>
+</div>
 {{-- <div class="p-6">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         <div class="card bg-white rounded-lg shadow-md overflow-hidden">
@@ -333,5 +515,4 @@
         </div>
     </div>
 </div> --}}
-les statistique de vente et de stock et livraison seron present ici
 @endsection

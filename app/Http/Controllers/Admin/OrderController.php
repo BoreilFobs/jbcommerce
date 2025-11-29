@@ -228,4 +228,56 @@ class OrderController extends Controller
 
         return view('admin.orders.invoice', compact('order'));
     }
+    
+    /**
+     * Bulk update order status
+     */
+    public function bulkUpdateStatus(Request $request)
+    {
+        $request->validate([
+            'order_ids' => 'required|array',
+            'order_ids.*' => 'exists:orders,id',
+            'status' => 'required|in:pending,confirmed,processing,shipped,delivered,cancelled',
+        ]);
+
+        $orderIds = $request->order_ids;
+        $newStatus = $request->status;
+        $count = 0;
+
+        foreach ($orderIds as $orderId) {
+            $order = Order::find($orderId);
+            if ($order) {
+                $order->update(['status' => $newStatus]);
+                
+                // Update timestamps based on status
+                if ($newStatus === 'shipped' && !$order->shipped_at) {
+                    $order->update(['shipped_at' => now()]);
+                }
+                
+                if ($newStatus === 'delivered' && !$order->delivered_at) {
+                    $order->update(['delivered_at' => now()]);
+                }
+                
+                if ($newStatus === 'cancelled' && !$order->cancelled_at) {
+                    $order->update([
+                        'cancelled_at' => now(),
+                        'cancelled_reason' => 'Annulé en masse par l\'administrateur',
+                    ]);
+                    
+                    // Restore product quantities
+                    foreach ($order->items as $item) {
+                        if ($item->offer) {
+                            $item->offer->increment('quantity', $item->quantity);
+                        }
+                    }
+                }
+                
+                $count++;
+            }
+        }
+
+        return redirect()
+            ->route('admin.orders.index')
+            ->with('success', "{$count} commande(s) mise(s) à jour avec succès.");
+    }
 }

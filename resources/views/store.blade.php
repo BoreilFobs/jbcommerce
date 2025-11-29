@@ -251,7 +251,7 @@
                                                     <div class="product-item-add border border-top-0 rounded-bottom text-center p-4 pt-0">
                                                         @if($offer->quantity > 0)
                                                             @if(Auth::check())
-                                                                <a href="{{ url('/cart/' . $offer->id . '/create/' . Auth::id()) }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-3 w-100">
+                                                                <a href="{{ route('cart.add', $offer->id) }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-3 w-100">
                                                                     <i class="fas fa-shopping-cart me-2"></i>Ajouter au panier
                                                                 </a>
                                                             @else
@@ -276,7 +276,7 @@
                                                                     <i class="fas fa-eye me-1"></i>{{ $offer->views }}
                                                                 </span>
                                                                 @if(Auth::check())
-                                                                    <a href="{{ url('/wish-list/' . $offer->id . '/create/' . Auth::id()) }}" class="text-danger">
+                                                                    <a href="{{ route('wishlist.add', $offer->id) }}" class="text-danger">
                                                                         <i class="fas fa-heart fa-lg"></i>
                                                                     </a>
                                                                 @else

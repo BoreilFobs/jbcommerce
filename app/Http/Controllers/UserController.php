@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -60,6 +61,32 @@ class UserController extends Controller
             return redirect()->route('admin.users.index')->with('success', 'Utilisateur supprimé avec succès.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Erreur lors de la suppression de l\'utilisateur: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Reset user password (Admin only)
+     */
+    public function resetPassword(Request $request, $id)
+    {
+        $request->validate([
+            'new_password' => 'required|string|min:8|confirmed',
+        ], [
+            'new_password.required' => 'Le nouveau mot de passe est requis.',
+            'new_password.min' => 'Le mot de passe doit contenir au moins 8 caractères.',
+            'new_password.confirmed' => 'Les mots de passe ne correspondent pas.',
+        ]);
+
+        try {
+            $user = User::findOrFail($id);
+            
+            // Update password
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+
+            return redirect()->back()->with('success', 'Mot de passe réinitialisé avec succès pour ' . $user->name . '.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Erreur lors de la réinitialisation du mot de passe: ' . $e->getMessage());
         }
     }
 }

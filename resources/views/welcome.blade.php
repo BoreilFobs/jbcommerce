@@ -229,7 +229,7 @@
                                             </div>
                                             <div class="product-item-add border border-top-0 rounded-bottom text-center p-4 pt-0">
                                                 @if(Auth::check())
-                                                    <a href="{{ url('/cart/' . $offer->id . '/create/' . Auth::id()) }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-3">
+                                                    <a href="{{ route('cart.add', $offer->id) }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-3">
                                                         <i class="fas fa-shopping-cart me-2"></i>Ajouter au panier
                                                     </a>
                                                 @else
@@ -245,7 +245,7 @@
                                                     </div>
                                                     <div class="d-flex">
                                                         @if(Auth::check())
-                                                            <a href="{{ url('/wish-list/' . $offer->id . '/create/' . Auth::id()) }}" 
+                                                            <a href="{{ route('wishlist.add', $offer->id) }}" 
                                                                class="text-primary d-flex align-items-center justify-content-center" 
                                                                title="Ajouter aux favoris">
                                                                 <span class="rounded-circle btn-sm-square border">
@@ -306,7 +306,7 @@
                                             </div>
                                             <div class="product-item-add border border-top-0 rounded-bottom text-center p-4 pt-0">
                                                 @if(Auth::check())
-                                                    <a href="{{ url('/cart/' . $newArrival->id . '/create/' . Auth::id()) }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-3">
+                                                    <a href="{{ route('cart.add', $newArrival->id) }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-3">
                                                         <i class="fas fa-shopping-cart me-2"></i>Ajouter au panier
                                                     </a>
                                                 @else
@@ -322,7 +322,7 @@
                                                     </div>
                                                     <div class="d-flex">
                                                         @if(Auth::check())
-                                                            <a href="{{ url('/wish-list/' . $newArrival->id . '/create/' . Auth::id()) }}" 
+                                                            <a href="{{ route('wishlist.add', $newArrival->id) }}" 
                                                                class="text-primary d-flex align-items-center justify-content-center" 
                                                                title="Ajouter aux favoris">
                                                                 <span class="rounded-circle btn-sm-square border">
@@ -389,7 +389,7 @@
                                             </div>
                                             <div class="product-item-add border border-top-0 rounded-bottom text-center p-4 pt-0">
                                                 @if(Auth::check())
-                                                    <a href="{{ url('/cart/' . $bestseller->id . '/create/' . Auth::id()) }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-3">
+                                                    <a href="{{ route('cart.add', $bestseller->id) }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-3">
                                                         <i class="fas fa-shopping-cart me-2"></i>Ajouter au panier
                                                     </a>
                                                 @else
@@ -405,7 +405,7 @@
                                                     </div>
                                                     <div class="d-flex">
                                                         @if(Auth::check())
-                                                            <a href="{{ url('/wish-list/' . $bestseller->id . '/create/' . Auth::id()) }}" 
+                                                            <a href="{{ route('wishlist.add', $bestseller->id) }}" 
                                                                class="text-primary d-flex align-items-center justify-content-center" 
                                                                title="Ajouter aux favoris">
                                                                 <span class="rounded-circle btn-sm-square border">
@@ -510,14 +510,14 @@
                                 </div>
                                 <div class="products-mini-add border p-3">
                                     @if(Auth::check())
-                                        <a href="{{ url('/cart/' . $offer->id . '/create/' . Auth::id()) }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4"><i class="fas fa-shopping-cart me-2"></i> Ajouter au panier</a>
+                                        <a href="{{ route('cart.add', $offer->id) }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4"><i class="fas fa-shopping-cart me-2"></i> Ajouter au panier</a>
                                     @else
                                         <a href="{{ route('login') }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4"><i class="fas fa-shopping-cart me-2"></i> Ajouter au panier</a>
                                     @endif
                                     <div class="d-flex">
                                         <a href="#" class="text-primary d-flex align-items-center justify-content-center me-3"><span class="rounded-circle btn-sm-square border"><i class="fas fa-random"></i></i></a>
                                         @if(Auth::check())
-                                            <a href="{{ url('/wish-list/' . $offer->id . '/create/' . Auth::id()) }}" class="text-primary d-flex align-items-center justify-content-center me-0"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
+                                            <a href="{{ route('wishlist.add', $offer->id) }}" class="text-primary d-flex align-items-center justify-content-center me-0"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
                                         @else
                                             <a href="{{ route('login') }}" class="text-primary d-flex align-items-center justify-content-center me-0"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
                                         @endif
@@ -571,13 +571,13 @@
                                 </div>
                                 <div class="products-mini-add border p-3">
                                     @if(Auth::check())
-                                        <a href="{{ url('/cart/' . $bestseller->id . '/create/' . Auth::id()) }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4"><i class="fas fa-shopping-cart me-2"></i> Ajouter au panier</a>
+                                        <a href="{{ route('cart.add', $bestseller->id) }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4"><i class="fas fa-shopping-cart me-2"></i> Ajouter au panier</a>
                                     @else
                                         <a href="{{ route('login') }}" class="btn btn-primary border-secondary rounded-pill py-2 px-4"><i class="fas fa-shopping-cart me-2"></i> Ajouter au panier</a>
                                     @endif
                                     <div class="d-flex">
                                         @if(Auth::check())
-                                            <a href="{{ url('/wish-list/' . $bestseller->id . '/create/' . Auth::id()) }}" class="text-primary d-flex align-items-center justify-content-center me-0" title="Ajouter aux favoris"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
+                                            <a href="{{ route('wishlist.add', $bestseller->id) }}" class="text-primary d-flex align-items-center justify-content-center me-0" title="Ajouter aux favoris"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
                                         @else
                                             <a href="{{ route('login') }}" class="text-primary d-flex align-items-center justify-content-center me-0" title="Connectez-vous pour ajouter aux favoris"><span class="rounded-circle btn-sm-square border"><i class="fas fa-heart"></i></a>
                                         @endif

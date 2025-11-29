@@ -75,14 +75,14 @@
                             <div class="timeline-item {{ in_array($order->status, ['shipped', 'delivered']) ? 'active' : '' }}">
                                 <div class="timeline-marker"></div>
                                 <div class="timeline-content">
-                                    <h6>Expédiée</h6>
+                                    <h6>Prête pour Retrait/Livraison</h6>
                                     @if($order->shipped_at)
                                         <p class="text-muted small mb-0">{{ $order->shipped_at->format('d/m/Y à H:i') }}</p>
                                     @endif
                                     @if($order->tracking_number)
                                         <p class="text-primary small mb-0">
                                             <i class="fas fa-barcode me-1"></i>
-                                            Tracking: <strong>{{ $order->tracking_number }}</strong>
+                                            Réf: <strong>{{ $order->tracking_number }}</strong>
                                         </p>
                                     @endif
                                 </div>
@@ -91,9 +91,11 @@
                             <div class="timeline-item {{ $order->status === 'delivered' ? 'active' : '' }}">
                                 <div class="timeline-marker"></div>
                                 <div class="timeline-content">
-                                    <h6>Livrée</h6>
+                                    <h6>Livrée/Retirée</h6>
                                     @if($order->delivered_at)
                                         <p class="text-muted small mb-0">{{ $order->delivered_at->format('d/m/Y à H:i') }}</p>
+                                    @else
+                                        <p class="text-muted small mb-0">En attente</p>
                                     @endif
                                 </div>
                             </div>
@@ -238,8 +240,8 @@
                 <!-- Shipping Information -->
                 <div class="bg-light rounded p-4 wow fadeInUp" data-wow-delay="0.3s">
                     <h5 class="mb-3">
-                        <i class="fas fa-shipping-fast text-primary me-2"></i>
-                        Informations de Livraison
+                        <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                        Adresse de Livraison/Retrait
                     </h5>
                     
                     <p class="mb-2"><strong>{{ $order->shipping_name }}</strong></p>
@@ -257,6 +259,19 @@
                             <br><span class="ms-4">{{ $order->shipping_postal_code }}</span>
                         @endif
                     </p>
+                    
+                    @if($order->status === 'shipped')
+                        <div class="alert alert-success mt-3 mb-0 small">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>Retrait en magasin :</strong> Disponible maintenant à Bafoussam<br>
+                            <strong>Livraison :</strong> Arrivée prévue dans 1-2 jours
+                        </div>
+                    @elseif($order->status === 'processing')
+                        <div class="alert alert-info mt-3 mb-0 small">
+                            <i class="fas fa-box me-2"></i>
+                            Votre commande est en préparation. Disponible pour retrait ou livraison sous 1-2 jours.
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

@@ -152,18 +152,17 @@
                             </div>
                             
                             <div class="col-md-6">
-                                <div class="payment-option border rounded p-3 h-100 {{ old('payment_method') == 'mobile_money_mtn' ? 'border-primary bg-white' : '' }}" 
-                                     data-payment="mobile_money_mtn" style="cursor: pointer;">
+                                <div class="payment-option border rounded p-3 h-100 bg-light" 
+                                     data-payment="mobile_money_mtn" style="cursor: not-allowed; opacity: 0.6;">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="payment_method" 
-                                               id="mobile_money_mtn" value="mobile_money_mtn"
-                                               {{ old('payment_method') == 'mobile_money_mtn' ? 'checked' : '' }}>
-                                        <label class="form-check-label w-100" for="mobile_money_mtn">
+                                               id="mobile_money_mtn" value="mobile_money_mtn" disabled>
+                                        <label class="form-check-label w-100" for="mobile_money_mtn" style="cursor: not-allowed;">
                                             <div class="d-flex align-items-center">
-                                                <i class="fas fa-mobile-alt fa-2x text-warning me-3"></i>
+                                                <i class="fas fa-mobile-alt fa-2x text-muted me-3"></i>
                                                 <div>
-                                                    <h6 class="mb-0">MTN Mobile Money</h6>
-                                                    <small class="text-muted">Paiement mobile</small>
+                                                    <h6 class="mb-0 text-muted">MTN Mobile Money</h6>
+                                                    <small class="text-muted">Indisponible pour le moment</small>
                                                 </div>
                                             </div>
                                         </label>
@@ -172,18 +171,17 @@
                             </div>
                             
                             <div class="col-md-6">
-                                <div class="payment-option border rounded p-3 h-100 {{ old('payment_method') == 'mobile_money_orange' ? 'border-primary bg-white' : '' }}" 
-                                     data-payment="mobile_money_orange" style="cursor: pointer;">
+                                <div class="payment-option border rounded p-3 h-100 bg-light" 
+                                     data-payment="mobile_money_orange" style="cursor: not-allowed; opacity: 0.6;">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="payment_method" 
-                                               id="mobile_money_orange" value="mobile_money_orange"
-                                               {{ old('payment_method') == 'mobile_money_orange' ? 'checked' : '' }}>
-                                        <label class="form-check-label w-100" for="mobile_money_orange">
+                                               id="mobile_money_orange" value="mobile_money_orange" disabled>
+                                        <label class="form-check-label w-100" for="mobile_money_orange" style="cursor: not-allowed;">
                                             <div class="d-flex align-items-center">
-                                                <i class="fas fa-mobile-alt fa-2x text-danger me-3"></i>
+                                                <i class="fas fa-mobile-alt fa-2x text-muted me-3"></i>
                                                 <div>
-                                                    <h6 class="mb-0">Orange Money</h6>
-                                                    <small class="text-muted">Paiement mobile</small>
+                                                    <h6 class="mb-0 text-muted">Orange Money</h6>
+                                                    <small class="text-muted">Indisponible pour le moment</small>
                                                 </div>
                                             </div>
                                         </label>
@@ -192,18 +190,17 @@
                             </div>
                             
                             <div class="col-md-6">
-                                <div class="payment-option border rounded p-3 h-100 {{ old('payment_method') == 'bank_transfer' ? 'border-primary bg-white' : '' }}" 
-                                     data-payment="bank_transfer" style="cursor: pointer;">
+                                <div class="payment-option border rounded p-3 h-100 bg-light" 
+                                     data-payment="bank_transfer" style="cursor: not-allowed; opacity: 0.6;">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="payment_method" 
-                                               id="bank_transfer" value="bank_transfer"
-                                               {{ old('payment_method') == 'bank_transfer' ? 'checked' : '' }}>
-                                        <label class="form-check-label w-100" for="bank_transfer">
+                                               id="bank_transfer" value="bank_transfer" disabled>
+                                        <label class="form-check-label w-100" for="bank_transfer" style="cursor: not-allowed;">
                                             <div class="d-flex align-items-center">
-                                                <i class="fas fa-university fa-2x text-info me-3"></i>
+                                                <i class="fas fa-university fa-2x text-muted me-3"></i>
                                                 <div>
-                                                    <h6 class="mb-0">Virement Bancaire</h6>
-                                                    <small class="text-muted">Transfert bancaire</small>
+                                                    <h6 class="mb-0 text-muted">Virement Bancaire</h6>
+                                                    <small class="text-muted">Indisponible pour le moment</small>
                                                 </div>
                                             </div>
                                         </label>

@@ -53,8 +53,8 @@
                         
                         <div class="col-md-6">
                             <h5 class="mb-3">
-                                <i class="fas fa-shipping-fast text-primary me-2"></i>
-                                Livraison
+                                <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                Adresse de Livraison/Retrait
                             </h5>
                             <p class="mb-2">
                                 <strong>{{ $order->shipping_name }}</strong>
@@ -219,22 +219,22 @@
                         <div class="d-flex align-items-start mb-3">
                             <div class="step-icon bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
                                  style="width: 40px; height: 40px; min-width: 40px;">
-                                <i class="fas fa-truck"></i>
+                                <i class="fas fa-box-open"></i>
                             </div>
                             <div>
-                                <h6 class="mb-1">3. Expédition</h6>
-                                <p class="text-muted mb-0 small">Votre commande sera expédiée à votre adresse.</p>
+                                <h6 class="mb-1">3. Préparation</h6>
+                                <p class="text-muted mb-0 small">Votre commande est emballée et prête.</p>
                             </div>
                         </div>
                         
                         <div class="d-flex align-items-start">
                             <div class="step-icon bg-warning text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
                                  style="width: 40px; height: 40px; min-width: 40px;">
-                                <i class="fas fa-home"></i>
+                                <i class="fas fa-check-circle"></i>
                             </div>
                             <div>
-                                <h6 class="mb-1">4. Livraison</h6>
-                                <p class="text-muted mb-0 small">Vous recevrez votre commande (3-7 jours selon votre région).</p>
+                                <h6 class="mb-1">4. Livraison/Retrait</h6>
+                                <p class="text-muted mb-0 small">Livraison à Bafoussam (1-2 jours) ou retrait en magasin disponible.</p>
                             </div>
                         </div>
                     </div>
@@ -252,9 +252,12 @@
 
                 <!-- Contact Support -->
                 <div class="text-center mt-4 wow fadeInUp" data-wow-delay="0.7s">
-                    <p class="text-muted">
+                    <p class="text-muted mb-2">
                         <i class="fas fa-headset me-2"></i>
                         Besoin d'aide? <a href="{{ route('contact') }}" class="text-primary">Contactez-nous</a>
+                    </p>
+                    <p class="text-muted small">
+                        <i class="fas fa-phone me-2"></i>+237 657 528 859 / +237 693 662 715
                     </p>
                 </div>
             </div>

@@ -11,49 +11,46 @@ class CartController extends Controller
     /**
      * Display the user's cart
      */
-    public function index($id)
+    public function index()
     {
-        // Check if the authenticated user is accessing their own cart
-        if (!Auth::check() || Auth::id() != $id) {
+        if (!Auth::check()) {
             return redirect()->route('login')->with('error', 'Veuillez vous connecter pour accéder à votre panier.');
         }
 
-        $carts = Cart::where("user_id", $id)->get();
+        $carts = Cart::where("user_id", Auth::id())->get();
         return view("cart", compact('carts'));
     }
 
     /**
      * Add item to cart
      */
-    public function store($Oid, $Uid)
+    public function store($id)
     {
         if (!Auth::check()) {
             return redirect()->route('login')->with('error', 'Veuillez vous connecter pour ajouter des articles au panier.');
         }
 
-        // Check if user is accessing their own cart
-        if (Auth::id() != $Uid) {
-            return redirect()->back()->with('error', 'Action non autorisée.');
-        }
+        $userId = Auth::id();
+        $offerId = $id;
 
         // Check if item already exists in cart
-        $existingCart = Cart::where('user_id', $Uid)
-                           ->where('offer_id', $Oid)
+        $existingCart = Cart::where('user_id', $userId)
+                           ->where('offer_id', $offerId)
                            ->first();
 
         if ($existingCart) {
             // Update quantity if item exists
             $existingCart->quantity += 1;
             $existingCart->save();
-            return redirect('/cart/' . $Uid)->with('success', 'Quantité mise à jour dans le panier.');
+            return redirect()->route('cart.index')->with('success', 'Quantité mise à jour dans le panier.');
         } else {
             // Create new cart item
             Cart::create([
-                'offer_id' => $Oid,
-                'user_id' => $Uid,
+                'offer_id' => $offerId,
+                'user_id' => $userId,
                 'quantity' => 1,
             ]);
-            return redirect('/cart/' . $Uid)->with('success', 'Article ajouté au panier avec succès.');
+            return redirect()->route('cart.index')->with('success', 'Article ajouté au panier avec succès.');
         }
     }
 
@@ -75,14 +72,6 @@ class CartController extends Controller
 
         $cart->delete();
         return redirect()->back()->with('success', 'Article retiré du panier.');
-    }
-
-    /**
-     * Redirect to login if not authenticated
-     */
-    public function redirect()
-    {
-        return redirect()->route("login")->with('error', 'Veuillez vous connecter pour accéder à votre panier.');
     }
 
     /**

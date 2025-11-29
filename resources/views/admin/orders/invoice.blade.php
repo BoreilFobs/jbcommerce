@@ -2,9 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-sca                    <div class="company-info">
-                        <i class="fas fa-bolt me-2"></i>JB Shop
-                    </div>1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Facture #{{ $order->order_number }} - JB Shop</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -134,12 +132,12 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="company-logo">
-                        <i class="fas fa-bolt me-2"></i>ElectreoSphere
+                        <i class="fas fa-shopping-bag me-2"></i>JB Shop
                     </div>
                     <p class="mb-0">Électronique & High-Tech</p>
-                    <p class="mb-0 small">Cameroun</p>
-                    <p class="mb-0 small"><i class="fas fa-phone me-1"></i>+237 XXX XXX XXX</p>
-                    <p class="mb-0 small"><i class="fas fa-envelope me-1"></i>contact@electroesphere.com</p>
+                    <p class="mb-0 small">Bafoussam, Cameroun</p>
+                    <p class="mb-0 small"><i class="fas fa-phone me-1"></i>+237 657 528 859 / +237 693 662 715</p>
+                    <p class="mb-0 small"><i class="fas fa-envelope me-1"></i>brayeljunior8@gmail.com</p>
                 </div>
                 <div class="col-md-6 text-md-end mt-3 mt-md-0">
                     <div class="invoice-title">FACTURE</div>
@@ -248,7 +246,7 @@
                             <strong>{{ number_format($order->subtotal, 0, ',', ' ') }} FCFA</strong>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
-                            <span>Frais de livraison:</span>
+                            <span>Frais de livraison/retrait:</span>
                             <strong>{{ number_format($order->shipping_cost, 0, ',', ' ') }} FCFA</strong>
                         </div>
                         @if($order->discount_amount > 0)
@@ -343,9 +341,9 @@
                 <p class="mb-2"><strong>Merci pour votre commande!</strong></p>
                 <p class="mb-2 small">Pour toute question concernant cette facture, veuillez nous contacter:</p>
                 <p class="mb-0 small">
-                    <i class="fas fa-phone me-1"></i>+237 XXX XXX XXX | 
-                    <i class="fas fa-envelope me-1 ms-2"></i>contact@electroesphere.com | 
-                    <i class="fas fa-globe me-1 ms-2"></i>www.electroesphere.com
+                    <i class="fas fa-phone me-1"></i>+237 657 528 859 | 
+                    <i class="fas fa-envelope me-1 ms-2"></i>brayeljunior8@gmail.com | 
+                    <i class="fas fa-globe me-1 ms-2"></i>jbshop237.com
                 </p>
                 <hr class="my-3">
                 <p class="mb-0 small text-muted">
