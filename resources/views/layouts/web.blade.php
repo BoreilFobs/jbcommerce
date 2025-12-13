@@ -58,6 +58,12 @@
         <meta name="geo.position" content="5.4781;10.4178">
         <meta name="ICBM" content="5.4781, 10.4178">
         
+        <!-- CSRF Token -->
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        
+        <!-- Authentication Status (for FCM) -->
+        <meta name="user-authenticated" content="{{ Auth::check() ? 'true' : 'false' }}">
+        
         <!-- Business Meta Tags -->
         <meta name="contact" content="brayeljunior8@gmail.com">
         <meta name="telephone" content="+237657528859">
@@ -184,13 +190,22 @@
                         {{-- Auth/Logout Dropdown --}}
                         <div class="dropdown">
                             @auth
-                                <a href="#" class="dropdown-toggle text-muted ms-2" data-bs-toggle="dropdown"><small><i class="fa fa-user me-2"></i> Mon Compte</small></a> <div class="dropdown-menu rounded">
+                                <a href="#" class="dropdown-toggle text-muted ms-2" data-bs-toggle="dropdown"><small><i class="fa fa-user me-2"></i> Mon Compte</small></a> 
+                                <div class="dropdown-menu rounded">
+                                    <a href="{{ route('profile.edit') }}" class="dropdown-item">
+                                        <i class="fa fa-user-circle me-2"></i>Profil
+                                    </a>
+                                    <div class="dropdown-divider"></div>
                                     <form action="{{ route('logout') }}" method="POST" class="dropdown-item">
                                         @csrf
-                                        <button type="submit" style="background:none; border:none; padding:0; color:inherit;">Déconnexion</button> </form>
+                                        <button type="submit" style="background:none; border:none; padding:0; color:inherit; width:100%; text-align:left;">
+                                            <i class="fa fa-sign-out-alt me-2"></i>Déconnexion
+                                        </button>
+                                    </form>
                                 </div>
                             @else
-                                <a href={{ route("login")}} data-bs-toggle="modal" class="text-muted ms-2"><small><i class="fa fa-user me-2"></i> Connexion / Inscription</small></a> @endauth
+                                <a href="{{ route('login') }}" data-bs-toggle="modal" class="text-muted ms-2"><small><i class="fa fa-user me-2"></i> Connexion / Inscription</small></a>
+                            @endauth
                         </div>
                     </div>
                 </div>
@@ -251,13 +266,16 @@
                 <!-- User Account Section -->
                 <div class="p-3 border-bottom">
                     @auth
-                        <div class="d-flex align-items-center mb-2">
+                        <div class="d-flex align-items-center mb-3">
                             <i class="fas fa-user-circle fa-2x text-primary me-2"></i>
                             <div>
                                 <strong>{{ Auth::user()->name }}</strong>
-                                <br><small class="text-muted">{{ Auth::user()->email }}</small>
+                                <br><small class="text-muted">{{ Auth::user()->phone }}</small>
                             </div>
                         </div>
+                        <a href="{{ route('profile.edit') }}" class="btn btn-sm btn-outline-primary w-100 mb-2">
+                            <i class="fas fa-user-edit me-2"></i>Mon Compte
+                        </a>
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf
                             <button type="submit" class="btn btn-sm btn-outline-danger w-100">
@@ -528,11 +546,12 @@
                     <h5 class="text-primary mb-3">Service Client</h5>
                     <div class="d-flex flex-column">
                         @if (Auth::check())
+                            <a href="{{ route('profile.edit') }}" class="text-white-50 mb-2 footer-link"><i class="fas fa-angle-right me-2"></i>Mon Compte</a>
                             <a href="{{ route('cart.index') }}" class="text-white-50 mb-2 footer-link"><i class="fas fa-angle-right me-2"></i>Mon Panier</a>
                             <a href="{{ url('/wish-list/' . Auth::id()) }}" class="text-white-50 mb-2 footer-link"><i class="fas fa-angle-right me-2"></i>Mes Favoris</a>
                             <a href="{{ route('orders.index') }}" class="text-white-50 mb-2 footer-link"><i class="fas fa-angle-right me-2"></i>Mes Commandes</a>
                         @else
-                            <a href="{{ route('login') }}" class="text-white-50 mb-2 footer-link"><i class="fas fa-angle-right me-2"></i>Mon Compte</a>
+                            <a href="{{ route('login') }}" class="text-white-50 mb-2 footer-link"><i class="fas fa-angle-right me-2"></i>Connexion</a>
                         @endif
                         <a href="{{ route('orders.track') }}" class="text-white-50 mb-2 footer-link"><i class="fas fa-angle-right me-2"></i>Suivre Commande</a>
                     </div>
@@ -832,6 +851,13 @@
 
     <!-- PWA Initialization -->
     <script src="{{ asset('js/pwa-init.js') }}"></script>
+
+    <!-- Firebase Cloud Messaging -->
+    @auth
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
+    <script src="{{ asset('js/fcm-init.js') }}"></script>
+    @endauth
 
 </body>
 

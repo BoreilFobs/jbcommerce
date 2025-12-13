@@ -90,7 +90,21 @@ Route::middleware('auth')->group(function () {
     // Profile management
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    // FCM Token management
+    Route::post('/fcm/token', [App\Http\Controllers\FcmTokenController::class, 'store'])->name('fcm.token.store');
+    Route::delete('/fcm/token', [App\Http\Controllers\FcmTokenController::class, 'destroy'])->name('fcm.token.destroy');
+    
+    // Test Notification routes
+    Route::get('/test-notif', [App\Http\Controllers\TestNotificationController::class, 'index'])->name('test.notification.index');
+    Route::post('/test-notif', [App\Http\Controllers\TestNotificationController::class, 'send'])->name('test.notification');
+    
+    // FCM Debug page
+    Route::get('/fcm-debug', function() {
+        return view('fcm-debug');
+    })->name('fcm.debug');
     
     // Wishlist management
     Route::get('/wish-list', [WishesController::class, 'index'])->name('wishlist.index');
