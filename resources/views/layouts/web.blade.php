@@ -148,6 +148,8 @@
 
 
     <body>
+        <!-- Connection Status Component -->
+        @include('components.connection-status')
 
         <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
             <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
@@ -291,6 +293,9 @@
                     @endif
                     <a href="{{ url('/contact') }}" class="mobile-menu-item {{ request()->is('contact') ? 'active' : '' }}">
                         <i class="fas fa-envelope me-3"></i>Contact
+                    </a>
+                     <a href="{{ url('/track-order') }}" class="mobile-menu-item {{ request()->is('contact') ? 'active' : '' }}">
+                        <i class="fas fa-envelope me-3"></i>Suivre Ma Comande
                     </a>
                     <a href="{{ url('/about') }}" class="mobile-menu-item {{ request()->is('about') ? 'active' : '' }}">
                         <i class="fas fa-info-circle me-3"></i>À Propos
@@ -825,6 +830,8 @@
         }
     </script>
 
+    <!-- PWA Initialization -->
+    <script src="{{ asset('js/pwa-init.js') }}"></script>
 
 </body>
 

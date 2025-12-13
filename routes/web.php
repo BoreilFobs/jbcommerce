@@ -27,6 +27,11 @@ Route::get('/product/details/{id}', [OffersController::class, 'show'])->name('pr
 
 Route::get('/offers/new-arrivals', [WelcomeController::class, 'newArrivals'])->name('offers.newArrivals');
 
+// Offline Page
+Route::get('/offline', function () {
+    return view('offline');
+})->name('offline');
+
 // SEO Routes
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 

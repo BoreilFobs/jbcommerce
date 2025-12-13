@@ -123,6 +123,9 @@
 </head>
 
 <body class="bg-gray-100">
+    <!-- Connection Status Component -->
+    @include('components.connection-status')
+    
     <div class="page-loader-wrapper fixed inset-0 flex items-center justify-center bg-white z-50 hidden">
         <span class="loader block w-12 h-12 border-4 border-t-4 border-blue-500 rounded-full animate-spin"></span>
     </div>
@@ -335,6 +338,9 @@
             });
         });
     </script>
+    
+    <!-- PWA Initialization -->
+    <script src="{{ asset('js/pwa-init.js') }}"></script>
 </body>
 
 </html>
