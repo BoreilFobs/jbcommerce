@@ -1,10 +1,18 @@
 // Service Worker for JB Shop - PWA with Offline Support
-// Version 1.0.0
+// Version 2.0.0 - Enhanced caching with real-time updates
 
-const CACHE_VERSION = 'jbshop-v1.0.0';
+const CACHE_VERSION = 'jbshop-v2.0.0';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const DYNAMIC_CACHE = `${CACHE_VERSION}-dynamic`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
+
+// Cache expiration times (in milliseconds)
+const CACHE_EXPIRATION = {
+    dynamic: 5 * 60 * 1000,      // 5 minutes for dynamic content
+    api: 2 * 60 * 1000,          // 2 minutes for API calls
+    images: 7 * 24 * 60 * 60 * 1000, // 7 days for images
+    static: 30 * 24 * 60 * 60 * 1000 // 30 days for static assets
+};
 
 // Core assets to cache immediately (shell architecture)
 const CORE_ASSETS = [
@@ -25,17 +33,40 @@ const CORE_ASSETS = [
     '/img/placeholder.svg'
 ];
 
-// API endpoints that need network-first strategy
+// API endpoints that need network-first strategy with cache invalidation
 const API_ENDPOINTS = [
     '/api/',
     '/cart/',
     '/checkout/',
-    '/orders/'
+    '/orders/',
+    '/fcm/token'
+];
+
+// Dynamic content that needs frequent updates
+const DYNAMIC_CONTENT = [
+    '/orders',
+    '/cart',
+    '/wishlist',
+    '/profile'
 ];
 
 // Maximum cache sizes
 const MAX_DYNAMIC_CACHE_SIZE = 50;
 const MAX_IMAGE_CACHE_SIZE = 100;
+
+// Online status detection
+let isOnline = true;
+self.addEventListener('online', () => {
+    isOnline = true;
+    console.log('[Service Worker] Device is online');
+    // Invalidate dynamic cache when coming back online
+    invalidateDynamicCache();
+});
+
+self.addEventListener('offline', () => {
+    isOnline = false;
+    console.log('[Service Worker] Device is offline');
+});
 
 // Install event - cache core assets
 self.addEventListener('install', (event) => {
@@ -79,7 +110,7 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// Fetch event - implement caching strategies
+// Fetch event - implement caching strategies with real-time updates
 self.addEventListener('fetch', (event) => {
     const { request } = event;
     const url = new URL(request.url);
@@ -94,55 +125,108 @@ self.addEventListener('fetch', (event) => {
         return;
     }
     
-    // Handle different types of requests with appropriate strategies
-    
-    // 1. Core static assets - Cache First (shell architecture)
-    if (CORE_ASSETS.some(asset => url.pathname === asset || url.pathname.startsWith(asset))) {
-        event.respondWith(cacheFirst(request, STATIC_CACHE));
+    // Skip FCM and Firebase requests (handle separately)
+    if (url.pathname.includes('firebase') || url.hostname.includes('googleapis')) {
+        event.respondWith(fetch(request));
         return;
     }
     
-    // 2. Images - Cache First with fallback
+    // Handle different types of requests with appropriate strategies
+    
+    // 1. Core static assets - Cache First with expiration check
+    if (CORE_ASSETS.some(asset => url.pathname === asset || url.pathname.startsWith(asset))) {
+        event.respondWith(cacheFirstWithExpiration(request, STATIC_CACHE, CACHE_EXPIRATION.static));
+        return;
+    }
+    
+    // 2. Images - Cache First with expiration and fallback
     if (request.destination === 'image' || url.pathname.match(/\.(jpg|jpeg|png|gif|svg|webp|ico)$/i)) {
         event.respondWith(cacheFirstImages(request));
         return;
     }
     
-    // 3. API calls and dynamic content - Network First
+    // 3. API calls - Network First with short cache expiration
     if (API_ENDPOINTS.some(endpoint => url.pathname.startsWith(endpoint))) {
-        event.respondWith(networkFirst(request));
+        event.respondWith(networkFirstWithExpiration(request, CACHE_EXPIRATION.api));
         return;
     }
     
-    // 4. HTML pages - Network First with offline fallback
+    // 4. Dynamic content (orders, cart, etc.) - Network First with immediate update
+    if (DYNAMIC_CONTENT.some(endpoint => url.pathname.startsWith(endpoint))) {
+        event.respondWith(networkFirstWithImmediateUpdate(request));
+        return;
+    }
+    
+    // 5. HTML pages - Network First with offline fallback and expiration
     if (request.headers.get('accept')?.includes('text/html')) {
-        event.respondWith(networkFirstWithOffline(request));
+        event.respondWith(networkFirstWithOfflineAndExpiration(request));
         return;
     }
     
-    // 5. Everything else - Stale While Revalidate
-    event.respondWith(staleWhileRevalidate(request));
+    // 6. Everything else - Stale While Revalidate with expiration check
+    event.respondWith(staleWhileRevalidateWithExpiration(request));
 });
 
-// Cache First Strategy (for static assets)
-async function cacheFirst(request, cacheName = STATIC_CACHE) {
+// Helper: Check if cached response is expired
+function isCacheExpired(cachedResponse, maxAge) {
+    if (!cachedResponse) return true;
+    
+    const cachedDate = cachedResponse.headers.get('sw-cache-date');
+    if (!cachedDate) return true;
+    
+    const age = Date.now() - parseInt(cachedDate, 10);
+    return age > maxAge;
+}
+
+// Helper: Add cache date to response
+function addCacheDate(response) {
+    const clonedResponse = response.clone();
+    const headers = new Headers(clonedResponse.headers);
+    headers.set('sw-cache-date', Date.now().toString());
+    
+    return new Response(clonedResponse.body, {
+        status: clonedResponse.status,
+        statusText: clonedResponse.statusText,
+        headers: headers
+    });
+}
+
+// Cache First with Expiration Check
+async function cacheFirstWithExpiration(request, cacheName = STATIC_CACHE, maxAge = CACHE_EXPIRATION.static) {
     const cachedResponse = await caches.match(request);
     
-    if (cachedResponse) {
+    // Check if cache is still valid
+    if (cachedResponse && !isCacheExpired(cachedResponse, maxAge)) {
+        // Cache is valid, but update in background if online
+        if (isOnline) {
+            fetch(request).then(networkResponse => {
+                if (networkResponse.ok) {
+                    caches.open(cacheName).then(cache => {
+                        cache.put(request, addCacheDate(networkResponse));
+                    });
+                }
+            }).catch(() => {});
+        }
         return cachedResponse;
     }
     
+    // Cache expired or doesn't exist, fetch from network
     try {
         const networkResponse = await fetch(request);
         
         if (networkResponse.ok) {
             const cache = await caches.open(cacheName);
-            cache.put(request, networkResponse.clone());
+            cache.put(request, addCacheDate(networkResponse.clone()));
         }
         
         return networkResponse;
     } catch (error) {
-        console.error('[Service Worker] Cache First failed:', error);
+        // Network failed, return expired cache if available
+        if (cachedResponse) {
+            console.log('[Service Worker] Returning expired cache for:', request.url);
+            return cachedResponse;
+        }
+        console.error('[Service Worker] Cache First with Expiration failed:', error);
         throw error;
     }
 }
@@ -184,14 +268,14 @@ async function cacheFirstImages(request) {
     }
 }
 
-// Network First Strategy (for dynamic content)
-async function networkFirst(request) {
+// Network First with Expiration (for API calls)
+async function networkFirstWithExpiration(request, maxAge = CACHE_EXPIRATION.api) {
     try {
         const networkResponse = await fetch(request);
         
         if (networkResponse.ok) {
             const cache = await caches.open(DYNAMIC_CACHE);
-            cache.put(request, networkResponse.clone());
+            cache.put(request, addCacheDate(networkResponse.clone()));
             
             // Limit cache size
             limitCacheSize(DYNAMIC_CACHE, MAX_DYNAMIC_CACHE_SIZE);
@@ -201,22 +285,40 @@ async function networkFirst(request) {
     } catch (error) {
         const cachedResponse = await caches.match(request);
         
-        if (cachedResponse) {
+        // Only use cache if not expired
+        if (cachedResponse && !isCacheExpired(cachedResponse, maxAge)) {
+            console.log('[Service Worker] Using cached API response (not expired)');
             return cachedResponse;
+        }
+        
+        // Return expired cache with warning header
+        if (cachedResponse) {
+            console.log('[Service Worker] Using expired cached API response (offline)');
+            const headers = new Headers(cachedResponse.headers);
+            headers.set('X-Cache-Status', 'EXPIRED');
+            return new Response(cachedResponse.body, {
+                status: cachedResponse.status,
+                statusText: cachedResponse.statusText,
+                headers: headers
+            });
         }
         
         throw error;
     }
 }
 
-// Network First with Offline Page Fallback
-async function networkFirstWithOffline(request) {
+// Network First with Immediate Update (for dynamic content like orders)
+async function networkFirstWithImmediateUpdate(request) {
     try {
         const networkResponse = await fetch(request);
         
         if (networkResponse.ok) {
             const cache = await caches.open(DYNAMIC_CACHE);
-            cache.put(request, networkResponse.clone());
+            // Always update cache with latest data
+            await cache.put(request, addCacheDate(networkResponse.clone()));
+            
+            // Notify clients about the update
+            notifyClientsAboutUpdate(request.url);
         }
         
         return networkResponse;
@@ -224,7 +326,46 @@ async function networkFirstWithOffline(request) {
         const cachedResponse = await caches.match(request);
         
         if (cachedResponse) {
-            return cachedResponse;
+            console.log('[Service Worker] Using cached response (offline)');
+            const headers = new Headers(cachedResponse.headers);
+            headers.set('X-Cache-Status', 'OFFLINE');
+            return new Response(cachedResponse.body, {
+                status: cachedResponse.status,
+                statusText: cachedResponse.statusText,
+                headers: headers
+            });
+        }
+        
+        throw error;
+    }
+}
+
+// Network First with Offline Page Fallback and Expiration
+async function networkFirstWithOfflineAndExpiration(request) {
+    try {
+        const networkResponse = await fetch(request);
+        
+        if (networkResponse.ok) {
+            const cache = await caches.open(DYNAMIC_CACHE);
+            await cache.put(request, addCacheDate(networkResponse.clone()));
+        }
+        
+        return networkResponse;
+    } catch (error) {
+        const cachedResponse = await caches.match(request);
+        
+        if (cachedResponse) {
+            // Add header to indicate cached content
+            const headers = new Headers(cachedResponse.headers);
+            headers.set('X-Cache-Status', 'OFFLINE');
+            if (isCacheExpired(cachedResponse, CACHE_EXPIRATION.dynamic)) {
+                headers.set('X-Cache-Expired', 'true');
+            }
+            return new Response(cachedResponse.body, {
+                status: cachedResponse.status,
+                statusText: cachedResponse.statusText,
+                headers: headers
+            });
         }
         
         // Return offline page
@@ -239,15 +380,20 @@ async function networkFirstWithOffline(request) {
     }
 }
 
-// Stale While Revalidate Strategy
-async function staleWhileRevalidate(request) {
+// Stale While Revalidate with Expiration Check
+async function staleWhileRevalidateWithExpiration(request) {
     const cachedResponse = await caches.match(request);
     
+    // Always try to fetch fresh data in background
     const fetchPromise = fetch(request)
         .then((networkResponse) => {
             if (networkResponse.ok) {
                 const cache = caches.open(DYNAMIC_CACHE);
-                cache.then(c => c.put(request, networkResponse.clone()));
+                cache.then(c => {
+                    c.put(request, addCacheDate(networkResponse.clone()));
+                    // Notify clients about update
+                    notifyClientsAboutUpdate(request.url);
+                });
             }
             return networkResponse;
         })
@@ -282,6 +428,50 @@ async function syncOrders() {
     console.log('[Service Worker] Syncing orders...');
 }
 
+// Notify all clients about content updates
+async function notifyClientsAboutUpdate(url) {
+    const clients = await self.clients.matchAll({ includeUncontrolled: true, type: 'window' });
+    clients.forEach(client => {
+        client.postMessage({
+            type: 'CONTENT_UPDATED',
+            url: url,
+            timestamp: Date.now()
+        });
+    });
+}
+
+// Invalidate dynamic cache (call when coming back online)
+async function invalidateDynamicCache() {
+    console.log('[Service Worker] Invalidating dynamic cache...');
+    const cache = await caches.open(DYNAMIC_CACHE);
+    const requests = await cache.keys();
+    
+    // Remove expired items
+    const now = Date.now();
+    for (const request of requests) {
+        const response = await cache.match(request);
+        if (response && isCacheExpired(response, CACHE_EXPIRATION.dynamic)) {
+            await cache.delete(request);
+            console.log('[Service Worker] Removed expired cache:', request.url);
+        }
+    }
+}
+
+// Clear all caches for specific URL patterns
+async function clearCacheForPattern(pattern) {
+    const cacheNames = await caches.keys();
+    for (const cacheName of cacheNames) {
+        const cache = await caches.open(cacheName);
+        const requests = await cache.keys();
+        for (const request of requests) {
+            if (request.url.includes(pattern)) {
+                await cache.delete(request);
+                console.log('[Service Worker] Cleared cache for:', request.url);
+            }
+        }
+    }
+}
+
 // Push notification support
 self.addEventListener('push', (event) => {
     const data = event.data ? event.data.json() : {};
@@ -308,20 +498,68 @@ self.addEventListener('notificationclick', (event) => {
     );
 });
 
-// Message handler for cache updates
+// Message handler for cache updates and control
 self.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'SKIP_WAITING') {
+    const { data } = event;
+    
+    if (!data) return;
+    
+    // Skip waiting and activate new service worker
+    if (data.type === 'SKIP_WAITING') {
         self.skipWaiting();
+        return;
     }
     
-    if (event.data && event.data.type === 'CLEAR_CACHE') {
+    // Clear all caches
+    if (data.type === 'CLEAR_CACHE') {
         event.waitUntil(
             caches.keys().then((cacheNames) => {
                 return Promise.all(
                     cacheNames.map((cacheName) => caches.delete(cacheName))
                 );
+            }).then(() => {
+                console.log('[Service Worker] All caches cleared');
+                event.ports[0]?.postMessage({ success: true });
             })
         );
+        return;
+    }
+    
+    // Clear specific cache
+    if (data.type === 'CLEAR_CACHE_FOR_URL') {
+        event.waitUntil(
+            clearCacheForPattern(data.url).then(() => {
+                console.log('[Service Worker] Cache cleared for:', data.url);
+                event.ports[0]?.postMessage({ success: true });
+            })
+        );
+        return;
+    }
+    
+    // Force update specific URL
+    if (data.type === 'FORCE_UPDATE') {
+        event.waitUntil(
+            fetch(data.url).then(response => {
+                if (response.ok) {
+                    return caches.open(DYNAMIC_CACHE).then(cache => {
+                        return cache.put(data.url, addCacheDate(response));
+                    });
+                }
+            }).then(() => {
+                console.log('[Service Worker] Force updated:', data.url);
+                event.ports[0]?.postMessage({ success: true });
+            }).catch(error => {
+                console.error('[Service Worker] Force update failed:', error);
+                event.ports[0]?.postMessage({ success: false, error: error.message });
+            })
+        );
+        return;
+    }
+    
+    // Check online status
+    if (data.type === 'CHECK_ONLINE') {
+        event.ports[0]?.postMessage({ isOnline: isOnline });
+        return;
     }
 });
 

@@ -14,8 +14,20 @@ const firebaseConfig = {
 (function() {
     'use strict';
     
+    // Check HTTPS requirement (not required for localhost)
+    const isSecure = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    if (!isSecure) {
+        console.error('[FCM] HTTPS is required for push notifications (except localhost)');
+        return;
+    }
+    
     // Check if Firebase and messaging are supported
-    if (!('firebase' in window) || !firebase.messaging.isSupported()) {
+    if (!('firebase' in window)) {
+        console.error('[FCM] Firebase library not loaded');
+        return;
+    }
+    
+    if (!firebase.messaging.isSupported()) {
         console.warn('[FCM] Firebase Messaging not supported in this browser');
         return;
     }
@@ -26,6 +38,7 @@ const firebaseConfig = {
         const messaging = firebase.messaging();
         
         console.log('[FCM] Firebase initialized successfully');
+        console.log('[FCM] Running on:', location.protocol + '//' + location.host);
 
         // Request permission and get token
         function requestNotificationPermission() {
@@ -40,14 +53,51 @@ const firebaseConfig = {
             });
         }
 
+        // Register service worker first
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                return navigator.serviceWorker.register('/firebase-messaging-sw.js', {
+                    scope: '/'
+                })
+                .then(registration => {
+                    console.log('[FCM] Service Worker registered:', registration.scope);
+                    
+                    // Update on change
+                    registration.addEventListener('updatefound', () => {
+                        console.log('[FCM] Service Worker update found');
+                    });
+                    
+                    return registration;
+                })
+                .catch(err => {
+                    console.error('[FCM] Service Worker registration failed:', err);
+                    return null;
+                });
+            } else {
+                console.warn('[FCM] Service Workers not supported');
+                return Promise.resolve(null);
+            }
+        }
+
         // Get FCM token
         function getToken() {
-            return messaging.getToken({
-                vapidKey: 'BFa-RUn46d5nfESUlVj__OfNoYCZyeGVo9lLDhTOtRjpVYv8qt9s72oXmX96-qDG8j0gQ1qPj_WRHIy4jblmTpA' // Get from Firebase Console > Project Settings > Cloud Messaging
+            return registerServiceWorker().then(registration => {
+                if (!registration) {
+                    console.warn('[FCM] Service Worker not available, getting token anyway...');
+                }
+                
+                return messaging.getToken({
+                    vapidKey: 'BFgL0kPWLG1VlQYRkzLLGYD-Xx4e-E-Aui8xvWBZz7W3L4f8Gm5t3NXMkMF-6OzQF8-kZF0vBjUxQvMfHwJXLXY',
+                    serviceWorkerRegistration: registration
+                });
             }).then(currentToken => {
                 if (currentToken) {
                     console.log('[FCM] Token received:', currentToken.substring(0, 20) + '...');
                     sendTokenToServer(currentToken);
+                    
+                    // Store for mobile app detection
+                    localStorage.setItem('fcm_token', currentToken);
+                    
                     return currentToken;
                 } else {
                     console.warn('[FCM] No token available. Request permission to generate one.');
@@ -55,6 +105,9 @@ const firebaseConfig = {
                 }
             }).catch(err => {
                 console.error('[FCM] Error getting token:', err);
+                if (err.code === 'messaging/permission-blocked') {
+                    console.error('[FCM] Notification permission is blocked. Please enable in browser settings.');
+                }
                 return null;
             });
         }
@@ -195,6 +248,20 @@ const firebaseConfig = {
             }, 8000);
         }
 
+        // Detect if running in mobile app (WebView)
+        function isWebView() {
+            const ua = navigator.userAgent.toLowerCase();
+            return (ua.includes('wv') || 
+                    ua.includes('webview') || 
+                    window.ReactNativeWebView !== undefined ||
+                    window.flutter_inappwebview !== undefined);
+        }
+
+        // Detect mobile device
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
         // Initialize on page load
         window.addEventListener('load', function() {
             // Only request permission if user is authenticated
@@ -202,17 +269,33 @@ const firebaseConfig = {
             const isAuthenticated = metaTag && metaTag.content === 'true';
 
             if (isAuthenticated) {
+                console.log('[FCM] User authenticated, initializing...');
+                console.log('[FCM] Mobile:', isMobile());
+                console.log('[FCM] WebView:', isWebView());
+                console.log('[FCM] Permission:', Notification.permission);
+
                 // Check if we already have permission
                 if (Notification.permission === 'granted') {
+                    console.log('[FCM] Permission already granted, getting token...');
                     getToken();
                 } else if (Notification.permission !== 'denied') {
-                    // Show a custom prompt to ask user
+                    // For mobile devices, show prompt immediately
+                    const delay = isMobile() ? 1000 : 2000;
+                    
                     setTimeout(() => {
-                        if (confirm('Voulez-vous recevoir des notifications sur vos commandes?')) {
+                        const message = isMobile() 
+                            ? 'Activez les notifications pour suivre vos commandes en temps réel!' 
+                            : 'Voulez-vous recevoir des notifications sur vos commandes?';
+                            
+                        if (confirm(message)) {
                             requestNotificationPermission();
                         }
-                    }, 2000);
+                    }, delay);
+                } else {
+                    console.warn('[FCM] Notification permission denied');
                 }
+            } else {
+                console.log('[FCM] User not authenticated, skipping initialization');
             }
         });
 
@@ -236,11 +319,50 @@ const firebaseConfig = {
             }
         });
 
+        // WebView communication for React Native
+        function sendToWebView(type, data) {
+            if (window.ReactNativeWebView) {
+                window.ReactNativeWebView.postMessage(JSON.stringify({ type, data }));
+                console.log('[FCM] Sent to React Native WebView:', type);
+            }
+        }
+
+        // Listen for messages from React Native
+        window.addEventListener('message', function(event) {
+            try {
+                const message = JSON.parse(event.data);
+                if (message.type === 'FCM_TOKEN' && message.token) {
+                    console.log('[FCM] Received token from React Native');
+                    sendTokenToServer(message.token);
+                    localStorage.setItem('fcm_token_native', message.token);
+                }
+            } catch (e) {
+                // Ignore non-JSON messages
+            }
+        });
+
+        // For Android WebView
+        document.addEventListener('message', function(event) {
+            try {
+                const message = JSON.parse(event.data);
+                if (message.type === 'FCM_TOKEN' && message.token) {
+                    console.log('[FCM] Received token from Android WebView');
+                    sendTokenToServer(message.token);
+                    localStorage.setItem('fcm_token_native', message.token);
+                }
+            } catch (e) {
+                // Ignore non-JSON messages
+            }
+        });
+
         // Expose FCM utilities globally
         window.FCM = {
             requestPermission: requestNotificationPermission,
             getToken: getToken,
-            hasPermission: () => Notification.permission === 'granted'
+            hasPermission: () => Notification.permission === 'granted',
+            isWebView: isWebView,
+            isMobile: isMobile,
+            sendToWebView: sendToWebView
         };
 
     } catch (error) {

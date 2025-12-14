@@ -25,15 +25,18 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
     console.log('[FCM SW] Received background message:', payload);
 
-    const notificationTitle = payload.notification.title;
+    const notificationTitle = payload.notification?.title || 'Nouvelle notification';
     const notificationOptions = {
-        body: payload.notification.body,
+        body: payload.notification?.body || '',
         icon: '/img/logo.svg',
         badge: '/img/logo.svg',
-        tag: payload.data?.order_id || 'notification',
-        data: payload.data,
+        tag: payload.data?.order_id || 'notification-' + Date.now(),
+        data: payload.data || {},
         requireInteraction: true,
-        vibrate: [200, 100, 200],
+        vibrate: [200, 100, 200, 100, 200],
+        timestamp: Date.now(),
+        renotify: true,
+        silent: false,
         actions: [
             {
                 action: 'view',
@@ -47,6 +50,7 @@ messaging.onBackgroundMessage((payload) => {
         ]
     };
 
+    // Show notification
     return self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
@@ -57,36 +61,51 @@ self.addEventListener('notificationclick', (event) => {
     event.notification.close();
 
     const data = event.notification.data || {};
-    let urlToOpen = '/orders';
+    const baseUrl = self.location.origin;
+    let urlToOpen = baseUrl + '/orders';
 
     // Determine URL based on notification type
     if (data.type === 'order_placed' || data.type === 'order_status_changed') {
-        urlToOpen = `/orders/${data.order_id}`;
+        urlToOpen = baseUrl + `/orders/${data.order_id}`;
     } else if (data.type === 'promotion') {
-        urlToOpen = '/store';
+        urlToOpen = baseUrl + '/shop';
+    } else if (data.click_action && data.click_action !== 'ORDER_DETAILS') {
+        urlToOpen = baseUrl + data.click_action;
     }
+
+    console.log('[FCM SW] Opening URL:', urlToOpen);
 
     // Handle action buttons
     if (event.action === 'close') {
+        console.log('[FCM SW] Close action clicked');
         return;
     }
 
     // Open or focus the app
     event.waitUntil(
-        clients.matchAll({ type: 'window', includeUncontrolled: true })
-            .then((clientList) => {
-                // Check if app is already open
-                for (const client of clientList) {
-                    if (client.url.includes(urlToOpen) && 'focus' in client) {
-                        return client.focus();
-                    }
+        clients.matchAll({ 
+            type: 'window', 
+            includeUncontrolled: true 
+        }).then((clientList) => {
+            // Try to focus existing window with same origin
+            for (const client of clientList) {
+                if (client.url.startsWith(baseUrl) && 'focus' in client) {
+                    console.log('[FCM SW] Focusing existing window');
+                    return client.focus().then(() => {
+                        // Navigate to the target URL
+                        return client.navigate(urlToOpen);
+                    });
                 }
-                
-                // Open new window if app is not open
-                if (clients.openWindow) {
-                    return clients.openWindow(urlToOpen);
-                }
-            })
+            }
+            
+            // Open new window if app is not open
+            if (clients.openWindow) {
+                console.log('[FCM SW] Opening new window');
+                return clients.openWindow(urlToOpen);
+            }
+        }).catch(err => {
+            console.error('[FCM SW] Error handling notification click:', err);
+        })
     );
 });
 

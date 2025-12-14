@@ -15,6 +15,52 @@
         console.log('[PWA] Service Workers not supported in this browser');
     }
     
+    // Listen for messages from service worker
+    if (navigator.serviceWorker) {
+        navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage);
+    }
+    
+    // Handle messages from service worker
+    function handleServiceWorkerMessage(event) {
+        const { data } = event;
+        
+        if (!data) return;
+        
+        // Content updated - show notification or reload
+        if (data.type === 'CONTENT_UPDATED') {
+            console.log('[PWA] Content updated:', data.url);
+            
+            // Check if current page was updated
+            if (window.location.pathname === new URL(data.url).pathname) {
+                showContentUpdateBanner();
+            }
+        }
+    }
+    
+    // Show banner when content is updated
+    function showContentUpdateBanner() {
+        // Remove existing banner if any
+        const existing = document.getElementById('content-update-banner');
+        if (existing) existing.remove();
+        
+        const banner = document.createElement('div');
+        banner.id = 'content-update-banner';
+        banner.className = 'content-update-banner';
+        banner.innerHTML = `
+            <div class="content-update-banner-inner">
+                <span><i class="fas fa-sync-alt"></i> Nouveau contenu disponible</span>
+                <button onclick="window.PWA.reloadPage()" class="btn btn-sm btn-light">Rafraîchir</button>
+                <button onclick="document.getElementById('content-update-banner').remove()" class="btn btn-sm btn-link">×</button>
+            </div>
+        `;
+        document.body.appendChild(banner);
+        
+        // Auto-hide after 10 seconds
+        setTimeout(() => {
+            if (banner.parentNode) banner.remove();
+        }, 10000);
+    }
+    
     // Register Service Worker
     async function registerServiceWorker() {
         try {
@@ -36,14 +82,51 @@
                 });
             });
             
-            // Periodic update check (every hour)
+            // Periodic update check (every 30 minutes for dynamic content)
             setInterval(() => {
                 registration.update();
-            }, 3600000);
+            }, 1800000);
+            
+            // Check for cache freshness on page load
+            checkCacheFreshness();
             
         } catch (error) {
             console.error('[PWA] Service Worker registration failed:', error);
         }
+    }
+    
+    // Check if cached content is fresh
+    async function checkCacheFreshness() {
+        const response = await fetch(window.location.href);
+        const cacheStatus = response.headers.get('X-Cache-Status');
+        
+        if (cacheStatus === 'OFFLINE' || cacheStatus === 'EXPIRED') {
+            console.log('[PWA] Displaying cached content (offline or expired)');
+            showOfflineBanner();
+        }
+    }
+    
+    // Show offline banner
+    function showOfflineBanner() {
+        const banner = document.createElement('div');
+        banner.id = 'offline-banner';
+        banner.className = 'offline-banner';
+        banner.innerHTML = `
+            <div class="offline-banner-inner">
+                <i class="fas fa-wifi-slash"></i>
+                <span>Mode hors ligne - Certaines informations peuvent ne pas être à jour</span>
+            </div>
+        `;
+        document.body.insertBefore(banner, document.body.firstChild);
+        
+        // Remove when online
+        window.addEventListener('online', () => {
+            banner.remove();
+            // Force reload to get fresh content
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        });
     }
     
     // Initialize PWA Features
@@ -330,7 +413,153 @@ style.textContent = `
         background: #dc3545;
         z-index: 99999;
     }
+    
+    /* Content update banner */
+    .content-update-banner {
+        position: fixed;
+        top: 70px;
+        right: 20px;
+        z-index: 9999;
+        animation: slideInRight 0.3s ease-out;
+    }
+    
+    .content-update-banner-inner {
+        background: #28a745;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .content-update-banner-inner i {
+        animation: spin 2s linear infinite;
+    }
+    
+    .content-update-banner button {
+        border: none;
+        cursor: pointer;
+    }
+    
+    /* Offline banner */
+    .offline-banner {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 9999;
+        background: #ff9800;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        animation: slideInDown 0.3s ease-out;
+    }
+    
+    .offline-banner-inner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    
+    @keyframes slideInRight {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideInDown {
+        from {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
 `;
 document.head.appendChild(style);
+
+// Expose PWA utilities globally
+window.PWA = {
+    // Reload page with fresh content
+    reloadPage: function() {
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+            // Clear cache for current URL
+            navigator.serviceWorker.controller.postMessage({
+                type: 'CLEAR_CACHE_FOR_URL',
+                url: window.location.href
+            });
+        }
+        setTimeout(() => {
+            window.location.reload(true);
+        }, 300);
+    },
+    
+    // Force update from server
+    forceUpdate: async function(url = window.location.href) {
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+            return new Promise((resolve) => {
+                const messageChannel = new MessageChannel();
+                messageChannel.port1.onmessage = (event) => {
+                    resolve(event.data.success);
+                };
+                navigator.serviceWorker.controller.postMessage({
+                    type: 'FORCE_UPDATE',
+                    url: url
+                }, [messageChannel.port2]);
+            });
+        }
+        return false;
+    },
+    
+    // Clear all caches
+    clearAllCaches: async function() {
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+            return new Promise((resolve) => {
+                const messageChannel = new MessageChannel();
+                messageChannel.port1.onmessage = (event) => {
+                    if (event.data.success) {
+                        console.log('[PWA] All caches cleared');
+                    }
+                    resolve(event.data.success);
+                };
+                navigator.serviceWorker.controller.postMessage({
+                    type: 'CLEAR_CACHE'
+                }, [messageChannel.port2]);
+            });
+        }
+        return false;
+    },
+    
+    // Check if online
+    isOnline: function() {
+        return navigator.onLine;
+    },
+    
+    // Update service worker
+    updateServiceWorker: async function() {
+        if ('serviceWorker' in navigator) {
+            const registration = await navigator.serviceWorker.getRegistration();
+            if (registration) {
+                await registration.update();
+                console.log('[PWA] Service worker update check initiated');
+            }
+        }
+    }
+};
 
 console.log('[PWA] Initialization script loaded');
