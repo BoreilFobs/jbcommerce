@@ -1,7 +1,8 @@
 @extends('layouts.web')
 @section('content')
 <div class="register-page-container flex items-center justify-center min-h-screen bg-gray-100 p-6" 
-     style="background-image: url('{{asset("img/authBG.png")}}'); background-size: cover; background-position: center; background-attachment: fixed;">
+     data-bg="{{asset('img/authBG.png')}}" 
+     style="background-size: cover; background-position: center; background-attachment: fixed;">
     
     <!-- Glass Card -->
     <div style="position: relative; top: -50px" class="register-card w-full max-w-lg p-8 space-y-6 bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 transform transition-all duration-500 hover:shadow-orange-400/50">

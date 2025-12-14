@@ -17,9 +17,9 @@
                                             $offer_images = is_string($offer->images) ? json_decode($offer->images, true) : ($offer->images ?: []);
                                         @endphp
                                     @foreach ($offer_images as $index => $img)
-                                            <div class="single-item" data-dot="<img class='img-fluid' src='{{'/storage/offer_img/product' . $offer->id . "/" . $offer_images[$index]}}' alt=''>">
+                                            <div class="single-item" data-dot="<img class='img-fluid' data-src='{{'/storage/offer_img/product' . $offer->id . "/" . $offer_images[$index]}}' alt='{{ $offer->name }}'>">
                                                 <div class="single-inner bg-light rounded">
-                                                    <img src="{{'/storage/offer_img/product' . $offer->id . "/" . $offer_images[$index]}}" class="img-fluid rounded" alt="Image">
+                                                    <img @if($index === 0) src @else data-src @endif="{{'/storage/offer_img/product' . $offer->id . "/" . $offer_images[$index]}}" class="img-fluid rounded" alt="{{ $offer->name }}" loading="@if($index === 0) eager @else lazy @endif">
                                                 </div>
                                             </div>
                                     @endforeach

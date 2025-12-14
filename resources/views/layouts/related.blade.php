@@ -78,10 +78,11 @@
                                         ? '/storage/offer_img/product' . $relatedOffer->id . "/" . $images[0]
                                         : '/img/default-product.jpg';
                                 @endphp
-                                <img src="{{ asset($firstImage) }}" 
+                                <img data-src="{{ asset($firstImage) }}" 
                                      class="card-img-top" 
                                      alt="{{ $relatedOffer->name }}"
                                      loading="lazy"
+                                     data-fallback="/img/default-product.jpg"
                                      style="height: 200px; object-fit: cover;">
                                 
                                 <!-- Badges -->

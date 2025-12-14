@@ -1,0 +1,301 @@
+/**
+ * Performance Optimization CSS
+ * Includes loading states, animations, and critical above-the-fold styles
+ */
+
+/* ===================================
+   LAZY LOADING STATES
+   =================================== */
+
+/* Blur-up effect for images while loading */
+img[data-src]:not(.lazy-loaded) {
+    filter: blur(5px);
+    transition: filter 0.3s ease-in-out;
+}
+
+img.lazy-loaded {
+    filter: blur(0);
+}
+
+/* Loading spinner for images */
+img.lazy-loading {
+    position: relative;
+    min-height: 150px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+/* Background loading state */
+[data-bg]:not(.lazy-loaded) {
+    background-color: #f5f5f5;
+    position: relative;
+}
+
+[data-bg].lazy-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    z-index: 1;
+}
+
+[data-bg].lazy-loaded {
+    background-size: cover;
+    background-position: center;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Shimmer loading animation */
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* Error state */
+.lazy-error {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #721c24;
+    font-size: 0.875rem;
+}
+
+/* ===================================
+   CRITICAL ABOVE-THE--FOLD STYLES
+   =================================== */
+
+/* Optimize carousel initial load */
+.header-carousel-item {
+    will-change: transform;
+}
+
+/* Optimize animations */
+.wow {
+    visibility: hidden;
+}
+
+.wow.animate__animated {
+    visibility: visible;
+}
+
+/* Reduce animation duration for faster perceived load */
+.animate__animated {
+    animation-duration: 0.5s !important;
+}
+
+.animate__slow {
+    animation-duration: 1s !important;
+}
+
+/* ===================================
+   FONT LOADING OPTIMIZATION
+   =================================== */
+
+/* Use system font as fallback while custom fonts load */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Apply custom font once loaded */
+.fonts-loaded body {
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Prevent FOIT (Flash of Invisible Text) */
+@font-face {
+    font-family: 'Open Sans';
+    font-display: swap;
+}
+
+/* ===================================
+   SPINNER OPTIMIZATION
+   =================================== */
+
+/* Hide spinner faster once content is ready */
+#spinner {
+    transition: opacity 0.2s ease-out;
+}
+
+#spinner.hide {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ===================================
+   AUTH BACKGROUND OPTIMIZATION
+   =================================== */
+
+/* Placeholder for auth background before load */
+.login-page-container[data-bg],
+.register-page-container[data-bg] {
+    background-color: #1a1a2e;
+    background-image: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+}
+
+/* Once loaded, fade in the real image */
+.login-page-container.lazy-loaded,
+.register-page-container.lazy-loaded {
+    animation: fadeInBg 0.5s ease-in-out;
+}
+
+@keyframes fadeInBg {
+    from {
+        opacity: 0.7;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* ===================================
+   IMAGE ASPECT RATIO BOXES
+   =================================== */
+
+/* Prevent layout shift by reserving space */
+.aspect-ratio-box {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.aspect-ratio-box::before {
+    content: '';
+    display: block;
+    padding-top: 75%; /* 4:3 aspect ratio */
+}
+
+.aspect-ratio-box.ratio-16-9::before {
+    padding-top: 56.25%; /* 16:9 */
+}
+
+.aspect-ratio-box.ratio-1-1::before {
+    padding-top: 100%; /* 1:1 square */
+}
+
+.aspect-ratio-box img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ===================================
+   REDUCE MOTION FOR ACCESSIBILITY
+   =================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    img[data-src]:not(.lazy-loaded) {
+        filter: none;
+    }
+}
+
+/* ===================================
+   CRITICAL CSS FOR LCP (Largest Contentful Paint)
+   =================================== */
+
+/* Ensure carousel images load quickly */
+.carousel-img img {
+    content-visibility: auto;
+    contain-intrinsic-size: 500px 500px;
+}
+
+/* Optimize product cards */
+.product-item {
+    content-visibility: auto;
+    contain-intrinsic-size: 300px 400px;
+}
+
+/* ===================================
+   PRINT OPTIMIZATION
+   =================================== */
+
+@media print {
+    /* Show all images for print */
+    img[data-src] {
+        filter: none !important;
+    }
+    
+    [data-bg] {
+        opacity: 1 !important;
+    }
+    
+    /* Hide loading indicators */
+    .lazy-loading::after,
+    #spinner {
+        display: none !important;
+    }
+}
+
+/* ===================================
+   MOBILE OPTIMIZATION
+   =================================== */
+
+@media (max-width: 768px) {
+    /* Reduce animation complexity on mobile */
+    .animate__animated {
+        animation-duration: 0.3s !important;
+    }
+    
+    /* Simplify shadows on mobile */
+    .shadow,
+    .shadow-lg,
+    .shadow-sm {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    }
+    
+    /* Reduce blur for better mobile performance */
+    img[data-src]:not(.lazy-loaded) {
+        filter: blur(3px);
+    }
+}
+
+/* ===================================
+   PROGRESSIVE LOADING PRIORITIES
+   =================================== */
+
+/* High priority - above the fold */
+.priority-high img[data-src] {
+    loading: eager;
+}
+
+/* Low priority - below the fold */
+.priority-low img[data-src] {
+    loading: lazy;
+}
+
+/* ===================================
+   CONTENT VISIBILITY OPTIMIZATION
+   =================================== */
+
+/* For off-screen content */
+.below-fold {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 500px;
+}
+
+/* Keep critical content always visible */
+.above-fold {
+    content-visibility: visible;
+}

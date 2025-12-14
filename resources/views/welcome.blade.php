@@ -8,7 +8,7 @@
                 <div class="header-carousel owl-carousel bg-light py-5">
                 <div class="row g-0 header-carousel-item align-items-center">
                     <div class="col-xl-6 carousel-img wow fadeInLeft" data-wow-delay="0.1s">
-                    <img src="img/carousel-1.png" class="img-fluid w-100" alt="Image">
+                    <img src="img/carousel-1.png" class="img-fluid w-100" alt="Économisez sur ordinateurs et smartphones" loading="eager">
                     </div>
                     <div class="col-xl-6 carousel-content p-4">
                     <h4 class="text-uppercase fw-bold mb-4 wow fadeInRight" data-wow-delay="0.1s" style="letter-spacing: 3px;">Économisez jusqu'à 400 000 FCFA</h4>
@@ -22,7 +22,7 @@
                 </div>
                 <div class="row g-0 header-carousel-item align-items-center">
                     <div class="col-xl-6 carousel-img wow fadeInLeft" data-wow-delay="0.1s">
-                    <img src="img/carousel-2.png" class="img-fluid w-100" alt="Image">
+                    <img data-src="img/carousel-2.png" class="img-fluid w-100" alt="Promotions électronique" loading="lazy">
                     </div>
                     <div class="col-xl-6 carousel-content p-4">
                     <h4 class="text-uppercase fw-bold mb-4 wow fadeInRight" data-wow-delay="0.1s" style="letter-spacing: 3px;">Économisez jusqu'à 200 000 FCFA</h4>
@@ -38,7 +38,7 @@
             </div>
             <div class="col-12 col-lg-5 col-xl-3 wow fadeInRight" data-wow-delay="0.1s">
                 <div class="carousel-header-banner h-100">
-                <img src="img/header-img.png" class="img-fluid w-100 h-100" style="object-fit: cover;" alt="Image">
+                <img data-src="img/header-img.png" class="img-fluid w-100 h-100" style="object-fit: cover;" alt="Offre spéciale iPad" loading="lazy">
                 <div class="carousel-banner-offer">
                     <p class="bg-primary text-white rounded fs-5 py-2 px-4 mb-0 me-3">Économisez 25 000 FCFA</p>
                     <p class="text-primary fs-5 fw-bold mb-0">Offre spéciale</p>
@@ -142,7 +142,7 @@
                     <h3 class="text-primary">Caméra intelligente</h3>
                     <h1 class="display-3 text-secondary mb-0">40% <span class="text-primary fw-normal">de réduction</span></h1>
                     </div>
-                    <img src="img/product-1.png" class="img-fluid" alt="">
+                    <img data-src="img/product-1.png" class="img-fluid" alt="Offre spéciale casques" loading="lazy">
                 </a>
                 </div>
                 <div class="col-lg-6 wow fadeInRight" data-wow-delay="0.3s">
@@ -152,7 +152,7 @@
                     <h3 class="text-primary">Montre connectée</h3>
                     <h1 class="display-3 text-secondary mb-0">20% <span class="text-primary fw-normal">de réduction</span></h1>
                     </div>
-                    <img src="img/product-2.png" class="img-fluid" alt="">
+                    <img data-src="img/product-2.png" class="img-fluid" alt="Promotion montre connectée" loading="lazy">
                 </a>
                 </div>
             </div>
@@ -203,10 +203,11 @@
                                                             ? '/storage/offer_img/product' . $offer->id . "/" . $images[0]
                                                             : '/img/default-product.jpg';
                                                     @endphp
-                                                    <img src="{{ asset($firstImage) }}" 
+                                                    <img data-src="{{ asset($firstImage) }}" 
                                                          class="img-fluid w-100 rounded-top" 
                                                          alt="{{ $offer->name }}"
                                                          loading="lazy"
+                                                         data-fallback="/img/default-product.jpg"
                                                          style="height: 250px; object-fit: cover;">
                                                     @if ($offer->created_at >= now()->subMonths())
                                                         <div class="product-new">Nouveau</div>
@@ -282,10 +283,11 @@
                                                             ? '/storage/offer_img/product' . $newArrival->id . "/" . $images[0]
                                                             : '/img/default-product.jpg';
                                                     @endphp
-                                                    <img src="{{ asset($firstImage) }}" 
+                                                    <img data-src="{{ asset($firstImage) }}" 
                                                          class="img-fluid w-100 rounded-top" 
                                                          alt="{{ $newArrival->name }}"
                                                          loading="lazy"
+                                                         data-fallback="/img/default-product.jpg"
                                                          style="height: 250px; object-fit: cover;">
                                                     <div class="product-new">Nouveau</div>
                                                     @if ($newArrival->discount_percentage > 0)
@@ -363,10 +365,11 @@
                                                             ? '/storage/offer_img/product' . $bestseller->id . "/" . $images[0]
                                                             : '/img/default-product.jpg';
                                                     @endphp
-                                                    <img src="{{ asset($firstImage) }}" 
+                                                    <img data-src="{{ asset($firstImage) }}" 
                                                          class="img-fluid w-100 rounded-top" 
                                                          alt="{{ $bestseller->name }}"
                                                          loading="lazy"
+                                                         data-fallback="/img/default-product.jpg"
                                                          style="height: 250px; object-fit: cover;">
                                                     @if ($bestseller->created_at >= now()->subMonths())
                                                         <div class="product-new">Nouveau</div>
@@ -493,7 +496,7 @@
                                                     ? '/storage/offer_img/product' . $offer->id . "/" . $images[0]
                                                     : '/img/default-product.jpg';
                                             @endphp
-                                            <img src="{{ asset($firstImage) }}" class="img-fluid w-100 h-100" alt="{{ $offer->name }}">
+                                            <img data-src="{{ asset($firstImage) }}" class="img-fluid w-100 h-100" alt="{{ $offer->name }}" loading="lazy" data-fallback="/img/default-product.jpg">
                                             <div class="products-mini-icon rounded-circle bg-primary">
                                                 <a href="{{url("/product/details/". $offer->id)}}"><i class="fa fa-eye fa-1x text-white"></i></a>
                                             </div>
@@ -552,7 +555,7 @@
                                                     ? '/storage/offer_img/product' . $bestseller->id . "/" . $images[0]
                                                     : '/img/default-product.jpg';
                                             @endphp
-                                            <img src="{{ asset($firstImage) }}" class="img-fluid w-100 h-100" alt="{{ $bestseller->name }}" style="object-fit: cover;">
+                                            <img data-src="{{ asset($firstImage) }}" class="img-fluid w-100 h-100" alt="{{ $bestseller->name }}" loading="lazy" data-fallback="/img/default-product.jpg" style="object-fit: cover;">
                                             <div class="products-mini-icon rounded-circle bg-primary">
                                                 <a href="{{ url('/product/details/' . $bestseller->id) }}"><i class="fa fa-eye fa-1x text-white"></i></a>
                                             </div>

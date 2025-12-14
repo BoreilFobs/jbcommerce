@@ -169,7 +169,7 @@
 
                         <!-- Banner -->
                         <div class="rounded mb-4 position-relative">
-                            <img src="{{ asset('img/product-banner-3.jpg') }}" class="img-fluid rounded w-100" style="height: 250px; object-fit: cover;" alt="Banner">
+                            <img data-src="{{ asset('img/product-banner-3.jpg') }}" class="img-fluid rounded w-100" style="height: 250px; object-fit: cover;" alt="Promo produits" loading="lazy">
                             <div class="position-absolute rounded d-flex flex-column align-items-center justify-content-center text-center" style="width: 100%; height: 250px; top: 0; left: 0; background: rgba(242, 139, 0, 0.3);">
                                 <h4 class="display-5 text-primary">SOLDES</h4>
                                 <h3 class="display-4 text-white mb-4">Jusqu'à -50%</h3>
@@ -192,11 +192,12 @@
                                                                     ? '/storage/offer_img/product' . $offer->id . "/" . $images[0]
                                                                     : '/img/default-product.jpg';
                                                             @endphp
-                                                            <img src="{{ asset($firstImage) }}" 
+                                                            <img data-src="{{ asset($firstImage) }}" 
                                                                  class="img-fluid w-100 rounded-top" 
                                                                  style="height: 250px; object-fit: cover;" 
                                                                  alt="{{ $offer->name }}"
-                                                                 loading="lazy">
+                                                                 loading="lazy"
+                                                                 data-fallback="/img/default-product.jpg">
                                                             
                                                             <!-- Badges -->
                                                             <div class="position-absolute top-0 start-0 m-2">
@@ -337,7 +338,7 @@
                     <div class="col-lg-6 wow fadeInLeft" data-wow-delay="0.1s">
                         <a href="{{ route('shop') }}?on_sale=1">
                             <div class="bg-primary rounded position-relative">
-                                <img src="{{ asset('img/product-banner.jpg') }}" class="img-fluid w-100 rounded" alt="Product Banner">
+                                <img data-src="{{ asset('img/product-banner.jpg') }}" class="img-fluid w-100 rounded" alt="Bannière produits" loading="lazy">
                                 <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center rounded p-4" style="background: rgba(255, 255, 255, 0.5);">
                                     <h3 class="display-5 text-primary">Produits <br> <span>Électroniques</span></h3>
                                     <p class="fs-4 text-muted">Jusqu'à -40%</p>
@@ -349,7 +350,7 @@
                     <div class="col-lg-6 wow fadeInRight" data-wow-delay="0.2s">
                         <a href="{{ route('shop') }}?featured=1">
                             <div class="text-center bg-primary rounded position-relative">
-                                <img src="{{ asset('img/product-banner-2.jpg') }}" class="img-fluid w-100" alt="Sale Banner">
+                                <img data-src="{{ asset('img/product-banner-2.jpg') }}" class="img-fluid w-100" alt="Bannière soldes" loading="lazy">
                                 <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center rounded p-4" style="background: rgba(242, 139, 0, 0.5);">
                                     <h2 class="display-2 text-secondary">SOLDES</h2>
                                     <h4 class="display-5 text-white mb-4">Jusqu'à -50%</h4>

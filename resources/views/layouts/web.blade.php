@@ -74,21 +74,45 @@
         <meta name="language" content="French">
         <meta name="country" content="Cameroon">
 
+        <!-- Resource Hints for Performance -->
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+        <link rel="dns-prefetch" href="https://use.fontawesome.com">
+        <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+        <link rel="dns-prefetch" href="https://www.gstatic.com">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"> 
+        
+        <!-- Optimized Font Loading with font-display: swap -->
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+        <noscript><link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"></noscript> 
 
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
-        <link href="{{ asset('lib/animate/animate.min.css') }}" rel="stylesheet">
-        <link href="{{ asset('lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
-
+        <!-- Critical CSS (inline or load immediately) -->
         <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
         <link href="{{ asset('css/style.css') }}" rel="stylesheet">
-        <link href="{{ asset('css/store-filters.css') }}" rel="stylesheet">
-        <link href="{{ asset('css/mobile-responsive.css') }}" rel="stylesheet">
-        <link href="{{ asset('css/related-products.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/performance.css') }}" rel="stylesheet">
+        
+        <!-- Deferred Non-Critical CSS -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" media="print" onload="this.media='all'"/>
+        <noscript><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/></noscript>
+        
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" media="print" onload="this.media='all'">
+        <noscript><link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet"></noscript>
+
+        <link href="{{ asset('lib/animate/animate.min.css') }}" rel="stylesheet" media="print" onload="this.media='all'">
+        <noscript><link href="{{ asset('lib/animate/animate.min.css') }}" rel="stylesheet"></noscript>
+        
+        <link href="{{ asset('lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet" media="print" onload="this.media='all'">
+        <noscript><link href="{{ asset('lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet"></noscript>
+
+        <link href="{{ asset('css/store-filters.css') }}" rel="stylesheet" media="print" onload="this.media='all'">
+        <noscript><link href="{{ asset('css/store-filters.css') }}" rel="stylesheet"></noscript>
+        
+        <link href="{{ asset('css/mobile-responsive.css') }}" rel="stylesheet" media="print" onload="this.media='all'">
+        <noscript><link href="{{ asset('css/mobile-responsive.css') }}" rel="stylesheet"></noscript>
+        
+        <link href="{{ asset('css/related-products.css') }}" rel="stylesheet" media="print" onload="this.media='all'">
+        <noscript><link href="{{ asset('css/related-products.css') }}" rel="stylesheet"></noscript>
         
         <!-- Mobile Optimization -->
         <meta name="mobile-web-app-capable" content="yes">
@@ -302,9 +326,9 @@
                             <i class="fas fa-shopping-cart me-3"></i>Mon Panier
                             <span class="badge bg-primary float-end">{{ $carts->sum('quantity') }}</span>
                         </a>
-                        <a href="{{ url('/wish-list/' . Auth::id()) }}" class="mobile-menu-item {{ request()->is('wish-list*') ? 'active' : '' }}">
+                        {{-- <a href="{{ url('/wish-list/' . Auth::id()) }}" class="mobile-menu-item {{ request()->is('wish-list*') ? 'active' : '' }}">
                             <i class="fas fa-heart me-3"></i>Liste de Souhaits
-                        </a>
+                        </a> --}}
                         <a href="{{ route('orders.index') }}" class="mobile-menu-item {{ request()->is('orders*') ? 'active' : '' }}">
                             <i class="fas fa-box me-3"></i>Mes Commandes
                         </a>
@@ -415,7 +439,7 @@
                 <div class="col-md-4 col-lg-3 text-center text-lg-end">
                     <div class="d-inline-flex align-items-center">
                         {{-- Wishlist (Liste de souhaits) --}}
-                        <div class="wishlist">
+                        {{-- <div class="wishlist">
                             @if(Auth::check())
                                 <a href="{{ url('/wish-list/' . Auth::id()) }}" class="text-muted d-flex align-items-center justify-content-center me-3" title="Liste de souhaits"> 
                                     <span class="rounded-circle btn-md-square border"><i class="fas fa-heart"></i></span>
@@ -425,7 +449,7 @@
                                     <span class="rounded-circle btn-md-square border"><i class="fas fa-heart"></i></span>
                                 </a>
                             @endif
-                        </div>
+                        </div> --}}
                         {{-- Cart (Panier) --}}
                         <div class="cart">
                             @if(Auth::check())
@@ -485,15 +509,15 @@
                         <small>Panier</small>
                     </a>
                     @auth
-                    <a href="{{ url('/wish-list/' . Auth::id()) }}" class="text-center flex-fill nav-tab {{ request()->is('wish-list*') ? 'active' : '' }}">
-                        <span class="d-block"><i class="fas fa-heart fa-lg"></i></span>
-                        <small>Souhaits</small>
-                    </a>
+                        <a href="{{ route('profile.edit') }}" class="text-center flex-fill nav-tab {{ request()->is('profile*') ? 'active' : '' }}">
+                            <span class="d-block"><i class="fas fa-user fa-lg"></i></span>
+                            <small>Compte</small>
+                        </a>
                     @else
-                    <a href="{{ route('login') }}" class="text-center flex-fill nav-tab">
-                        <span class="d-block"><i class="fas fa-user fa-lg"></i></span>
-                        <small>Compte</small>
-                    </a>
+                        <a href="{{ route('login') }}" class="text-center flex-fill nav-tab">
+                            <span class="d-block"><i class="fas fa-user fa-lg"></i></span>
+                            <small>Compte</small>
+                        </a>
                     @endauth
                 </div>
             </nav>
@@ -849,14 +873,17 @@
         }
     </script>
 
+    <!-- Lazy Loading (Load Early for Image Optimization) -->
+    <script src="{{ asset('js/lazy-load.js') }}"></script>
+    
     <!-- PWA Initialization -->
-    <script src="{{ asset('js/pwa-init.js') }}"></script>
+    <script src="{{ asset('js/pwa-init.js') }}" defer></script>
 
     <!-- Firebase Cloud Messaging -->
     @auth
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
-    <script src="{{ asset('js/fcm-init.js') }}"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js" defer></script>
+    <script src="{{ asset('js/fcm-init.js') }}" defer></script>
     @endauth
 
 </body>

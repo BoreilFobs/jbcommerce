@@ -266,8 +266,8 @@
                                                 ? '/storage/offer_img/product' . $item->offer->id . "/" . $images[0]
                                                 : '/img/default-product.jpg';
                                         @endphp
-                                        <img src="{{ asset($firstImage) }}" alt="{{ $item->offer->name }}" 
-                                             class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                        <img data-src="{{ asset($firstImage) }}" alt="{{ $item->offer->name }}" 
+                                             class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;" loading="lazy" data-fallback="/img/default-product.jpg">
                                         <div class="flex-grow-1">
                                             <h6 class="mb-1">{{ Str::limit($item->offer->name, 30) }}</h6>
                                             <small class="text-muted">Quantité: {{ $item->quantity }}</small>
