@@ -2,13 +2,11 @@
 @section('content')
 
 <!-- Page Header -->
-<div class="container-fluid page-header py-5" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
-    <h1 class="text-center text-white display-6 wow fadeInUp" data-wow-delay="0.1s">
-        <i class="fas fa-check-circle me-3"></i>Commande Confirmée
-    </h1>
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6 wow fadeInUp" data-wow-delay="0.1s">Commande Confirmée</h1>
     <ol class="breadcrumb justify-content-center mb-0 wow fadeInUp" data-wow-delay="0.3s">
-        <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-white">Accueil</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('orders.index') }}" class="text-white">Mes Commandes</a></li>
+        <li class="breadcrumb-item"><a href="{{ url('/') }}">Accueil</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('orders.index') }}">Commandes</a></li>
         <li class="breadcrumb-item active text-white">Confirmation</li>
     </ol>
 </div>

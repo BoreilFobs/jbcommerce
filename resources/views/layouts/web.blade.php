@@ -178,6 +178,19 @@
 
 
     <body>
+        <!-- Page Refresh After Login/Logout -->
+        @if(session('refresh_page'))
+        <script>
+            // Force page refresh after login/logout
+            if (!sessionStorage.getItem('page_refreshed')) {
+                sessionStorage.setItem('page_refreshed', 'true');
+                window.location.reload(true);
+            } else {
+                sessionStorage.removeItem('page_refreshed');
+            }
+        </script>
+        @endif
+        
         <!-- Connection Status Component -->
         @include('components.connection-status')
 

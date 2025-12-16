@@ -2,16 +2,13 @@
 @section('content')
 
 <!-- Page Header -->
-<div class="container-fluid page-header py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-    <div class="container">
-        <h1 class="text-center text-white display-6 wow fadeInUp" data-wow-delay="0.1s">
-            <i class="fas fa-box me-3"></i>Mes Commandes
-        </h1>
-        <ol class="breadcrumb justify-content-center mb-0 wow fadeInUp" data-wow-delay="0.3s">
-            <li class="breadcrumb-item"><a href="{{ url('/') }}" class="text-white">Accueil</a></li>
-            <li class="breadcrumb-item active text-white">Mes Commandes</li>
-        </ol>
-    </div>
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6 wow fadeInUp" data-wow-delay="0.1s">Mes Commandes</h1>
+    <ol class="breadcrumb justify-content-center mb-0 wow fadeInUp" data-wow-delay="0.3s">
+        <li class="breadcrumb-item"><a href="{{ url('/') }}">Accueil</a></li>
+        <li class="breadcrumb-item"><a href="#">Pages</a></li>
+        <li class="breadcrumb-item active text-white">Commandes</li>
+    </ol>
 </div>
 
 <!-- Orders Section -->

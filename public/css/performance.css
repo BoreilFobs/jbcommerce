@@ -39,10 +39,11 @@ img.lazy-loading {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background: linear-gradient(90deg, rgba(255, 126, 0, 0.1) 0%, rgba(255, 126, 0, 0.05) 50%, rgba(255, 126, 0, 0.1) 100%);
     background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-    z-index: 1;
+    animation: shimmer 2s infinite;
+    z-index: 0 !important; /* Behind content */
+    pointer-events: none; /* Don't block interactions */
 }
 
 [data-bg].lazy-loaded {
@@ -137,11 +138,20 @@ body {
    AUTH BACKGROUND OPTIMIZATION
    =================================== */
 
-/* Placeholder for auth background before load */
+/* Placeholder for auth background before load - Orange theme */
 .login-page-container[data-bg],
 .register-page-container[data-bg] {
-    background-color: #1a1a2e;
-    background-image: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    background-color: #ff7e00;
+    background-image: linear-gradient(135deg, #ff9933 0%, #ff7e00 50%, #ff6600 100%);
+}
+
+/* Ensure form is always visible above loading states */
+.login-card,
+.register-card {
+    position: relative;
+    z-index: 10 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 /* Once loaded, fade in the real image */

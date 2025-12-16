@@ -10,15 +10,15 @@
 @extends('layouts.web')
 @section('content')
         <!-- Single Page Header start -->
-            <div class="container-fluid page-header py-5">
-                <h1 class="text-center text-white display-6 wow fadeInUp" data-wow-delay="0.1s">Contactez-nous</h1>
-                <ol class="breadcrumb justify-content-center mb-0 wow fadeInUp" data-wow-delay="0.3s">
-                    <li class="breadcrumb-item"><a href="#">Accueil</a></li>
-                    <li class="breadcrumb-item"><a href="#">Pages</a></li>
-                    <li class="breadcrumb-item active text-white">Contact</li>
-                </ol>
-            </div>
-            <!-- Single Page Header End -->
+        <div class="container-fluid page-header py-5">
+            <h1 class="text-center text-white display-6 wow fadeInUp" data-wow-delay="0.1s">Contactez-nous</h1>
+            <ol class="breadcrumb justify-content-center mb-0 wow fadeInUp" data-wow-delay="0.3s">
+                <li class="breadcrumb-item"><a href="{{ url('/') }}">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                <li class="breadcrumb-item active text-white">Contact</li>
+            </ol>
+        </div>
+        <!-- Single Page Header End -->
 
             <!-- Contacts Start -->
             <div class="container-fluid contact py-5">
@@ -34,11 +34,10 @@
                            <!-- Contact Form Start -->
 <div class="col-lg-7">
     <h5 class="text-primary wow fadeInUp" data-wow-delay="0.1s">Restons connectés</h5>
-    <h1 class="display-5 mb-4 wow fadeInUp" data-wow-delay="0.3s">Envoyez votre message</h1>
+    <h1 class="display-5 mb-4 wow fadeInUp" data-wow-delay="0.3s">Envoyez-nous votre Message</h1>
     <p class="mb-4 wow fadeInUp" data-wow-delay="0.5s">
-        Le formulaire de contact est actuellement inactif. Obtenez un formulaire de contact fonctionnel 
-        avec Ajax & PHP en quelques minutes. Copiez et collez simplement les fichiers, ajoutez un peu de code et c’est terminé. 
-        <a href="https://htmlcodex.com/contact-form">Télécharger maintenant</a>.
+        Vous avez une question, une suggestion ou besoin d'aide ? N'hésitez pas à nous contacter. 
+        Notre équipe est là pour vous répondre dans les plus brefs délais.
     </p>
     <form>
         <div class="row g-4 wow fadeInUp" data-wow-delay="0.1s">
@@ -131,11 +130,11 @@
                                     <div class="col-md-6 col-lg-6 col-xl-3 wow fadeInUp" data-wow-delay="0.7s">
                                         <div class="rounded p-4">
                                             <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-4" style="width: 70px; height: 70px;">
-                                                <i class="fab fa-firefox-browser fa-2x text-primary"></i>
+                                                <i class="fas fa-clock fa-2x text-primary"></i>
                                             </div>
                                             <div>
-                                                <h4>VotreSite@ex.com</h4>
-                                                <p class="mb-2">(+012) 3456 7890</p>
+                                                <h4>Horaires</h4>
+                                                <p class="mb-2">Lun - Sam: 8h - 18h</p>
                                             </div>
                                         </div>
                                     </div>

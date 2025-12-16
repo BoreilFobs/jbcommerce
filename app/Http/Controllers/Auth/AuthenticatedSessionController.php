@@ -27,6 +27,9 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+        
+        // Flag to trigger page refresh after redirect
+        $request->session()->flash('refresh_page', true);
 
         if (Auth::user()->name === 'admin') {
             return redirect('/dashboard');
@@ -45,6 +48,9 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
+        
+        // Flag to trigger page refresh after redirect
+        session()->flash('refresh_page', true);
 
         return redirect('/');
     }

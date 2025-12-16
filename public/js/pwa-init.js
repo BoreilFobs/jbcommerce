@@ -4,6 +4,17 @@
 (function() {
     'use strict';
     
+    // Detect if running in WebView/Hybrid app
+    function isWebView() {
+        const ua = navigator.userAgent || navigator.vendor || window.opera;
+        return (
+            window.ReactNativeWebView !== undefined || // React Native
+            /wv/.test(ua) || // WebView identifier
+            /Android.*AppleWebKit(?!.*Safari)/i.test(ua) || // Android WebView
+            /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(ua) // iOS WebView
+        );
+    }
+    
     // Check if service workers are supported
     if ('serviceWorker' in navigator) {
         // Wait for the page to load
@@ -37,28 +48,11 @@
         }
     }
     
-    // Show banner when content is updated
+    // Show banner when content is updated (DISABLED - bannière désactivée)
     function showContentUpdateBanner() {
-        // Remove existing banner if any
-        const existing = document.getElementById('content-update-banner');
-        if (existing) existing.remove();
-        
-        const banner = document.createElement('div');
-        banner.id = 'content-update-banner';
-        banner.className = 'content-update-banner';
-        banner.innerHTML = `
-            <div class="content-update-banner-inner">
-                <span><i class="fas fa-sync-alt"></i> Nouveau contenu disponible</span>
-                <button onclick="window.PWA.reloadPage()" class="btn btn-sm btn-light">Rafraîchir</button>
-                <button onclick="document.getElementById('content-update-banner').remove()" class="btn btn-sm btn-link">×</button>
-            </div>
-        `;
-        document.body.appendChild(banner);
-        
-        // Auto-hide after 10 seconds
-        setTimeout(() => {
-            if (banner.parentNode) banner.remove();
-        }, 10000);
+        // Bannière complètement désactivée pour ne pas embêter les utilisateurs
+        console.log('[PWA] Content update banner disabled');
+        return;
     }
     
     // Register Service Worker
@@ -106,27 +100,11 @@
         }
     }
     
-    // Show offline banner
+    // Show offline banner (DISABLED - bannière désactivée)
     function showOfflineBanner() {
-        const banner = document.createElement('div');
-        banner.id = 'offline-banner';
-        banner.className = 'offline-banner';
-        banner.innerHTML = `
-            <div class="offline-banner-inner">
-                <i class="fas fa-wifi-slash"></i>
-                <span>Mode hors ligne - Certaines informations peuvent ne pas être à jour</span>
-            </div>
-        `;
-        document.body.insertBefore(banner, document.body.firstChild);
-        
-        // Remove when online
-        window.addEventListener('online', () => {
-            banner.remove();
-            // Force reload to get fresh content
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
-        });
+        // Bannière complètement désactivée pour ne pas embêter les utilisateurs
+        console.log('[PWA] Offline banner disabled');
+        return;
     }
     
     // Initialize PWA Features
@@ -332,32 +310,11 @@
         }
     }
     
-    // Show Update Notification
+    // Show Update Notification (DISABLED - bannière désactivée)
     function showUpdateNotification() {
-        const notification = document.createElement('div');
-        notification.className = 'update-notification';
-        notification.innerHTML = `
-            <div class="container">
-                <div class="row align-items-center py-3">
-                    <div class="col">
-                        <i class="fas fa-sync-alt me-2"></i>
-                        <strong>Mise à jour disponible</strong>
-                        <p class="mb-0 small">Une nouvelle version est prête</p>
-                    </div>
-                    <div class="col-auto">
-                        <button class="btn btn-light btn-sm" onclick="window.location.reload()">
-                            Actualiser
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-            notification.style.transform = 'translateY(0)';
-        }, 100);
+        // Bannière complètement désactivée pour ne pas embêter les utilisateurs
+        console.log('[PWA] Update notification banner disabled');
+        return;
     }
     
     // Expose global PWA utilities
