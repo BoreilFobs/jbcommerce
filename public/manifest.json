@@ -1,29 +1,75 @@
 {
-  "name": "JB Shop - Boutique en Ligne",
+  "name": "JB Shop - Boutique en Ligne à Bafoussam",
   "short_name": "JB Shop",
-  "description": "Boutique en ligne spécialisée dans la vente d'électronique, smartphones, ordinateurs et accessoires à Bafoussam, Cameroun",
-  "start_url": "/",
+  "description": "Boutique en ligne spécialisée dans la vente d'électronique, smartphones, ordinateurs et accessoires à Bafoussam, Cameroun. Livraison rapide, paiement sécurisé.",
+  "start_url": "/?source=pwa",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#f28b00",
+  "theme_color": "#ff7e00",
   "orientation": "portrait-primary",
+  "scope": "/",
   "icons": [
     {
-      "src": "/img/logo.svg",
+      "src": "/img/logo.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/img/logo.svg",
+      "src": "/img/logo.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ],
-  "categories": ["shopping", "business"],
-  "lang": "fr",
+  "screenshots": [
+    {
+      "src": "/img/carousel-1.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "form_factor": "wide"
+    }
+  ],
+  "categories": ["shopping", "business", "ecommerce"],
+  "lang": "fr-FR",
   "dir": "ltr",
-  "scope": "/",
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "shortcuts": [
+    {
+      "name": "Boutique",
+      "short_name": "Boutique",
+      "description": "Parcourir tous les produits",
+      "url": "/shop",
+      "icons": [{ "src": "/img/logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Mon Panier",
+      "short_name": "Panier",
+      "description": "Voir mon panier",
+      "url": "/cart",
+      "icons": [{ "src": "/img/logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Mes Commandes",
+      "short_name": "Commandes",
+      "description": "Suivre mes commandes",
+      "url": "/orders",
+      "icons": [{ "src": "/img/logo.png", "sizes": "192x192" }]
+    }
+  ],
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
 }

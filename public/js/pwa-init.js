@@ -133,15 +133,15 @@
             // Store the event for later use
             deferredPrompt = e;
             
-            // Show custom install button/banner
-            showInstallBanner();
+            // Show custom install modal (only on mobile)
+            showInstallModal();
         });
         
         // Listen for successful installation
         window.addEventListener('appinstalled', () => {
             console.log('[PWA] App installed successfully');
             deferredPrompt = null;
-            hideInstallBanner();
+            hideInstallModal();
             
             // Track installation
             if (window.gtag) {
@@ -153,57 +153,129 @@
         });
     }
     
-    // Show Install Banner
-    function showInstallBanner() {
-        // Check if banner was dismissed recently
-        const dismissedAt = localStorage.getItem('pwa_install_dismissed');
-        if (dismissedAt) {
-            const daysSinceDismissal = (Date.now() - parseInt(dismissedAt)) / (1000 * 60 * 60 * 24);
-            if (daysSinceDismissal < 7) {
-                return; // Don't show for 7 days after dismissal
+    // Check if device is mobile
+    function isMobileDevice() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+    
+    // Show Install Modal (Mobile Only)
+    function showInstallModal() {
+        // Only show on mobile devices
+        if (!isMobileDevice()) {
+            console.log('[PWA] Install modal disabled on desktop');
+            return;
+        }
+        
+        // Check if already installed
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            console.log('[PWA] App already installed');
+            return;
+        }
+        
+        // Check if modal was shown before
+        const modalShown = localStorage.getItem('pwa_install_modal_shown');
+        if (modalShown === 'true') {
+            console.log('[PWA] Install modal already shown');
+            return;
+        }
+        
+        // Check if user dismissed with "Remind me later"
+        const remindLater = localStorage.getItem('pwa_install_remind_later');
+        if (remindLater) {
+            const daysSinceReminder = (Date.now() - parseInt(remindLater)) / (1000 * 60 * 60 * 24);
+            if (daysSinceReminder < 3) {
+                console.log('[PWA] User chose remind me later, waiting 3 days');
+                return;
             }
         }
         
-        const banner = document.createElement('div');
-        banner.id = 'pwa-install-banner';
-        banner.className = 'pwa-install-banner';
-        banner.innerHTML = `
-            <div class="container">
-                <div class="row align-items-center py-3">
-                    <div class="col-auto">
-                        <img src="/img/logo.png" alt="JB Shop" style="width: 40px; height: 40px;">
+        // Create modal overlay
+        const modalOverlay = document.createElement('div');
+        modalOverlay.id = 'pwa-install-modal';
+        modalOverlay.className = 'pwa-modal-overlay';
+        modalOverlay.innerHTML = `
+            <div class="pwa-modal-content">
+                <div class="pwa-modal-header">
+                    <div class="pwa-modal-icon">
+                        <i class="fas fa-mobile-alt"></i>
                     </div>
-                    <div class="col">
-                        <strong>Installer JB Shop</strong>
-                        <p class="mb-0 small">Accès rapide et mode hors ligne</p>
+                    <h3 class="pwa-modal-title">Installer JB Shop</h3>
+                    <button class="pwa-modal-close" id="pwa-modal-close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="pwa-modal-body">
+                    <div class="pwa-feature">
+                        <i class="fas fa-bolt text-warning"></i>
+                        <span>Accès ultra-rapide</span>
                     </div>
-                    <div class="col-auto">
-                        <button id="pwa-install-btn" class="btn btn-primary btn-sm me-2">
-                            <i class="fas fa-download me-1"></i>Installer
-                        </button>
-                        <button id="pwa-dismiss-btn" class="btn btn-outline-secondary btn-sm">
-                            ×
-                        </button>
+                    <div class="pwa-feature">
+                        <i class="fas fa-wifi-slash text-info"></i>
+                        <span>Fonctionne hors ligne</span>
                     </div>
+                    <div class="pwa-feature">
+                        <i class="fas fa-bell text-danger"></i>
+                        <span>Notifications de commandes</span>
+                    </div>
+                    <div class="pwa-feature">
+                        <i class="fas fa-home text-success"></i>
+                        <span>Comme une vraie application</span>
+                    </div>
+                    <p class="pwa-modal-description">
+                        Installez JB Shop sur votre écran d'accueil pour une expérience optimale !
+                    </p>
+                </div>
+                <div class="pwa-modal-footer">
+                    <button id="pwa-install-now" class="btn-pwa-install">
+                        <i class="fas fa-download me-2"></i>Installer Maintenant
+                    </button>
+                    <button id="pwa-remind-later" class="btn-pwa-later">
+                        <i class="far fa-clock me-2"></i>Me Rappeler Plus Tard
+                    </button>
                 </div>
             </div>
         `;
         
-        document.body.appendChild(banner);
+        document.body.appendChild(modalOverlay);
+        
+        // Show modal with animation
+        setTimeout(() => {
+            modalOverlay.classList.add('show');
+        }, 100);
         
         // Add event listeners
-        document.getElementById('pwa-install-btn')?.addEventListener('click', installPWA);
-        document.getElementById('pwa-dismiss-btn')?.addEventListener('click', dismissInstallBanner);
+        document.getElementById('pwa-install-now')?.addEventListener('click', installPWA);
+        document.getElementById('pwa-remind-later')?.addEventListener('click', remindLater);
+        document.getElementById('pwa-modal-close')?.addEventListener('click', closeInstallModal);
         
-        // Show banner with animation
-        setTimeout(() => {
-            banner.style.transform = 'translateY(0)';
-        }, 100);
+        // Close on overlay click
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                closeInstallModal();
+            }
+        });
+    }
+    
+    // Remind Later
+    function remindLater() {
+        localStorage.setItem('pwa_install_remind_later', Date.now().toString());
+        hideInstallModal();
+        console.log('[PWA] User chose remind me later');
+    }
+    
+    // Close Install Modal
+    function closeInstallModal() {
+        // Mark as shown so it doesn't appear again
+        localStorage.setItem('pwa_install_modal_shown', 'true');
+        hideInstallModal();
     }
     
     // Install PWA
     async function installPWA() {
-        if (!deferredPrompt) return;
+        if (!deferredPrompt) {
+            console.log('[PWA] No install prompt available');
+            return;
+        }
         
         // Show the install prompt
         deferredPrompt.prompt();
@@ -214,31 +286,20 @@
         console.log(`[PWA] User response: ${outcome}`);
         
         if (outcome === 'accepted') {
-            hideInstallBanner();
+            localStorage.setItem('pwa_install_modal_shown', 'true');
+            hideInstallModal();
         }
         
         // Clear the deferred prompt
         deferredPrompt = null;
     }
     
-    // Dismiss Install Banner
-    function dismissInstallBanner() {
-        const banner = document.getElementById('pwa-install-banner');
-        if (banner) {
-            banner.style.transform = 'translateY(-100%)';
-            setTimeout(() => banner.remove(), 300);
-        }
-        
-        // Remember dismissal
-        localStorage.setItem('pwa_install_dismissed', Date.now().toString());
-    }
-    
-    // Hide Install Banner
-    function hideInstallBanner() {
-        const banner = document.getElementById('pwa-install-banner');
-        if (banner) {
-            banner.style.transform = 'translateY(-100%)';
-            setTimeout(() => banner.remove(), 300);
+    // Hide Install Modal
+    function hideInstallModal() {
+        const modal = document.getElementById('pwa-install-modal');
+        if (modal) {
+            modal.classList.remove('show');
+            setTimeout(() => modal.remove(), 300);
         }
     }
     
@@ -330,33 +391,169 @@
 // Styles for PWA Components
 const style = document.createElement('style');
 style.textContent = `
-    .pwa-install-banner,
-    .update-notification {
+    /* PWA Install Modal - Mobile Only */
+    .pwa-modal-overlay {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
-        z-index: 10000;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        transform: translateY(-100%);
-        transition: transform 0.3s ease-out;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
     }
     
-    .update-notification {
-        background: linear-gradient(135deg, #f28b00 0%, #d67700 100%);
+    .pwa-modal-overlay.show {
+        opacity: 1;
     }
     
-    .pwa-install-banner p,
-    .update-notification p {
-        color: rgba(255,255,255,0.9);
+    .pwa-modal-overlay.show .pwa-modal-content {
+        transform: scale(1);
+        opacity: 1;
     }
     
-    .pwa-install-banner .btn,
-    .update-notification .btn {
+    .pwa-modal-content {
+        background: white;
         border-radius: 20px;
-        font-weight: 600;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        max-width: 400px;
+        width: 100%;
+        transform: scale(0.8);
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        overflow: hidden;
+    }
+    
+    .pwa-modal-header {
+        background: linear-gradient(135deg, #ff7e00 0%, #ff9933 100%);
+        padding: 30px 20px 20px;
+        text-align: center;
+        position: relative;
+    }
+    
+    .pwa-modal-icon {
+        width: 80px;
+        height: 80px;
+        background: white;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .pwa-modal-icon i {
+        font-size: 40px;
+        color: #ff7e00;
+    }
+    
+    .pwa-modal-title {
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        margin: 0;
+    }
+    
+    .pwa-modal-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+    
+    .pwa-modal-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: rotate(90deg);
+    }
+    
+    .pwa-modal-body {
+        padding: 25px 20px;
+    }
+    
+    .pwa-feature {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 12px 0;
+        font-size: 15px;
+    }
+    
+    .pwa-feature i {
+        font-size: 24px;
+        width: 30px;
+    }
+    
+    .pwa-modal-description {
+        margin: 20px 0 0;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        text-align: center;
+        color: #666;
+        font-size: 14px;
+    }
+    
+    .pwa-modal-footer {
+        padding: 0 20px 25px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .btn-pwa-install {
+        background: linear-gradient(135deg, #ff7e00 0%, #ff9933 100%);
+        color: white;
+        border: none;
+        padding: 15px 25px;
+        border-radius: 50px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(255, 126, 0, 0.3);
+    }
+    
+    .btn-pwa-install:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 126, 0, 0.4);
+    }
+    
+    .btn-pwa-install:active {
+        transform: translateY(0);
+    }
+    
+    .btn-pwa-later {
+        background: white;
+        color: #666;
+        border: 2px solid #e0e0e0;
+        padding: 12px 25px;
+        border-radius: 50px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .btn-pwa-later:hover {
+        border-color: #ff7e00;
+        color: #ff7e00;
+        background: #fff5eb;
     }
     
     /* Offline mode indicator */
@@ -445,6 +642,34 @@ style.textContent = `
         to {
             transform: translateY(0);
             opacity: 1;
+        }
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 576px) {
+        .pwa-modal-content {
+            margin: 0 10px;
+        }
+        
+        .pwa-modal-header {
+            padding: 25px 15px 15px;
+        }
+        
+        .pwa-modal-icon {
+            width: 70px;
+            height: 70px;
+        }
+        
+        .pwa-modal-icon i {
+            font-size: 35px;
+        }
+        
+        .pwa-modal-title {
+            font-size: 20px;
+        }
+        
+        .pwa-feature {
+            font-size: 14px;
         }
     }
 `;

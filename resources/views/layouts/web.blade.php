@@ -891,6 +891,9 @@
     
     <!-- PWA Initialization -->
     <script src="{{ asset('js/pwa-init.js') }}" defer></script>
+    
+    <!-- PWA Enhanced Features (WhatsApp, In-app browsers support) -->
+    <script src="{{ asset('js/pwa-enhanced.js') }}" defer></script>
 
     <!-- Firebase Cloud Messaging -->
     @auth
