@@ -91,6 +91,7 @@
         <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
         <link href="{{ asset('css/style.css') }}" rel="stylesheet">
         <link href="{{ asset('css/performance.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/pwa-install.css') }}" rel="stylesheet">
         
         <!-- Deferred Non-Critical CSS -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" media="print" onload="this.media='all'"/>
@@ -121,11 +122,18 @@
         <meta name="theme-color" content="#f28b00">
         
         <!-- PWA Manifest -->
-        <link rel="manifest" href="{{ asset('manifest.json') }}">
+        <link rel="manifest" href="{{ asset('manifest.json') }}" crossorigin="use-credentials">
         
         <!-- Favicon & App Icons -->
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
-        <link rel="apple-touch-icon" href="{{ asset('img/logo.png') }}">
+        <link rel="apple-touch-icon" href="{{ asset('img/carousel-1.png') }}">
+        <link rel="apple-touch-icon" sizes="192x192" href="{{ asset('img/carousel-1.png') }}">
+        <link rel="apple-touch-icon" sizes="512x512" href="{{ asset('img/carousel-1.png') }}">
+        
+        <!-- iOS Meta Tags -->
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="JB Shop">
         
         <!-- Additional SEO Links -->
         <link rel="author" href="{{ asset('humans.txt') }}">
@@ -534,6 +542,12 @@
                     @endauth
                 </div>
             </nav>
+            
+            <!-- PWA Install Button (Floating) -->
+            <button id="pwa-install-button" class="pwa-install-fab" style="display: none;">
+                <i class="fas fa-download"></i>
+                <span class="pwa-install-text">Installer</span>
+            </button>
         @endif
 
 <!-- Minimalistic Footer Start -->

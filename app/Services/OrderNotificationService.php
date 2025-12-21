@@ -9,10 +9,12 @@ use Illuminate\Support\Facades\Log;
 class OrderNotificationService
 {
     protected $firebaseService;
+    protected $whatsappService;
 
-    public function __construct(FirebaseService $firebaseService)
+    public function __construct(FirebaseService $firebaseService, WhatsAppService $whatsappService)
     {
         $this->firebaseService = $firebaseService;
+        $this->whatsappService = $whatsappService;
     }
 
     /**
@@ -22,22 +24,32 @@ class OrderNotificationService
     {
         $user = $order->user;
         
-        if (!$user || !$user->fcm_token) {
+        if (!$user) {
             return false;
         }
 
-        $title = '🎉 Commande Confirmée!';
-        $body = "Votre commande #{$order->id} a été enregistrée avec succès. Montant: {$order->total_amount} FCFA";
-        
-        $data = [
-            'type' => 'order_placed',
-            'order_id' => (string)$order->id,
-            'order_status' => $order->status,
-            'total' => (string)$order->total_amount,
-            'click_action' => 'ORDER_DETAILS',
-        ];
+        // Envoyer la notification FCM
+        if ($user->fcm_token) {
+            $title = '🎉 Commande Confirmée!';
+            $body = "Votre commande #{$order->id} a été enregistrée avec succès. Montant: {$order->total_amount} FCFA";
+            
+            $data = [
+                'type' => 'order_placed',
+                'order_id' => (string)$order->id,
+                'order_status' => $order->status,
+                'total' => (string)$order->total_amount,
+                'click_action' => 'ORDER_DETAILS',
+            ];
 
-        return $this->firebaseService->sendToDevice($user->fcm_token, $title, $body, $data);
+            $this->firebaseService->sendToDevice($user->fcm_token, $title, $body, $data);
+        }
+
+        // Envoyer la notification WhatsApp
+        if ($user->phone) {
+            $this->whatsappService->sendOrderNotification($order, $user);
+        }
+
+        return true;
     }
 
     /**
@@ -47,7 +59,7 @@ class OrderNotificationService
     {
         $user = $order->user;
         
-        if (!$user || !$user->fcm_token) {
+        if (!$user) {
             return false;
         }
 
@@ -79,16 +91,26 @@ class OrderNotificationService
             'body' => "Le statut de votre commande #{$order->id} a été mis à jour."
         ];
 
-        $data = [
-            'type' => 'order_status_changed',
-            'order_id' => (string)$order->id,
-            'old_status' => $oldStatus,
-            'new_status' => $newStatus,
-            'total' => (string)$order->total_amount,
-            'click_action' => 'ORDER_DETAILS',
-        ];
+        // Envoyer la notification FCM
+        if ($user->fcm_token) {
+            $data = [
+                'type' => 'order_status_changed',
+                'order_id' => (string)$order->id,
+                'old_status' => $oldStatus,
+                'new_status' => $newStatus,
+                'total' => (string)$order->total_amount,
+                'click_action' => 'ORDER_DETAILS',
+            ];
 
-        return $this->firebaseService->sendToDevice($user->fcm_token, $message['title'], $message['body'], $data);
+            $this->firebaseService->sendToDevice($user->fcm_token, $message['title'], $message['body'], $data);
+        }
+
+        // Envoyer la notification WhatsApp
+        if ($user->phone) {
+            $this->whatsappService->sendOrderStatusUpdate($order, $user, $newStatus);
+        }
+
+        return true;
     }
 
     /**

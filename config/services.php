@@ -35,4 +35,15 @@ return [
         ],
     ],
 
+    'firebase' => [
+        'project_id' => env('FIREBASE_PROJECT_ID'),
+        'credentials' => env('FIREBASE_CREDENTIALS'),
+    ],
+
+    'evolution' => [
+        'api_url' => env('EVOLUTION_API_URL'),
+        'instance_name' => env('EVOLUTION_INSTANCE_NAME'),
+        'api_key' => env('EVOLUTION_API_KEY'),
+    ],
+
 ];

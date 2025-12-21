@@ -133,7 +133,12 @@
             // Store the event for later use
             deferredPrompt = e;
             
-            // Show custom install modal (only on mobile)
+            console.log('[PWA] Install prompt available');
+            
+            // Show floating install button
+            showInstallButton();
+            
+            // Show custom install modal (only on mobile, with delay)
             showInstallModal();
         });
         
@@ -142,6 +147,7 @@
             console.log('[PWA] App installed successfully');
             deferredPrompt = null;
             hideInstallModal();
+            hideInstallButton();
             
             // Track installation
             if (window.gtag) {
@@ -153,6 +159,28 @@
         });
     }
     
+    // Show floating install button
+    function showInstallButton() {
+        const installBtn = document.getElementById('pwa-install-button');
+        if (installBtn && deferredPrompt) {
+            // Check if already installed
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                return;
+            }
+            
+            installBtn.style.display = 'flex';
+            installBtn.addEventListener('click', installPWA);
+        }
+    }
+    
+    // Hide floating install button
+    function hideInstallButton() {
+        const installBtn = document.getElementById('pwa-install-button');
+        if (installBtn) {
+            installBtn.style.display = 'none';
+        }
+    }
+    
     // Check if device is mobile
     function isMobileDevice() {
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -160,6 +188,12 @@
     
     // Show Install Modal (Mobile Only)
     function showInstallModal() {
+        // Always check if prompt is available
+        if (!deferredPrompt) {
+            console.log('[PWA] Install prompt not available yet');
+            return;
+        }
+        
         // Only show on mobile devices
         if (!isMobileDevice()) {
             console.log('[PWA] Install modal disabled on desktop');
@@ -189,6 +223,14 @@
             }
         }
         
+        // Delay modal display by 3 seconds for better UX
+        setTimeout(() => {
+            displayInstallModal();
+        }, 3000);
+    }
+    
+    // Display the install modal
+    function displayInstallModal() {
         // Create modal overlay
         const modalOverlay = document.createElement('div');
         modalOverlay.id = 'pwa-install-modal';
@@ -196,41 +238,28 @@
         modalOverlay.innerHTML = `
             <div class="pwa-modal-content">
                 <div class="pwa-modal-header">
-                    <div class="pwa-modal-icon">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <h3 class="pwa-modal-title">Installer JB Shop</h3>
                     <button class="pwa-modal-close" id="pwa-modal-close">
                         <i class="fas fa-times"></i>
                     </button>
+                    <div class="pwa-modal-icon">
+                        <i class="fab fa-android"></i>
+                    </div>
+                    <h3 class="pwa-modal-title">Installer JB Shop</h3>
                 </div>
                 <div class="pwa-modal-body">
-                    <div class="pwa-feature">
-                        <i class="fas fa-bolt text-warning"></i>
-                        <span>Accès ultra-rapide</span>
-                    </div>
-                    <div class="pwa-feature">
-                        <i class="fas fa-wifi-slash text-info"></i>
-                        <span>Fonctionne hors ligne</span>
-                    </div>
-                    <div class="pwa-feature">
-                        <i class="fas fa-bell text-danger"></i>
-                        <span>Notifications de commandes</span>
-                    </div>
-                    <div class="pwa-feature">
-                        <i class="fas fa-home text-success"></i>
-                        <span>Comme une vraie application</span>
-                    </div>
                     <p class="pwa-modal-description">
-                        Installez JB Shop sur votre écran d'accueil pour une expérience optimale !
+                        Téléchargez notre application mobile pour une meilleure expérience d'achat !
                     </p>
                 </div>
                 <div class="pwa-modal-footer">
                     <button id="pwa-install-now" class="btn-pwa-install">
-                        <i class="fas fa-download me-2"></i>Installer Maintenant
+                        <i class="fas fa-download me-2"></i>Télécharger
                     </button>
+                    <a href="https://wa.me/237682252932" target="_blank" class="btn-pwa-whatsapp">
+                        <i class="fab fa-whatsapp me-2"></i>WhatsApp
+                    </a>
                     <button id="pwa-remind-later" class="btn-pwa-later">
-                        <i class="far fa-clock me-2"></i>Me Rappeler Plus Tard
+                        Plus tard
                     </button>
                 </div>
             </div>
@@ -432,26 +461,35 @@ style.textContent = `
     
     .pwa-modal-header {
         background: linear-gradient(135deg, #ff7e00 0%, #ff9933 100%);
-        padding: 30px 20px 20px;
+        padding: 40px 20px 25px;
         text-align: center;
         position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
     }
     
     .pwa-modal-icon {
-        width: 80px;
-        height: 80px;
+        width: 100px;
+        height: 100px;
         background: white;
-        border-radius: 20px;
+        border-radius: 25px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 0 auto 15px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        animation: float 3s ease-in-out infinite;
     }
     
     .pwa-modal-icon i {
-        font-size: 40px;
-        color: #ff7e00;
+        font-size: 60px;
+        color: #3ddc84;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
     }
     
     .pwa-modal-title {
@@ -528,6 +566,9 @@ style.textContent = `
         cursor: pointer;
         transition: all 0.3s;
         box-shadow: 0 4px 15px rgba(255, 126, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     .btn-pwa-install:hover {
@@ -536,6 +577,34 @@ style.textContent = `
     }
     
     .btn-pwa-install:active {
+        transform: translateY(0);
+    }
+    
+    .btn-pwa-whatsapp {
+        background: #25D366;
+        color: white;
+        text-decoration: none;
+        padding: 13px 25px;
+        border-radius: 50px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+    }
+    
+    .btn-pwa-whatsapp:hover {
+        background: #20BA5A;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+        color: white;
+    }
+    
+    .btn-pwa-whatsapp:active {
         transform: translateY(0);
     }
     
@@ -652,24 +721,25 @@ style.textContent = `
         }
         
         .pwa-modal-header {
-            padding: 25px 15px 15px;
+            padding: 30px 15px 20px;
         }
         
         .pwa-modal-icon {
-            width: 70px;
-            height: 70px;
+            width: 80px;
+            height: 80px;
         }
         
         .pwa-modal-icon i {
-            font-size: 35px;
+            font-size: 45px;
         }
         
         .pwa-modal-title {
             font-size: 20px;
         }
         
-        .pwa-feature {
+        .btn-pwa-install, .btn-pwa-whatsapp {
             font-size: 14px;
+            padding: 12px 20px;
         }
     }
 `;

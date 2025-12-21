@@ -75,42 +75,30 @@ class WhatsAppService
     }
 
     /**
-     * Générer et envoyer un code OTP
+     * Envoyer un code OTP (le code doit être fourni)
      */
-    public function sendOTP($phoneNumber, $name = '')
+    public function sendOTP($phoneNumber, $otpCode, $name = '')
     {
         try {
-            // Générer un code OTP à 6 chiffres
-            $otp = str_pad(random_int(100000, 999999), 6, '0', STR_PAD_LEFT);
-            
-            // Stocker l'OTP dans le cache pour 10 minutes
-            $cacheKey = "otp_{$phoneNumber}";
-            Cache::put($cacheKey, $otp, now()->addMinutes(10));
+            // Utiliser le code OTP fourni
+            $otp = $otpCode;
 
-            // Préparer le message
-            $greeting = $name ? "Bonjour {$name}," : "Bonjour,";
-            $message = "🔐 *JB Shop - Code de Vérification*\n\n"
-                     . "{$greeting}\n\n"
-                     . "Votre code de vérification est :\n\n"
+            // Préparer le message court et direct
+            $message = "🔐 *JB Shop*\n\n"
+                     . "Code de vérification :\n\n"
                      . "*{$otp}*\n\n"
-                     . "⏱️ Ce code est valide pendant 10 minutes.\n\n"
-                     . "⚠️ Ne partagez jamais ce code avec qui que ce soit.\n\n"
-                     . "Si vous n'avez pas demandé ce code, ignorez ce message.\n\n"
-                     . "Merci,\n"
-                     . "L'équipe JB Shop 🛍️";
+                     . "Valide 10 minutes";
 
             // Envoyer le message
             $result = $this->sendTextMessage($phoneNumber, $message);
 
             if ($result['success']) {
                 Log::info('OTP sent successfully', [
-                    'phone' => $phoneNumber,
-                    'otp' => $otp // À retirer en production
+                    'phone' => $phoneNumber
                 ]);
 
                 return [
                     'success' => true,
-                    'otp' => $otp, // Retourné pour tests, à retirer en production
                     'message' => 'Code OTP envoyé avec succès'
                 ];
             }
@@ -184,33 +172,31 @@ class WhatsAppService
         try {
             $phoneNumber = $user->phone;
             
-            // Préparer le message de commande
-            $message = "🎉 *Commande Confirmée - JB Shop*\n\n"
+            // Calculer le nombre d'articles
+            $totalItems = $order->items->sum('quantity');
+            
+            // Préparer le message de commande court
+            $message = "🎉 *Commande Confirmée*\n\n"
                      . "Bonjour {$user->name},\n\n"
-                     . "Votre commande a été confirmée avec succès !\n\n"
-                     . "📦 *Détails de la Commande*\n"
-                     . "━━━━━━━━━━━━━━━━━━━━\n"
-                     . "🔖 Numéro : *{$order->order_number}*\n"
-                     . "📅 Date : " . $order->created_at->format('d/m/Y à H:i') . "\n"
-                     . "💰 Montant : *" . number_format($order->total_amount, 0, ',', ' ') . " FCFA*\n"
-                     . "📍 Adresse : {$order->shipping_address}\n\n"
-                     . "📋 *Articles Commandés*\n"
-                     . "━━━━━━━━━━━━━━━━━━━━\n";
+                     . "📦 Commande : *{$order->order_number}*\n"
+                     . "🛍️ Articles : {$totalItems}\n"
+                     . "💰 Total : *" . number_format($order->total_amount, 0, ',', ' ') . " FCFA*\n\n";
 
-            // Ajouter les articles
-            foreach ($order->items as $index => $item) {
-                $message .= ($index + 1) . ". {$item->product_name}\n"
-                         . "   × {$item->quantity} - " . number_format($item->price * $item->quantity, 0, ',', ' ') . " FCFA\n";
+            // Ajouter les articles (max 3 pour garder le message court)
+            $itemCount = min($order->items->count(), 3);
+            foreach ($order->items->take($itemCount) as $index => $item) {
+                $message .= "• {$item->product_name} (×{$item->quantity})\n";
+            }
+            
+            if ($order->items->count() > 3) {
+                $remaining = $order->items->count() - 3;
+                $message .= "• ... et {$remaining} autre(s) article(s)\n";
             }
 
-            $message .= "\n🚚 *Livraison*\n"
-                     . "━━━━━━━━━━━━━━━━━━━━\n"
-                     . "📞 Contact : {$order->phone}\n"
-                     . "⏱️ Délai estimé : 2-5 jours ouvrables\n\n"
-                     . "📱 Suivez votre commande :\n"
-                     . config('app.url') . "/orders/{$order->id}\n\n"
-                     . "Merci pour votre confiance ! 🙏\n"
-                     . "L'équipe JB Shop";
+            $message .= "\n📍 Livraison : {$order->shipping_address}\n"
+                     . "📞 Contact : {$order->shipping_phone}\n"
+                     . "⏱️ Délai : 2-5 jours\n\n"
+                     . "Merci pour votre confiance ! 🙏";
 
             return $this->sendTextMessage($phoneNumber, $message);
 
@@ -236,7 +222,7 @@ class WhatsAppService
             $phoneNumber = $user->phone;
             
             $statusMessages = [
-                'pending' => '⏳ En attente de confirmation',
+                'pending' => '⏳ En attente',
                 'confirmed' => '✅ Confirmée',
                 'processing' => '📦 En préparation',
                 'shipped' => '🚚 Expédiée',
@@ -256,32 +242,38 @@ class WhatsAppService
             $emoji = $statusEmoji[$newStatus] ?? '📋';
             $statusText = $statusMessages[$newStatus] ?? $newStatus;
 
-            $message = "{$emoji} *Mise à Jour Commande - JB Shop*\n\n"
-                     . "Bonjour {$user->name},\n\n"
-                     . "Le statut de votre commande a été mis à jour :\n\n"
-                     . "🔖 Numéro : *{$order->order_number}*\n"
-                     . "📊 Nouveau statut : *{$statusText}*\n\n";
+            $message = "{$emoji} *JB Shop*\n\n"
+                     . "Bonjour {$user->name},\n\n";
 
             // Messages personnalisés selon le statut
-            if ($newStatus === 'shipped') {
-                $trackingNumber = $order->tracking_number ?? 'N/A';
-                $message .= "📦 Numéro de suivi : *{$trackingNumber}*\n\n"
-                         . "Votre commande est en route ! 🚚\n"
-                         . "Vous devriez la recevoir dans 2-3 jours.\n\n";
+            if ($newStatus === 'confirmed') {
+                $message .= "Votre commande *{$order->order_number}* a été confirmée !\n\n"
+                         . "Nous préparons vos articles. ⏱️";
+            } elseif ($newStatus === 'processing') {
+                $message .= "Votre commande *{$order->order_number}* est en cours de préparation.\n\n"
+                         . "Elle sera bientôt expédiée ! 📦";
+            } elseif ($newStatus === 'shipped') {
+                $message .= "📦 *Votre colis a été expédié !*\n\n"
+                         . "Commande : *{$order->order_number}*\n";
+                if ($order->tracking_number) {
+                    $message .= "Suivi : {$order->tracking_number}\n";
+                }
+                $message .= "\nLivraison dans 2-3 jours. 🚚";
             } elseif ($newStatus === 'delivered') {
-                $message .= "🎉 Votre commande a été livrée !\n\n"
-                         . "Nous espérons que vous êtes satisfait(e) de vos achats.\n\n"
-                         . "N'hésitez pas à nous laisser un avis ! ⭐\n\n";
+                $message .= "🎉 *Votre colis a été livré !*\n\n"
+                         . "Commande : *{$order->order_number}*\n\n"
+                         . "Merci pour votre confiance !\n"
+                         . "Laissez-nous un avis ⭐";
             } elseif ($newStatus === 'cancelled') {
-                $message .= "Votre commande a été annulée.\n\n"
-                         . "Si vous avez des questions, contactez-nous :\n"
-                         . "📞 +237-657-528-859\n\n";
+                $message .= "Votre commande *{$order->order_number}* a été annulée.\n\n";
+                if ($order->cancelled_reason) {
+                    $message .= "Raison : {$order->cancelled_reason}\n\n";
+                }
+                $message .= "Questions ? 📞 +237-682-252-932";
+            } else {
+                $message .= "Statut de votre commande *{$order->order_number}* :\n\n"
+                         . "*{$statusText}*";
             }
-
-            $message .= "📱 Voir les détails :\n"
-                     . config('app.url') . "/orders/{$order->id}\n\n"
-                     . "Merci,\n"
-                     . "L'équipe JB Shop 🛍️";
 
             return $this->sendTextMessage($phoneNumber, $message);
 
@@ -307,21 +299,11 @@ class WhatsAppService
         try {
             $phoneNumber = $user->phone;
 
-            $message = "🎉 *Bienvenue sur JB Shop !*\n\n"
-                     . "Bonjour {$user->name},\n\n"
-                     . "Merci de nous avoir rejoint ! 🙏\n\n"
-                     . "Nous sommes ravis de vous compter parmi nous.\n\n"
-                     . "🛍️ *Découvrez nos produits :*\n"
-                     . config('app.url') . "/shop\n\n"
-                     . "💡 *Astuce :* Installez notre application pour :\n"
-                     . "• Un accès plus rapide ⚡\n"
-                     . "• Des notifications de commandes 🔔\n"
-                     . "• Mode hors ligne 📱\n\n"
-                     . "Besoin d'aide ? Contactez-nous :\n"
-                     . "📞 +237-657-528-859\n"
-                     . "📧 brayeljunior8@gmail.com\n\n"
-                     . "Bon shopping ! 🛒\n"
-                     . "L'équipe JB Shop";
+            $message = "🎉 *Bienvenue {$user->name} !*\n\n"
+                     . "Votre compte JB Shop est créé.\n\n"
+                     . "🛍️ Boutique : " . config('app.url') . "/shop\n"
+                     . "📞 Support : +237-657-528-859\n\n"
+                     . "Bon shopping ! 🛒";
 
             return $this->sendTextMessage($phoneNumber, $message);
 
