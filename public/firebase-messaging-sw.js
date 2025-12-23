@@ -28,8 +28,8 @@ messaging.onBackgroundMessage((payload) => {
     const notificationTitle = payload.notification?.title || 'Nouvelle notification';
     const notificationOptions = {
         body: payload.notification?.body || '',
-        icon: '/img/logo.svg',
-        badge: '/img/logo.svg',
+        icon: '/icons/icon-192x192.png',
+        badge: '/icons/icon-96x96.png',
         tag: payload.data?.order_id || 'notification-' + Date.now(),
         data: payload.data || {},
         requireInteraction: true,
@@ -41,7 +41,7 @@ messaging.onBackgroundMessage((payload) => {
             {
                 action: 'view',
                 title: 'Voir',
-                icon: '/img/logo.svg'
+                icon: '/icons/icon-96x96.png'
             },
             {
                 action: 'close',

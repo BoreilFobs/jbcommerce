@@ -29,7 +29,10 @@ const CORE_ASSETS = [
     '/lib/animate/animate.min.css',
     '/lib/owlcarousel/assets/owl.carousel.min.css',
     '/manifest.json',
-    '/img/logo.png',
+    '/favicon.ico',
+    '/icons/icon-192x192.png',
+    '/icons/icon-512x512.png',
+    '/icons/apple-touch-icon.png',
     '/img/placeholder.svg'
 ];
 
@@ -478,8 +481,8 @@ self.addEventListener('push', (event) => {
     const title = data.title || 'JB Shop';
     const options = {
         body: data.body || 'Nouvelle notification',
-        icon: '/img/logo.png',
-        badge: '/img/logo.png',
+        icon: '/icons/icon-192x192.png',
+        badge: '/icons/icon-96x96.png',
         vibrate: [200, 100, 200],
         data: data.url || '/'
     };

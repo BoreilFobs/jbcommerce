@@ -39,7 +39,7 @@
         <meta property="og:url" content="https://jbshop237.com">
         <meta property="og:title" content="JB Shop - Boutique en Ligne à Bafoussam | Électronique & Accessoires">
         <meta property="og:description" content="Découvrez JB Shop, votre destination e-commerce de confiance à Bafoussam. Large sélection d'électronique, smartphones, ordinateurs et accessoires. Livraison rapide au Cameroun.">
-        <meta property="og:image" content="{{ asset('img/logo.png') }}">
+        <meta property="og:image" content="{{ asset('icons/og-image.png') }}">
         <meta property="og:image:width" content="1200">
         <meta property="og:image:height" content="630">
         <meta property="og:site_name" content="JB Shop">
@@ -50,7 +50,7 @@
         <meta name="twitter:url" content="https://jbshop237.com">
         <meta name="twitter:title" content="JB Shop - Boutique en Ligne à Bafoussam">
         <meta name="twitter:description" content="Votre boutique en ligne de confiance pour électronique, smartphones et accessoires au Cameroun.">
-        <meta name="twitter:image" content="{{ asset('img/logo.png') }}">
+        <meta name="twitter:image" content="{{ asset('icons/og-image.png') }}">
         
         <!-- Geographic Meta Tags -->
         <meta name="geo.region" content="CM-OU">
@@ -126,9 +126,14 @@
         
         <!-- Favicon & App Icons -->
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
-        <link rel="apple-touch-icon" href="{{ asset('img/carousel-1.png') }}">
-        <link rel="apple-touch-icon" sizes="192x192" href="{{ asset('img/carousel-1.png') }}">
-        <link rel="apple-touch-icon" sizes="512x512" href="{{ asset('img/carousel-1.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('icons/favicon-16x16.png') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('icons/favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('icons/favicon-48x48.png') }}">
+        <link rel="apple-touch-icon" href="{{ asset('icons/apple-touch-icon.png') }}">
+        <link rel="apple-touch-icon" sizes="120x120" href="{{ asset('icons/apple-touch-icon-120x120.png') }}">
+        <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('icons/apple-touch-icon-152x152.png') }}">
+        <link rel="apple-touch-icon" sizes="167x167" href="{{ asset('icons/apple-touch-icon-167x167.png') }}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('icons/apple-touch-icon-180x180.png') }}">
         
         <!-- iOS Meta Tags -->
         <meta name="apple-mobile-web-app-capable" content="yes">
@@ -144,7 +149,7 @@
             "@context": "https://schema.org",
             "@type": "Store",
             "name": "JB Shop",
-            "image": "{{ asset('img/logo.png') }}",
+            "image": "{{ asset('icons/icon-512x512.png') }}",
             "description": "Boutique en ligne spécialisée dans la vente d'électronique, smartphones, ordinateurs et accessoires à Bafoussam, Cameroun.",
             "address": {
                 "@type": "PostalAddress",
