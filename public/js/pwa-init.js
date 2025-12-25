@@ -124,6 +124,7 @@
     
     // Handle PWA Install Prompt
     let deferredPrompt;
+    let installButtonShown = false;
     
     function handleInstallPrompt() {
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -133,21 +134,27 @@
             // Store the event for later use
             deferredPrompt = e;
             
-            console.log('[PWA] Install prompt available');
+            console.log('[PWA] ✅ Install prompt available - App is installable!');
             
-            // Show floating install button
+            // Show floating install button immediately
             showInstallButton();
             
             // Show custom install modal (only on mobile, with delay)
-            showInstallModal();
+            if (isMobileDevice()) {
+                showInstallModal();
+            }
         });
         
         // Listen for successful installation
         window.addEventListener('appinstalled', () => {
-            console.log('[PWA] App installed successfully');
+            console.log('[PWA] ✅ App installed successfully');
             deferredPrompt = null;
+            installButtonShown = false;
             hideInstallModal();
             hideInstallButton();
+            
+            // Store installation flag
+            localStorage.setItem('pwa_installed', 'true');
             
             // Track installation
             if (window.gtag) {
@@ -157,19 +164,33 @@
                 });
             }
         });
+        
+        // Log PWA readiness after 2 seconds
+        setTimeout(() => {
+            if (!deferredPrompt) {
+                console.log('[PWA] ⚠️ Install prompt not triggered. Checking requirements:');
+                console.log('- HTTPS: ', window.location.protocol === 'https:' || window.location.hostname === 'localhost');
+                console.log('- Service Worker: ', 'serviceWorker' in navigator);
+                console.log('- Manifest: Check if manifest.json is loaded');
+                console.log('- Already installed: ', window.matchMedia('(display-mode: standalone)').matches);
+            }
+        }, 2000);
     }
     
     // Show floating install button
     function showInstallButton() {
         const installBtn = document.getElementById('pwa-install-button');
-        if (installBtn && deferredPrompt) {
+        if (installBtn && deferredPrompt && !installButtonShown) {
             // Check if already installed
-            if (window.matchMedia('(display-mode: standalone)').matches) {
+            if (window.matchMedia('(display-mode: standalone)').matches || localStorage.getItem('pwa_installed') === 'true') {
+                console.log('[PWA] App already installed, hiding button');
                 return;
             }
             
+            console.log('[PWA] 📱 Showing install button');
             installBtn.style.display = 'flex';
             installBtn.addEventListener('click', installPWA);
+            installButtonShown = true;
         }
     }
     

@@ -119,7 +119,7 @@
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-        <meta name="theme-color" content="#f28b00">
+        <meta name="theme-color" content="#ff7e00">
         
         <!-- PWA Manifest -->
         <link rel="manifest" href="{{ asset('manifest.json') }}" crossorigin="use-credentials">
@@ -137,8 +137,17 @@
         
         <!-- iOS Meta Tags -->
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
         <meta name="apple-mobile-web-app-title" content="JB Shop">
+        
+        <!-- Android/Chrome Meta Tags -->
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="application-name" content="JB Shop">
+        
+        <!-- Microsoft Tiles -->
+        <meta name="msapplication-TileColor" content="#ff7e00">
+        <meta name="msapplication-TileImage" content="{{ asset('icons/icon-144x144.png') }}">
+        <meta name="msapplication-config" content="{{ asset('browserconfig.xml') }}">
         
         <!-- Additional SEO Links -->
         <link rel="author" href="{{ asset('humans.txt') }}">
