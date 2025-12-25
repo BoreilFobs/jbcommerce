@@ -917,9 +917,8 @@
     <!-- Lazy Loading (Load Early for Image Optimization) -->
     <script src="{{ asset('js/lazy-load.js') }}"></script>
     
-    <!-- PWA Initialization -->
-        <script src="{{ asset('js/pwa-init.js') }}?v=2.3.0" defer></script>    <!-- PWA Enhanced Features (WhatsApp, In-app browsers support) -->
-    <script src="{{ asset('js/pwa-enhanced.js') }}" defer></script>
+    <!-- PWA Initialization - v2.4.0 -->
+    <script src="{{ asset('js/pwa-init-v2.js') }}?v=2.4.0" defer></script>
 
     <!-- Firebase Cloud Messaging -->
     @auth

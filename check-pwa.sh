@@ -18,7 +18,7 @@ echo "📁 Checking PWA files..."
 files=(
     "public/service-worker.js"
     "public/manifest.json"
-    "public/js/pwa-init.js"
+    "public/js/pwa-init-v2.js"
     "public/icons/icon-192x192.png"
     "public/icons/icon-512x512.png"
     "public/icons/icon-192x192-maskable.png"
@@ -39,10 +39,10 @@ echo ""
 
 # Check JavaScript syntax
 echo "🔧 Checking JavaScript syntax..."
-if node -c public/js/pwa-init.js 2>/dev/null; then
-    echo -e "${GREEN}✅${NC} pwa-init.js syntax valid"
+if node -c public/js/pwa-init-v2.js 2>/dev/null; then
+    echo -e "${GREEN}✅${NC} pwa-init-v2.js syntax valid"
 else
-    echo -e "${RED}❌${NC} pwa-init.js has syntax errors"
+    echo -e "${RED}❌${NC} pwa-init-v2.js has syntax errors"
     all_exist=false
 fi
 
