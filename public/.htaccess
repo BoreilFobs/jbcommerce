@@ -50,6 +50,29 @@
     Header always set Content-Security-Policy "upgrade-insecure-requests"
 </IfModule>
 
+# PWA / Service Worker Headers
+<IfModule mod_headers.c>
+    # Service Worker - must not be cached
+    <FilesMatch "service-worker\.js$">
+        Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+        Header set Service-Worker-Allowed "/"
+    </FilesMatch>
+    
+    # Manifest file
+    <FilesMatch "manifest\.json$">
+        Header set Content-Type "application/manifest+json"
+        Header set Cache-Control "public, max-age=86400"
+    </FilesMatch>
+</IfModule>
+
+# MIME Types for PWA
+<IfModule mod_mime.c>
+    AddType application/manifest+json .webmanifest .json
+    AddType application/javascript .js
+    AddType image/png .png
+    AddType image/x-icon .ico
+</IfModule>
+
 # Browser Caching for Performance
 <IfModule mod_expires.c>
     ExpiresActive On
