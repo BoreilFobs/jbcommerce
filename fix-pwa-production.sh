@@ -19,6 +19,41 @@ if [ ! -f "artisan" ]; then
     exit 1
 fi
 
+echo "📁 Step 0: Checking Apache /icons/ alias conflict..."
+echo ""
+
+# Check for Apache alias conflict
+if [ -f "/etc/apache2/mods-enabled/alias.conf" ]; then
+    if grep -q "Alias /icons/" /etc/apache2/mods-enabled/alias.conf 2>/dev/null; then
+        echo -e "${YELLOW}⚠️  Apache has a default /icons/ alias that may conflict${NC}"
+        echo "   This is likely causing your icons to return 404"
+        echo ""
+        echo "   To fix this, you have two options:"
+        echo ""
+        echo "   Option 1: Disable the alias (recommended)"
+        echo "   sudo a2disconf serve-cgi-bin"
+        echo "   sudo systemctl restart apache2"
+        echo ""
+        echo "   Option 2: Comment out the alias in alias.conf"
+        echo "   sudo nano /etc/apache2/mods-enabled/alias.conf"
+        echo "   # Comment out the line: Alias /icons/ \"/usr/share/apache2/icons/\""
+        echo "   sudo systemctl restart apache2"
+        echo ""
+    fi
+fi
+
+# Also check autoindex.conf
+if [ -f "/etc/apache2/mods-enabled/autoindex.conf" ]; then
+    if grep -q "Alias /icons/" /etc/apache2/mods-enabled/autoindex.conf 2>/dev/null; then
+        echo -e "${YELLOW}⚠️  Found /icons/ alias in autoindex.conf${NC}"
+        echo ""
+        echo "   To fix: Edit /etc/apache2/mods-enabled/autoindex.conf"
+        echo "   Comment out or remove the Alias /icons/ line"
+        echo "   Then: sudo systemctl restart apache2"
+        echo ""
+    fi
+fi
+
 echo "📁 Step 1: Checking if files exist..."
 echo ""
 
