@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PWA Installation Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .pass { color: #22c55e; font-weight: bold; }
+        .fail { color: #ef4444; font-weight: bold; }
+        .warning { color: #f59e0b; font-weight: bold; }
+        button {
+            background: #ff7e00;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #e06d00; }
+        pre {
+            background: #1f2937;
+            color: #10b981;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 JB Shop PWA Installation Test</h1>
+    <p>This page tests all PWA installation requirements.</p>
+    
+    <div id="results"></div>
+    
+    <div class="test-item">
+        <h3>Actions</h3>
+        <button onclick="runTests()">Run All Tests</button>
+        <button onclick="clearServiceWorker()">Clear Service Worker</button>
+        <button onclick="clearAllData()">Clear All PWA Data</button>
+        <button onclick="location.href='/'">Go to Main Site</button>
+    </div>
+    
+    <div class="test-item">
+        <h3>Console Output</h3>
+        <pre id="console"></pre>
+    </div>
+
+    <script>
+        let consoleOutput = '';
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+            consoleOutput += `[${timestamp}] ${prefix} ${message}\n`;
+            document.getElementById('console').textContent = consoleOutput;
+            console.log(message);
+        }
+
+        async function runTests() {
+            consoleOutput = '';
+            const results = document.getElementById('results');
+            results.innerHTML = '<h2>Test Results</h2>';
+            
+            // Test 1: HTTPS
+            const isSecure = window.location.protocol === 'https:' || window.location.hostname === 'localhost';
+            addResult('HTTPS/Localhost', isSecure, 
+                isSecure ? 'Connection is secure' : 'PWA requires HTTPS on production!');
+            log(`HTTPS: ${isSecure}`, isSecure ? 'success' : 'error');
+            
+            // Test 2: Service Worker Support
+            const hasSW = 'serviceWorker' in navigator;
+            addResult('Service Worker Support', hasSW, 
+                hasSW ? 'Browser supports service workers' : 'Browser does not support service workers');
+            log(`Service Worker Support: ${hasSW}`, hasSW ? 'success' : 'error');
+            
+            // Test 3: Service Worker Registration
+            let swRegistered = false;
+            if (hasSW) {
+                try {
+                    const registration = await navigator.serviceWorker.getRegistration();
+                    swRegistered = registration !== undefined;
+                    addResult('Service Worker Registered', swRegistered,
+                        swRegistered ? `Scope: ${registration.scope}` : 'No service worker registered');
+                    log(`SW Registered: ${swRegistered}`, swRegistered ? 'success' : 'warning');
+                } catch (e) {
+                    addResult('Service Worker Registered', false, `Error: ${e.message}`);
+                    log(`SW Registration Error: ${e.message}`, 'error');
+                }
+            }
+            
+            // Test 4: Manifest
+            const manifestLink = document.querySelector('link[rel="manifest"]');
+            const hasManifest = manifestLink !== null;
+            addResult('Manifest Link', hasManifest,
+                hasManifest ? `Found: ${manifestLink.href}` : 'No manifest link in HTML');
+            log(`Manifest Link: ${hasManifest}`, hasManifest ? 'success' : 'error');
+            
+            // Test 5: Fetch Manifest
+            if (hasManifest) {
+                try {
+                    const response = await fetch('/manifest.json');
+                    if (response.ok) {
+                        const manifest = await response.json();
+                        addResult('Manifest Accessible', true,
+                            `Name: ${manifest.short_name}, Icons: ${manifest.icons.length}`);
+                        log(`Manifest loaded: ${manifest.short_name}`, 'success');
+                        
+                        // Validate manifest fields
+                        const required = ['name', 'short_name', 'start_url', 'display', 'icons'];
+                        const missing = required.filter(field => !manifest[field]);
+                        if (missing.length === 0) {
+                            addResult('Manifest Fields', true, 'All required fields present');
+                            log('Manifest fields: All required fields present', 'success');
+                        } else {
+                            addResult('Manifest Fields', false, `Missing: ${missing.join(', ')}`);
+                            log(`Manifest fields missing: ${missing.join(', ')}`, 'error');
+                        }
+                        
+                        // Check icons
+                        const has192 = manifest.icons.some(icon => icon.sizes === '192x192');
+                        const has512 = manifest.icons.some(icon => icon.sizes === '512x512');
+                        addResult('Required Icons', has192 && has512,
+                            `192x192: ${has192 ? '✅' : '❌'}, 512x512: ${has512 ? '✅' : '❌'}`);
+                        log(`Icons - 192x192: ${has192}, 512x512: ${has512}`, (has192 && has512) ? 'success' : 'error');
+                    } else {
+                        addResult('Manifest Accessible', false, `HTTP ${response.status}`);
+                        log(`Manifest HTTP ${response.status}`, 'error');
+                    }
+                } catch (e) {
+                    addResult('Manifest Accessible', false, `Error: ${e.message}`);
+                    log(`Manifest error: ${e.message}`, 'error');
+                }
+            }
+            
+            // Test 6: Icons Accessibility
+            const iconSizes = ['192x192', '512x512'];
+            for (const size of iconSizes) {
+                try {
+                    const response = await fetch(`/icons/icon-${size}.png`);
+                    addResult(`Icon ${size}`, response.ok,
+                        response.ok ? 'Accessible' : `HTTP ${response.status}`);
+                    log(`Icon ${size}: ${response.ok}`, response.ok ? 'success' : 'error');
+                } catch (e) {
+                    addResult(`Icon ${size}`, false, `Error: ${e.message}`);
+                    log(`Icon ${size} error: ${e.message}`, 'error');
+                }
+            }
+            
+            // Test 7: BeforeInstallPrompt Support
+            const hasInstallPrompt = 'onbeforeinstallprompt' in window;
+            addResult('BeforeInstallPrompt API', hasInstallPrompt,
+                hasInstallPrompt ? 'Browser supports install prompts' : 'Browser does not support (iOS/Safari)');
+            log(`BeforeInstallPrompt: ${hasInstallPrompt}`, hasInstallPrompt ? 'success' : 'warning');
+            
+            // Test 8: Already Installed
+            const isInstalled = window.matchMedia('(display-mode: standalone)').matches ||
+                               window.navigator.standalone === true;
+            addResult('Installation Status', !isInstalled,
+                isInstalled ? 'App already installed' : 'App not installed (can install)');
+            log(`Installed: ${isInstalled}`, isInstalled ? 'warning' : 'success');
+            
+            // Test 9: WebView Detection
+            const isWebView = /wv|WebView/.test(navigator.userAgent);
+            addResult('Not in WebView', !isWebView,
+                isWebView ? 'Running in WebView (PWA disabled)' : 'Running in regular browser');
+            log(`WebView: ${isWebView}`, isWebView ? 'warning' : 'success');
+            
+            // Summary
+            log('=== Test Complete ===', 'success');
+        }
+        
+        function addResult(name, pass, details) {
+            const results = document.getElementById('results');
+            const status = pass ? '<span class="pass">✅ PASS</span>' : '<span class="fail">❌ FAIL</span>';
+            results.innerHTML += `
+                <div class="test-item">
+                    <strong>${name}:</strong> ${status}
+                    <br><small>${details}</small>
+                </div>
+            `;
+        }
+        
+        async function clearServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                for (let registration of registrations) {
+                    await registration.unregister();
+                    log(`Unregistered service worker: ${registration.scope}`, 'success');
+                }
+                alert('Service workers cleared! Reload the page.');
+            }
+        }
+        
+        async function clearAllData() {
+            // Clear service workers
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                for (let registration of registrations) {
+                    await registration.unregister();
+                }
+            }
+            
+            // Clear caches
+            if ('caches' in window) {
+                const cacheNames = await caches.keys();
+                for (let name of cacheNames) {
+                    await caches.delete(name);
+                }
+            }
+            
+            // Clear localStorage
+            localStorage.clear();
+            
+            alert('All PWA data cleared! The page will reload.');
+            location.reload(true);
+        }
+        
+        // Auto-run tests on load
+        window.addEventListener('load', runTests);
+    </script>
+</body>
+</html>

@@ -67,7 +67,7 @@
                 }
             }
             
-            const registration = await navigator.serviceWorker.register('/service-worker.js', {
+            const registration = await navigator.serviceWorker.register('/service-worker.js?v=2.3.0', {
                 scope: '/',
                 updateViaCache: 'none' // Always check for updates
             });
@@ -78,6 +78,32 @@
             // Wait for service worker to be ready
             await navigator.serviceWorker.ready;
             console.log('[PWA] ✅ Service Worker is ready!');
+            
+            // Validate manifest.json
+            try {
+                const manifestResponse = await fetch('/manifest.json');
+                if (manifestResponse.ok) {
+                    const manifest = await manifestResponse.json();
+                    console.log('[PWA] ✅ Manifest loaded:', manifest.short_name);
+                    console.log('[PWA] Start URL:', manifest.start_url);
+                    console.log('[PWA] Icons:', manifest.icons.length);
+                    
+                    // Validate required fields
+                    if (!manifest.name || !manifest.short_name) {
+                        console.error('[PWA] ❌ Manifest missing required name fields');
+                    }
+                    if (!manifest.icons || manifest.icons.length < 2) {
+                        console.error('[PWA] ❌ Manifest needs at least 2 icons (192x192 and 512x512)');
+                    }
+                    if (!manifest.start_url) {
+                        console.error('[PWA] ❌ Manifest missing start_url');
+                    }
+                } else {
+                    console.error('[PWA] ❌ Failed to load manifest.json:', manifestResponse.status);
+                }
+            } catch (e) {
+                console.error('[PWA] ❌ Error validating manifest:', e);
+            }
             
             // Check for updates
             registration.addEventListener('updatefound', () => {
@@ -165,12 +191,17 @@
             console.log('[PWA] ✅ Install prompt available - App is installable!');
             console.log('[PWA] Browser:', navigator.userAgent);
             console.log('[PWA] Protocol:', window.location.protocol);
+            console.log('[PWA] Mobile device:', isMobileDevice());
             
             // Show floating install button immediately
             showInstallButton();
             
-            // Show custom install modal (mobile and desktop)
-            showInstallModal();
+            // Show custom install modal with slight delay for better UX
+            if (isMobileDevice()) {
+                setTimeout(() => {
+                    showInstallModal();
+                }, 2000);
+            }
         });
         
         // Listen for successful installation
@@ -336,12 +367,6 @@
     
     // Show Install Modal
     function showInstallModal() {
-        // Always check if prompt is available
-        if (!deferredPrompt) {
-            console.log('[PWA] Install prompt not available yet');
-            return;
-        }
-        
         // Check if already installed
         const isInstalled = window.matchMedia('(display-mode: standalone)').matches || 
                            window.navigator.standalone === true ||
@@ -351,43 +376,62 @@
             return;
         }
         
-        // Show on mobile devices primarily, but allow desktop too
+        // Show on mobile devices primarily
         if (!isMobileDevice()) {
             console.log('[PWA] Desktop detected - install button will be shown instead of modal');
             return;
         }
         
-        // Check if already installed
-        if (window.matchMedia('(display-mode: standalone)').matches) {
-            console.log('[PWA] App already installed');
+        // If no deferredPrompt but on mobile, show manual instructions after delay
+        if (!deferredPrompt) {
+            console.log('[PWA] No install prompt available, will show manual instructions');
+            setTimeout(() => {
+                if (!deferredPrompt) {
+                    showManualInstallInstructions();
+                }
+            }, 3000);
             return;
         }
         
-        // Check if modal was shown before
-        const modalShown = localStorage.getItem('pwa_install_modal_shown');
-        if (modalShown === 'true') {
-            console.log('[PWA] Install modal already shown');
+        // AGGRESSIVE MODE: On production, show modal at least once even if dismissed before
+        // Check if modal was shown in THIS session
+        const sessionModalShown = sessionStorage.getItem('pwa_modal_shown_this_session');
+        if (sessionModalShown === 'true') {
+            console.log('[PWA] Modal already shown in this session');
             return;
         }
         
-        // Check if user dismissed with "Remind me later"
+        // Check if user dismissed with "Remind me later" in the last 24 hours (reduced from 3 days)
         const remindLater = localStorage.getItem('pwa_install_remind_later');
         if (remindLater) {
-            const daysSinceReminder = (Date.now() - parseInt(remindLater)) / (1000 * 60 * 60 * 24);
-            if (daysSinceReminder < 3) {
-                console.log('[PWA] User chose remind me later, waiting 3 days');
+            const hoursSinceReminder = (Date.now() - parseInt(remindLater)) / (1000 * 60 * 60);
+            if (hoursSinceReminder < 24) {
+                console.log('[PWA] User chose remind me later, waiting 24 hours');
                 return;
             }
         }
         
-        // Delay modal display by 3 seconds for better UX
+        // Mark as shown in this session
+        sessionStorage.setItem('pwa_modal_shown_this_session', 'true');
+        
+        // Show modal with shorter delay for better visibility
+        console.log('[PWA] 📱 Scheduling modal display in 2 seconds...');
         setTimeout(() => {
             displayInstallModal();
-        }, 3000);
+        }, 2000);
     }
     
     // Display the install modal
     function displayInstallModal() {
+        console.log('[PWA] 🎯 Displaying install modal...');
+        
+        // Remove any existing modal first
+        const existingModal = document.getElementById('pwa-install-modal');
+        if (existingModal) {
+            existingModal.remove();
+            console.log('[PWA] Removed existing modal');
+        }
+        
         // Create modal overlay
         const modalOverlay = document.createElement('div');
         modalOverlay.id = 'pwa-install-modal';
@@ -423,16 +467,19 @@
         `;
         
         document.body.appendChild(modalOverlay);
+        console.log('[PWA] ✅ Modal added to DOM');
         
         // Show modal with animation
         setTimeout(() => {
             modalOverlay.classList.add('show');
+            console.log('[PWA] ✅ Modal animation triggered - should be visible now!');
         }, 100);
         
         // Add event listeners
         document.getElementById('pwa-install-now')?.addEventListener('click', installPWA);
         document.getElementById('pwa-remind-later')?.addEventListener('click', remindLater);
         document.getElementById('pwa-modal-close')?.addEventListener('click', closeInstallModal);
+        console.log('[PWA] Event listeners attached');
         
         // Close on overlay click
         modalOverlay.addEventListener('click', (e) => {
@@ -459,25 +506,52 @@
     // Install PWA
     async function installPWA() {
         if (!deferredPrompt) {
-            console.log('[PWA] No install prompt available');
+            console.log('[PWA] ⚠️ No install prompt available');
+            
+            // Show helpful message to user
+            if (isMobileDevice()) {
+                showManualInstallInstructions();
+            } else {
+                alert('Pour installer l\'application:\n\n' +
+                      'Chrome/Edge: Cliquez sur l\'icône d\'installation dans la barre d\'adresse\n' +
+                      'ou Menu → Installer JB Shop');
+            }
             return;
         }
         
-        // Show the install prompt
-        deferredPrompt.prompt();
-        
-        // Wait for user response
-        const { outcome } = await deferredPrompt.userChoice;
-        
-        console.log(`[PWA] User response: ${outcome}`);
-        
-        if (outcome === 'accepted') {
-            localStorage.setItem('pwa_install_modal_shown', 'true');
-            hideInstallModal();
+        try {
+            console.log('[PWA] 📱 Showing install prompt...');
+            
+            // Show the install prompt
+            deferredPrompt.prompt();
+            
+            // Wait for user response
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            console.log(`[PWA] User response: ${outcome}`);
+            
+            if (outcome === 'accepted') {
+                console.log('[PWA] ✅ User accepted the install prompt');
+                localStorage.setItem('pwa_install_modal_shown', 'true');
+                hideInstallModal();
+                hideInstallButton();
+            } else {
+                console.log('[PWA] ❌ User dismissed the install prompt');
+                // Store reminder to show again later
+                localStorage.setItem('pwa_install_remind_later', Date.now().toString());
+            }
+            
+            // Clear the deferred prompt
+            deferredPrompt = null;
+            
+        } catch (error) {
+            console.error('[PWA] ❌ Error during installation:', error);
+            
+            // Show fallback instructions
+            alert('Impossible d\'installer automatiquement.\\n\\n' +
+                  'Veuillez utiliser le menu de votre navigateur:\\n' +
+                  'Menu (⋮) → "Installer l\'application" ou "Ajouter à l\'écran d\'accueil"');
         }
-        
-        // Clear the deferred prompt
-        deferredPrompt = null;
     }
     
     // Hide Install Modal
@@ -972,3 +1046,15 @@ window.PWA = {
 };
 
 console.log('[PWA] Initialization script loaded');
+
+// Force clear old cached versions of scripts and service workers
+if ('caches' in window) {
+    caches.keys().then(keys => {
+        keys.forEach(key => {
+            if (key.includes('jbshop-v2.0') || key.includes('jbshop-v2.1') || key.includes('jbshop-v2.2')) {
+                caches.delete(key);
+                console.log('[PWA] Deleted old cache:', key);
+            }
+        });
+    });
+}

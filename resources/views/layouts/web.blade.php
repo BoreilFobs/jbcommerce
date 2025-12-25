@@ -122,7 +122,7 @@
         <meta name="theme-color" content="#ff7e00">
         
         <!-- PWA Manifest -->
-        <link rel="manifest" href="{{ asset('manifest.json') }}" crossorigin="use-credentials">
+        <link rel="manifest" href="{{ asset('manifest.json') }}">
         
         <!-- Favicon & App Icons -->
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
@@ -918,9 +918,7 @@
     <script src="{{ asset('js/lazy-load.js') }}"></script>
     
     <!-- PWA Initialization -->
-    <script src="{{ asset('js/pwa-init.js') }}" defer></script>
-    
-    <!-- PWA Enhanced Features (WhatsApp, In-app browsers support) -->
+        <script src="{{ asset('js/pwa-init.js') }}?v=2.3.0" defer></script>    <!-- PWA Enhanced Features (WhatsApp, In-app browsers support) -->
     <script src="{{ asset('js/pwa-enhanced.js') }}" defer></script>
 
     <!-- Firebase Cloud Messaging -->

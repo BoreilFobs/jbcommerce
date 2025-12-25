@@ -2,12 +2,11 @@
   "name": "JB Shop - Boutique en Ligne à Bafoussam",
   "short_name": "JB Shop",
   "description": "Boutique en ligne spécialisée dans la vente d'électronique, smartphones, ordinateurs et accessoires à Bafoussam, Cameroun. Livraison rapide, paiement sécurisé.",
-  "start_url": "/?source=pwa",
-  "id": "/?source=pwa",
+  "start_url": "/",
+  "id": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ff7e00",
-  "orientation": "portrait-primary",
   "scope": "/",
   "icons": [
     {
