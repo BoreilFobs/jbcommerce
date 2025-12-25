@@ -58,19 +58,35 @@
     // Register Service Worker
     async function registerServiceWorker() {
         try {
+            // Unregister old service workers first (force clean install)
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            for (let registration of registrations) {
+                if (registration.scope !== window.location.origin + '/') {
+                    await registration.unregister();
+                    console.log('[PWA] Unregistered old service worker:', registration.scope);
+                }
+            }
+            
             const registration = await navigator.serviceWorker.register('/service-worker.js', {
-                scope: '/'
+                scope: '/',
+                updateViaCache: 'none' // Always check for updates
             });
             
-            console.log('[PWA] Service Worker registered successfully:', registration.scope);
+            console.log('[PWA] ✅ Service Worker registered successfully:', registration.scope);
+            console.log('[PWA] Service Worker state:', registration.active ? 'active' : 'installing');
+            
+            // Wait for service worker to be ready
+            await navigator.serviceWorker.ready;
+            console.log('[PWA] ✅ Service Worker is ready!');
             
             // Check for updates
             registration.addEventListener('updatefound', () => {
                 const newWorker = registration.installing;
+                console.log('[PWA] Update found, installing new version...');
                 
                 newWorker.addEventListener('statechange', () => {
                     if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                        // New service worker available
+                        console.log('[PWA] New version installed!');
                         showUpdateNotification();
                     }
                 });
@@ -85,7 +101,9 @@
             checkCacheFreshness();
             
         } catch (error) {
-            console.error('[PWA] Service Worker registration failed:', error);
+            console.error('[PWA] ❌ Service Worker registration failed:', error);
+            console.error('[PWA] Error details:', error.message);
+            // Still try to initialize PWA features even if SW fails
         }
     }
     
@@ -127,6 +145,16 @@
     let installButtonShown = false;
     
     function handleInstallPrompt() {
+        // Check if already installed
+        const isInstalled = window.matchMedia('(display-mode: standalone)').matches || 
+                           window.navigator.standalone === true ||
+                           localStorage.getItem('pwa_installed') === 'true';
+        
+        if (isInstalled) {
+            console.log('[PWA] ✅ App is already installed!');
+            return;
+        }
+        
         window.addEventListener('beforeinstallprompt', (e) => {
             // Prevent the mini-infobar from appearing
             e.preventDefault();
@@ -135,19 +163,19 @@
             deferredPrompt = e;
             
             console.log('[PWA] ✅ Install prompt available - App is installable!');
+            console.log('[PWA] Browser:', navigator.userAgent);
+            console.log('[PWA] Protocol:', window.location.protocol);
             
             // Show floating install button immediately
             showInstallButton();
             
-            // Show custom install modal (only on mobile, with delay)
-            if (isMobileDevice()) {
-                showInstallModal();
-            }
+            // Show custom install modal (mobile and desktop)
+            showInstallModal();
         });
         
         // Listen for successful installation
         window.addEventListener('appinstalled', () => {
-            console.log('[PWA] ✅ App installed successfully');
+            console.log('[PWA] ✅ App installed successfully!');
             deferredPrompt = null;
             installButtonShown = false;
             hideInstallModal();
@@ -165,32 +193,74 @@
             }
         });
         
-        // Log PWA readiness after 2 seconds
+        // For iOS Safari - show manual instructions
+        if (isiOS() && !isInstalled) {
+            console.log('[PWA] iOS detected - showing iOS install instructions');
+            setTimeout(() => {
+                if (!deferredPrompt) {
+                    showiOSInstallPrompt();
+                }
+            }, 3000);
+        }
+        
+        // Log PWA readiness after 3 seconds
         setTimeout(() => {
-            if (!deferredPrompt) {
-                console.log('[PWA] ⚠️ Install prompt not triggered. Checking requirements:');
-                console.log('- HTTPS: ', window.location.protocol === 'https:' || window.location.hostname === 'localhost');
-                console.log('- Service Worker: ', 'serviceWorker' in navigator);
-                console.log('- Manifest: Check if manifest.json is loaded');
-                console.log('- Already installed: ', window.matchMedia('(display-mode: standalone)').matches);
+            if (!deferredPrompt && !isInstalled) {
+                console.log('[PWA] ⚠️ Install prompt not triggered. Diagnostic info:');
+                console.log('- Protocol:', window.location.protocol);
+                console.log('- HTTPS:', window.location.protocol === 'https:');
+                console.log('- Localhost:', window.location.hostname === 'localhost');
+                console.log('- Service Worker:', 'serviceWorker' in navigator);
+                console.log('- BeforeInstallPrompt:', 'onbeforeinstallprompt' in window);
+                console.log('- User Agent:', navigator.userAgent);
+                console.log('- Display Mode:', window.matchMedia('(display-mode: standalone)').matches ? 'standalone' : 'browser');
+                
+                // Check manifest
+                fetch('/manifest.json')
+                    .then(r => r.ok ? console.log('[PWA] ✅ Manifest.json accessible') : console.error('[PWA] ❌ Manifest.json not found'))
+                    .catch(e => console.error('[PWA] ❌ Cannot fetch manifest:', e));
+                    
+                // If on mobile but no prompt, show manual instructions
+                if (isMobileDevice()) {
+                    console.log('[PWA] Mobile device detected, showing fallback instructions');
+                    showManualInstallInstructions();
+                }
             }
-        }, 2000);
+        }, 3000);
     }
     
     // Show floating install button
     function showInstallButton() {
         const installBtn = document.getElementById('pwa-install-button');
-        if (installBtn && deferredPrompt && !installButtonShown) {
+        if (!installBtn) {
+            console.error('[PWA] ❌ Install button element not found in DOM');
+            return;
+        }
+        
+        if (deferredPrompt && !installButtonShown) {
             // Check if already installed
-            if (window.matchMedia('(display-mode: standalone)').matches || localStorage.getItem('pwa_installed') === 'true') {
+            const isInstalled = window.matchMedia('(display-mode: standalone)').matches || 
+                               window.navigator.standalone === true ||
+                               localStorage.getItem('pwa_installed') === 'true';
+                               
+            if (isInstalled) {
                 console.log('[PWA] App already installed, hiding button');
                 return;
             }
             
             console.log('[PWA] 📱 Showing install button');
             installBtn.style.display = 'flex';
-            installBtn.addEventListener('click', installPWA);
+            installBtn.style.visibility = 'visible';
+            installBtn.style.opacity = '1';
+            
+            // Remove old listeners to prevent duplicates
+            const newBtn = installBtn.cloneNode(true);
+            installBtn.parentNode.replaceChild(newBtn, installBtn);
+            newBtn.addEventListener('click', installPWA);
+            
             installButtonShown = true;
+        } else if (!deferredPrompt) {
+            console.log('[PWA] ⚠️ Install button not shown - prompt not available yet');
         }
     }
     
@@ -207,7 +277,64 @@
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
     
-    // Show Install Modal (Mobile Only)
+    // Check if running on iOS
+    function isiOS() {
+        return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    }
+    
+    // Show iOS install prompt
+    function showiOSInstallPrompt() {
+        const modal = document.getElementById('pwa-install-modal');
+        if (modal) {
+            const content = modal.querySelector('.modal-body') || modal.querySelector('.pwa-modal-content');
+            if (content) {
+                content.innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        <h3 style="margin-bottom: 15px;">Installer JB Shop</h3>
+                        <p style="margin-bottom: 15px;">Sur iOS, appuyez sur le bouton Partager <span style="font-size: 24px;">⎘</span> puis "Sur l'écran d'accueil"</p>
+                        <img src="/icons/icon-192x192.png" alt="JB Shop" style="width: 80px; height: 80px; margin: 20px auto; display: block; border-radius: 16px;">
+                        <button onclick="this.closest('.pwa-modal').style.display='none'" style="margin-top: 20px; padding: 10px 30px; background: #ff7e00; color: white; border: none; border-radius: 8px; cursor: pointer;">OK</button>
+                    </div>
+                `;
+                modal.style.display = 'flex';
+                console.log('[PWA] Showing iOS install instructions');
+            }
+        }
+    }
+    
+    // Show manual install instructions
+    function showManualInstallInstructions() {
+        const modal = document.getElementById('pwa-install-modal');
+        if (modal) {
+            const content = modal.querySelector('.modal-body') || modal.querySelector('.pwa-modal-content');
+            if (content) {
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                const isAndroid = /Android/.test(navigator.userAgent);
+                
+                let instructions = '<div style="text-align: center; padding: 20px;"><h3 style="margin-bottom: 15px;">Installer JB Shop</h3>';
+                
+                if (isIOS) {
+                    instructions += '<p style="margin-bottom: 15px;">1. Appuyez sur le bouton Partager <span style="font-size: 24px;">⎘</span></p>';
+                    instructions += '<p style="margin-bottom: 15px;">2. Faites défiler et sélectionnez "Sur l\'écran d\'accueil"</p>';
+                    instructions += '<p style="margin-bottom: 15px;">3. Appuyez sur "Ajouter"</p>';
+                } else if (isAndroid) {
+                    instructions += '<p style="margin-bottom: 15px;">1. Appuyez sur le menu (⋮) en haut à droite</p>';
+                    instructions += '<p style="margin-bottom: 15px;">2. Sélectionnez "Installer l\'application" ou "Ajouter à l\'écran d\'accueil"</p>';
+                } else {
+                    instructions += '<p style="margin-bottom: 15px;">Dans votre navigateur, cherchez l\'option "Installer" dans le menu</p>';
+                }
+                
+                instructions += '<img src="/icons/icon-192x192.png" alt="JB Shop" style="width: 80px; height: 80px; margin: 20px auto; display: block; border-radius: 16px;">';
+                instructions += '<button onclick="this.closest(\'.pwa-modal\').style.display=\'none\'" style="margin-top: 20px; padding: 10px 30px; background: #ff7e00; color: white; border: none; border-radius: 8px; cursor: pointer;">OK</button></div>';
+                
+                content.innerHTML = instructions;
+                modal.style.display = 'flex';
+                console.log('[PWA] Showing manual install instructions');
+            }
+        }
+    }
+    
+    // Show Install Modal
     function showInstallModal() {
         // Always check if prompt is available
         if (!deferredPrompt) {
@@ -215,9 +342,18 @@
             return;
         }
         
-        // Only show on mobile devices
+        // Check if already installed
+        const isInstalled = window.matchMedia('(display-mode: standalone)').matches || 
+                           window.navigator.standalone === true ||
+                           localStorage.getItem('pwa_installed') === 'true';
+        if (isInstalled) {
+            console.log('[PWA] App already installed');
+            return;
+        }
+        
+        // Show on mobile devices primarily, but allow desktop too
         if (!isMobileDevice()) {
-            console.log('[PWA] Install modal disabled on desktop');
+            console.log('[PWA] Desktop detected - install button will be shown instead of modal');
             return;
         }
         

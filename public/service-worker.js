@@ -1,7 +1,7 @@
 // Service Worker for JB Shop - PWA with Offline Support
 // Version 2.1.0 - Enhanced caching with real-time updates and improved PWA score
 
-const CACHE_VERSION = 'jbshop-v2.1.0';
+const CACHE_VERSION = 'jbshop-v2.2.0'; // Updated version to force cache refresh
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const DYNAMIC_CACHE = `${CACHE_VERSION}-dynamic`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
