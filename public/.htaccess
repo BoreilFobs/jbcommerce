@@ -5,6 +5,11 @@
 
     RewriteEngine On
 
+    # IMPORTANT: Serve static files directly (icons, manifest, etc.)
+    # This MUST come before any other rules
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule \.(png|jpg|jpeg|gif|ico|svg|webp|css|js|json|webmanifest|woff|woff2|ttf|eot)$ - [L]
+
     # Force HTTPS (Redirect HTTP to HTTPS)
     RewriteCond %{HTTPS} off
     RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
@@ -12,10 +17,6 @@
     # Force WWW or Non-WWW (Choose one - currently set to non-www)
     RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
     RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
-
-    # PWA Icons - Serve directly from local icons folder
-    # This overrides Apache's default /icons/ alias
-    RewriteRule ^icons/(.+)$ /icons/$1 [L,PT]
 
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
