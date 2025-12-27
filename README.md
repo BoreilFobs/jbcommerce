@@ -1,67 +1,185 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# JB Shop - Plateforme E-Commerce
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="public/icons/icon-192x192.png" width="120" alt="JB Shop Logo">
 </p>
 
-## About Laravel
+<p align="center">
+  <strong>Une boutique en ligne moderne pour le Cameroun</strong>
+</p>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📋 Description
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**JB Shop** est une plateforme e-commerce complète développée avec Laravel, conçue pour offrir une expérience d'achat en ligne fluide et moderne. La plateforme permet aux utilisateurs de parcourir des produits, gérer leur panier, passer des commandes et recevoir des notifications en temps réel.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## ✨ Fonctionnalités
 
-## Learning Laravel
+### 🛒 Côté Client
+- **Catalogue de produits** - Navigation par catégories avec filtres et recherche
+- **Panier d'achat** - Gestion complète du panier avec mise à jour en temps réel
+- **Liste de souhaits** - Sauvegarde des produits favoris
+- **Commandes** - Processus de commande simplifié
+- **PWA** - Application Web Progressive installable sur mobile
+- **Notifications** - Notifications push via Firebase Cloud Messaging
+- **Intégration WhatsApp** - Communication directe avec le service client
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 👨‍💼 Côté Administration
+- **Tableau de bord** - Vue d'ensemble avec statistiques et indicateurs clés
+- **Gestion des produits** - CRUD complet avec images multiples, spécifications et SEO
+- **Gestion des catégories** - Organisation des produits par catégories
+- **Gestion des commandes** - Suivi et mise à jour du statut des commandes
+- **Gestion des utilisateurs** - Administration des comptes clients
+- **Alertes de stock** - Notifications pour les produits en rupture ou stock faible
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 🛠️ Technologies Utilisées
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Backend**: Laravel 12 (PHP 8.2+)
+- **Frontend**: Blade, Tailwind CSS, JavaScript
+- **Base de données**: MySQL
+- **Authentification**: Laravel Breeze
+- **Stockage**: Laravel Storage (local/S3)
+- **Notifications**: Firebase Cloud Messaging (FCM)
+- **PWA**: Service Workers, Web App Manifest
 
-## Laravel Sponsors
+## 📁 Structure du Projet
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```
+├── app/
+│   ├── Http/Controllers/    # Contrôleurs de l'application
+│   ├── Models/              # Modèles Eloquent
+│   ├── Services/            # Services métier
+│   └── Observers/           # Observateurs de modèles
+├── resources/
+│   ├── views/               # Vues Blade
+│   │   ├── admin/           # Vues administration
+│   │   ├── offer/           # Vues produits
+│   │   ├── category/        # Vues catégories
+│   │   └── components/      # Composants réutilisables
+│   └── css/                 # Styles CSS
+├── public/
+│   ├── icons/               # Icônes PWA
+│   ├── js/                  # JavaScript compilé
+│   └── manifest.json        # Manifest PWA
+├── routes/
+│   ├── web.php              # Routes web
+│   └── auth.php             # Routes authentification
+└── database/
+    ├── migrations/          # Migrations de base de données
+    └── seeders/             # Seeders de données
+```
 
-### Premium Partners
+## ⚙️ Installation
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### Prérequis
+- PHP 8.2 ou supérieur
+- Composer
+- Node.js & NPM
+- MySQL
 
-## Contributing
+### Étapes d'installation
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. **Cloner le dépôt**
+   ```bash
+   git clone https://github.com/BoreilFobs/jbcommerce.git
+   cd jbcommerce
+   ```
 
-## Code of Conduct
+2. **Installer les dépendances PHP**
+   ```bash
+   composer install
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+3. **Installer les dépendances JavaScript**
+   ```bash
+   npm install
+   ```
 
-## Security Vulnerabilities
+4. **Configurer l'environnement**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+5. **Configurer la base de données**
+   - Créer une base de données MySQL
+   - Mettre à jour les informations dans `.env`
 
-## License
+6. **Exécuter les migrations**
+   ```bash
+   php artisan migrate
+   ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# jbcommerce
+7. **Créer le lien de stockage**
+   ```bash
+   php artisan storage:link
+   ```
+
+8. **Compiler les assets**
+   ```bash
+   npm run build
+   ```
+
+9. **Lancer le serveur de développement**
+   ```bash
+   php artisan serve
+   ```
+
+## 🚀 Déploiement
+
+### Configuration serveur recommandée
+- Ubuntu 22.04 LTS
+- Apache 2.4 ou Nginx
+- PHP 8.2+ avec extensions requises
+- MySQL 8.0+
+- SSL/HTTPS (requis pour PWA)
+
+### Variables d'environnement importantes
+```env
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://votre-domaine.com
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_DATABASE=jbshop
+DB_USERNAME=votre_utilisateur
+DB_PASSWORD=votre_mot_de_passe
+
+MAIL_MAILER=smtp
+# Configuration email...
+
+# Firebase (pour notifications push)
+FIREBASE_CREDENTIALS=chemin/vers/credentials.json
+```
+
+## 📱 PWA (Progressive Web App)
+
+L'application est installable sur les appareils mobiles grâce à la technologie PWA:
+- Fonctionne hors ligne (pages mises en cache)
+- Installable sur l'écran d'accueil
+- Notifications push
+- Expérience native sur mobile
+
+## 🔐 Sécurité
+
+- Authentification sécurisée avec Laravel
+- Protection CSRF sur tous les formulaires
+- Validation des données côté serveur
+- Échappement automatique des données affichées
+- Mots de passe hashés avec bcrypt
+
+## 📞 Support
+
+Pour toute question ou assistance:
+- **Site web**: [jbshop237.com](https://jbshop237.com)
+- **WhatsApp**: Intégré dans l'application
+
+## 📄 Licence
+
+Ce projet est sous licence propriétaire. Tous droits réservés.
+
+---
+
+<p align="center">
+  Développé avec ❤️ au Cameroun
+</p>
