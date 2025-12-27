@@ -59,13 +59,20 @@ class OffersController extends Controller
      */
     public function store(Request $request)
     {
+        // Clean up discount_percentage - remove leading zeros
+        if ($request->has('discount_percentage')) {
+            $request->merge([
+                'discount_percentage' => (int) $request->discount_percentage
+            ]);
+        }
+
         $validated = $request->validate([
             'name' => "required|string|max:255",
             'price' => "required|numeric|min:0",
             'category' => "required|string",
             'brand' => "nullable|string|max:255",
             'quantity' => "required|integer|min:0",
-            'discount_percentage' => "nullable|integer|min:0|max:100",
+            'discount_percentage' => "nullable|numeric|min:0|max:100",
             'description' => "required|string",
             'specifications' => "nullable|array",
             'specifications.*.key' => "nullable|string|max:255",
@@ -76,6 +83,26 @@ class OffersController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
+        ], [
+            'name.required' => 'Le nom du produit est obligatoire.',
+            'name.max' => 'Le nom ne peut pas dépasser 255 caractères.',
+            'price.required' => 'Le prix est obligatoire.',
+            'price.numeric' => 'Le prix doit être un nombre.',
+            'price.min' => 'Le prix ne peut pas être négatif.',
+            'category.required' => 'La catégorie est obligatoire.',
+            'quantity.required' => 'La quantité est obligatoire.',
+            'quantity.integer' => 'La quantité doit être un nombre entier.',
+            'quantity.min' => 'La quantité ne peut pas être négative.',
+            'discount_percentage.numeric' => 'Le pourcentage de réduction doit être un nombre.',
+            'discount_percentage.min' => 'Le pourcentage de réduction ne peut pas être négatif.',
+            'discount_percentage.max' => 'Le pourcentage de réduction ne peut pas dépasser 100.',
+            'description.required' => 'La description est obligatoire.',
+            'images.required' => 'Au moins une image est obligatoire.',
+            'images.min' => 'Au moins une image est obligatoire.',
+            'images.max' => 'Maximum 5 images autorisées.',
+            'images.*.image' => 'Les fichiers doivent être des images.',
+            'images.*.mimes' => 'Formats acceptés: jpeg, png, jpg, gif, webp.',
+            'images.*.max' => 'Chaque image ne peut pas dépasser 2Mo.',
         ]);
 
         // Process specifications from key-value pairs to associative array
@@ -143,13 +170,20 @@ class OffersController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Clean up discount_percentage - remove leading zeros
+        if ($request->has('discount_percentage')) {
+            $request->merge([
+                'discount_percentage' => (int) $request->discount_percentage
+            ]);
+        }
+
         $validated = $request->validate([
             'name' => "required|string|max:255",
             'price' => "required|numeric|min:0",
             'category' => "required|string",
             'brand' => "nullable|string|max:255",
             'quantity' => "required|integer|min:0",
-            'discount_percentage' => "nullable|integer|min:0|max:100",
+            'discount_percentage' => "nullable|numeric|min:0|max:100",
             'description' => "required|string",
             'specifications' => "nullable|array",
             'specifications.*.key' => "nullable|string|max:255",
@@ -160,6 +194,24 @@ class OffersController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:3048',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
+        ], [
+            'name.required' => 'Le nom du produit est obligatoire.',
+            'name.max' => 'Le nom ne peut pas dépasser 255 caractères.',
+            'price.required' => 'Le prix est obligatoire.',
+            'price.numeric' => 'Le prix doit être un nombre.',
+            'price.min' => 'Le prix ne peut pas être négatif.',
+            'category.required' => 'La catégorie est obligatoire.',
+            'quantity.required' => 'La quantité est obligatoire.',
+            'quantity.integer' => 'La quantité doit être un nombre entier.',
+            'quantity.min' => 'La quantité ne peut pas être négative.',
+            'discount_percentage.numeric' => 'Le pourcentage de réduction doit être un nombre.',
+            'discount_percentage.min' => 'Le pourcentage de réduction ne peut pas être négatif.',
+            'discount_percentage.max' => 'Le pourcentage de réduction ne peut pas dépasser 100.',
+            'description.required' => 'La description est obligatoire.',
+            'images.max' => 'Maximum 5 images autorisées.',
+            'images.*.image' => 'Les fichiers doivent être des images.',
+            'images.*.mimes' => 'Formats acceptés: jpeg, png, jpg, gif, webp.',
+            'images.*.max' => 'Chaque image ne peut pas dépasser 3Mo.',
         ]);
 
         // Process specifications from key-value pairs to associative array
