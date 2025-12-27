@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.jbshop237.twa",
+        "sha256_cert_fingerprints": ["76:65:4A:C8:35:BC:98:0F:DD:57:F0:E4:9F:B2:DE:12:6F:B0:67:38:3B:28:EC:C2:C2:3A:93:62:D6:0B:EF:5D"]
+      }
+    }]
